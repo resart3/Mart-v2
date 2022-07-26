@@ -25,8 +25,7 @@ class UserController extends Controller
     }
 
     public function login(Request $request)
-    {
-        dd("dd masuk");
+    {        
         if(Auth::attempt(['email' => $request['email'], 'password' => $request['password']])) {
             $user = Auth::user();
 
