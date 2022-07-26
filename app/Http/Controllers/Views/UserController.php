@@ -13,7 +13,7 @@ class UserController extends Controller
     public function index(){
         $user = User::get();
         $title = 'Halaman User';
-        return view('user', compact('user', 'title'));
+        return view('user', compact('user', 'title'));        
     }
 
     public function view_login(){
@@ -26,6 +26,7 @@ class UserController extends Controller
 
     public function login(Request $request)
     {
+        dd("dd masuk");
         if(Auth::attempt(['email' => $request['email'], 'password' => $request['password']])) {
             $user = Auth::user();
 
