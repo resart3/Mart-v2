@@ -25,4 +25,13 @@ class FamilyCard extends Model
         return $this->hasOne(FamilyMember::class, 'family_card_id', 'nomor')->where('isFamilyHead', 1)
             ->select('family_card_id', 'nik', 'nama');
     }
+
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class, 'land');
+        // "role_user" is table name
+        // OR if we have model RoleUser, then we can use class
+        // instead of table name role_user
+        //return $this->belongsToMany(Role::class, RoleUser::class);
+    }
 }
