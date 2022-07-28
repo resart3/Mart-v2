@@ -14,10 +14,12 @@ return new class extends Migration
     public function up()
     {
         Schema::create('lands', function (Blueprint $table) {
+            $table->string('family_card_id');
             $table->foreign('family_card_id')->references('nomor')->on('family_cards');
-            $table->foreign('categories_id')->references('id')->on('categories');
-            // $table->foreignId('categories_id')->constrained('categories');
-            // $table->foreignId('nomor')->constrained('family_cards');
+
+            $table->unsignedInteger('category_id');
+            $table->foreign('category_id')->references('id')->on('categories');            
+
             $table->integer("amount");
             $table->string("house_number");
         });
