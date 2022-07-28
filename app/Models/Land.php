@@ -11,5 +11,10 @@ class Land extends Model
 
     protected $table = "land";
 
-    protected $fillable = ["family_card_id"];
+    protected $fillable = [
+        "family_card_id",
+        "categories_id",
+        "amount",
+        "house_number"
+    ];    
 }
