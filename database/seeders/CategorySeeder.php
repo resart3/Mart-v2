@@ -19,11 +19,11 @@ class CategorySeeder extends Seeder
         $data = [
             [
                 'category_name' => "Rumah dengan luas tanah s.d 150m2",
-                'amount' => "150.000"
+                'amount' => "150000"
             ],
             [
                 'category_name' => "Rumah dengan luas tanah 151 s.d 200 m2",
-                'amount' => "200.000"
+                'amount' => "200000"
             ]
         ];
 

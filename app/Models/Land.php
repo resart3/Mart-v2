@@ -9,12 +9,12 @@ class Land extends Model
 {
     use HasFactory;
 
-    protected $table = "land";
+    // protected $table = "land";
 
     protected $fillable = [
         "family_card_id",
-        "categories_id",
-        "amount",
+        "category_id",
+        "area",
         "house_number"
-    ];    
+    ];
 }

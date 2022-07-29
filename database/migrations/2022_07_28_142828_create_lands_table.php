@@ -14,14 +14,17 @@ return new class extends Migration
     public function up()
     {
         Schema::create('lands', function (Blueprint $table) {
+            $table->bigIncrements('id');
+
             $table->string('family_card_id');
             $table->foreign('family_card_id')->references('nomor')->on('family_cards');
 
-            $table->unsignedInteger('category_id');
+            $table->unsignedBigInteger('category_id');
             $table->foreign('category_id')->references('id')->on('categories');            
 
-            $table->integer("amount");
+            $table->integer("area");
             $table->string("house_number");
+            $table->timestamps();
         });
     }
 

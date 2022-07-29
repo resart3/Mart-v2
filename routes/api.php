@@ -5,6 +5,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\FamilyCardController;
 use App\Http\Controllers\FamilyMemberController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\LandController;
+use App\Http\Controllers\CategoryController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -41,8 +43,17 @@ Route::group(['middleware' => 'user'], function () {
     Route::post('transaction_receipt/{id}', [TransactionController::class, 'add_receipt']);
     Route::resource('family_card', FamilyCardController::class);
     Route::resource('family_member', FamilyMemberController::class);
+    Route::resource('land', LandController::class);
+    Route::resource('category', CategoryController::class);
+    
 //    Route::get('images/transaction/{id}/{filename}', [TransactionController::class, 'transaction_receipt']);
 });
+
+
+
+
+
+
 
 // Route::group(['middleware' => 'user'], function () {
     
