@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/select.bootstrap4.min.css') }}">
 
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    
 </head>
 
 <body>
@@ -86,6 +87,12 @@
                     <li class="{{ Request::is('dashboard/transaction') ? 'active' : '' }}">
                         <a class="nav-link" href="{{ url('dashboard/transaction') }}">
                             <i class="fa fa-book"></i> <span>Halaman Transaksi</span>
+                        </a>
+                    </li>
+
+                    <li class="{{ Request::is('dashboard/tarif') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ url('dashboard/tarif')}}">
+                            <i class="fa fa-file-invoice"></i> <span>Halaman Tarif K3</span>
                         </a>
                     </li>
                 </ul>

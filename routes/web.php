@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Views\UserController;
 use App\Http\Controllers\Views\FamilyCardController;
 use App\Http\Controllers\Views\TransactionController;
+use App\Http\Controllers\Views\TarifController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -24,7 +26,9 @@ Route::group(['prefix' => 'user'], function () {
 
 Route::group(['prefix' => 'dashboard', 'middleware' => 'superuser'], function () {
     Route::get('/', function () { $title = 'Dashboard'; return view('index', compact('title')); });
-    Route::get('user', [UserController::class, 'index']);
+    Route::resource('user', UserController::class);
     Route::resource('data', FamilyCardController::class);
     Route::resource('transaction', TransactionController::class);
+    Route::resource('tarif', TarifController::class);
+    // Route::post('tarif.addnewtarif', [TarifController::class, 'addTarif']);
 });

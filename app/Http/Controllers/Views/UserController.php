@@ -50,4 +50,22 @@ class UserController extends Controller
 
         return redirect('user/login')->with('success', 'Sukses Melakukan Logout');
     }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param UserRequest $request
+     * @return Response
+     */
+    public function store(Request $request){
+        $data = [
+            'name'=>$request->input('name'),
+            'email'=>$request->input('email'),
+            'nik'=>$request->input('nik'),
+            'role'=>$request->input('role'),
+            'password'=>$request->input('password'),
+        ];
+        User::create($data);
+        return redirect()->route('user.index')->with('success','User baru berhasil ditambahkan!');
+    }
 }
