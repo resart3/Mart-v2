@@ -25,6 +25,9 @@ Route::group(['prefix' => 'user'], function () {
 Route::group(['prefix' => 'dashboard', 'middleware' => 'superuser'], function () {
     Route::get('/', function () { $title = 'Dashboard'; return view('index', compact('title')); });
     Route::get('user', [UserController::class, 'index']);
+    Route::group(['prefix' => 'user'], function () {
+        Route::get('/create', [UserController::class, 'create']);
+    });
     Route::resource('data', FamilyCardController::class);
     Route::resource('transaction', TransactionController::class);
 });

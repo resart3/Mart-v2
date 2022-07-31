@@ -19,4 +19,8 @@ class Category extends Model
         // return $this->belongsToMany(FamilyCard::class, 'land')->withPivot('active', 'created_by');;
         return $this->belongsToMany(Category::class, 'land');
     }
+
+    public function lands() {
+        return $this->hasMany(Land::class);
+    }
 }

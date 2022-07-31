@@ -17,4 +17,11 @@ class Land extends Model
         "area",
         "house_number"
     ];
+
+    public function family_cards(){
+        return $this->belongsTo(FamilyCard::class, 'family_card_id');
+    }    
+    public function categories(){
+        return $this->belongsTo(Category::class, 'category_id');
+    } 
 }

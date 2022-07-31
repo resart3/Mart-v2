@@ -34,4 +34,8 @@ class FamilyCard extends Model
         // instead of table name role_user
         //return $this->belongsToMany(Role::class, RoleUser::class);
     }
+
+    public function lands() {
+        return $this->hasMany(Land::class,'family_card_id', 'nomor');
+    }
 }

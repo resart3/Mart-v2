@@ -30,7 +30,7 @@ class UserController extends Controller
             $user = Auth::user();
 
             if($user->role != 'superuser'){
-                return redirect()->back()->with('error', 'Email Atau Password Anda Salah');
+                return redirect()->back()->with('error', 'Anda Tidak Memiliki Akses');
             }
 
             request()->session()->put('user', Auth::user());
@@ -49,5 +49,14 @@ class UserController extends Controller
         Auth::logout();
 
         return redirect('user/login')->with('success', 'Sukses Melakukan Logout');
+    }
+
+    public function create(){
+        $title = 'Halaman User';
+        return view('user', compact('title'));
+    }
+
+    public function store(){
+        dd('masuk');
     }
 }
