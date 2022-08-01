@@ -49,7 +49,7 @@
                                 <tr>
                                     <th>No</th>
                                     <th style="width: 20%">Kategori</th>
-                                    <th>Detail</th>
+                                    <!-- <th>Detail</th> -->
                                     <th>Nominal</th>
                                     <th>Action</th>
                                 </tr>
@@ -58,9 +58,9 @@
                                 @foreach ($tarif as $key => $data)
                                     <tr>
                                         <td>{{ $key + 1 }}</td>
-                                        <td>{{ $data->kategori }}</td>
-                                        <td>{{ $data->detail }}</td>
-                                        <td>{{ $data->nominal }}</td>
+                                        <td>{{ $data->category_name }}</td>
+                                        <!-- <td>{{ $data->detail }}</td> -->
+                                        <td>{{ $data->amount }}</td>
                                         <td>
                                             <a href="data/{{ $data->nomor }}" class="btn btn-outline-primary">
                                                 Detail
@@ -100,9 +100,11 @@
                                 </tr>
                                 </thead>
                                 <tbody style="font-size: 14px!important">
-                                @foreach ($tarif as $key => $data)
+                                @foreach ($land as $key => $data)
                                     <tr>
-                                        
+                                        <td>{{ $key + 1 }}</td>
+                                        <td>{{ $data->family_card_id }}</td>
+                                        <td>{{ $data->family_card_id }}</td>
                                     </tr>
                                 @endforeach
                                 </tbody>

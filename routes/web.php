@@ -29,6 +29,6 @@ Route::group(['prefix' => 'dashboard', 'middleware' => 'superuser'], function ()
     Route::resource('user', UserController::class);
     Route::resource('data', FamilyCardController::class);
     Route::resource('transaction', TransactionController::class);
-    // Route::resource('tarif', TarifController::class);
+    Route::resource('tarif', TarifController::class);
     // Route::post('tarif.addnewtarif', [TarifController::class, 'addTarif']);
 });
