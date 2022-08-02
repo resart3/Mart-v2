@@ -37,8 +37,8 @@ class FamilyCardController extends Controller
             'kabupaten_kota'=>$request->input('kabupaten_kota'),
             'provinsi'=>$request->input('provinsi'),
         ];
-        $data = $request->except("_token");
-        FamilyCard::create($data);
+        // $data = $request->except("_token");
+        // FamilyCard::create($data);
 
         $data2 = [
             'nama'=>$request->input('nama'),
@@ -53,7 +53,8 @@ class FamilyCardController extends Controller
             'isFamilyHead'=>$request->input('isFamilyHead'),
             'family_card_id'=>$request->input('nomor'),
         ];
-        $data = $request->except("_token");
+        dd($data2);
+        // $data = $request->except("_token");
         FamilyMember::create($data);
         return redirect()->route('data.index')
         ->with('success','Family created successfully.');

@@ -39,11 +39,10 @@ class TarifController extends Controller
     public function store(Request $request)
     {
         $data = [
-            'kategori'=>$request->input('kategori'),
-            'detail'=>$request->input('detail'),
-            'nominal'=>$request->input('nominal')
+            'category_name'=>$request->input('kategori'),
+            'amount'=>$request->input('nominal')
         ];
-        Tarif::create($data);
+        Category::create($data);
         return redirect()->route('tarif.index')->with('success','Tarif K3 berhasil ditambahkan!');
     }
 
@@ -73,7 +72,7 @@ class TarifController extends Controller
      */
     public function edit($id)
     {
-        //
+        dd('masul');
     }
 
     /**

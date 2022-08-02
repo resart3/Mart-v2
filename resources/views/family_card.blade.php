@@ -233,7 +233,7 @@
                     <div class="form-group row mb-4">
                         <label class="col-sm-2 col-form-label">Jenis Kelamin</label>
                         <div class="col-sm-10">
-                            <select class="form-control" id="jenis_kelamin">
+                            <select class="form-control" name="jenis_kelamin" id="jenis_kelamin">
                                 <option value=""></option>
                                 <option value="Laki-Laki">Laki-Laki</option>
                                 <option value="Perempuan">Perempuan</option>
@@ -243,7 +243,7 @@
                     <div class="form-group row mb-4">
                         <label class="col-sm-2 col-form-label">Agama</label>
                         <div class="col-sm-10">
-                            <select class="form-control" id="agama">
+                            <select class="form-control" name="agama" id="agama">
                                 <option value=""></option>
                                 <option value="ISLAM">ISLAM</option>
                                 <option value="PROTESTAN">PROTESTAN</option>
@@ -269,7 +269,7 @@
                     <div class="form-group row mb-4">
                         <label class="col-sm-2 col-form-label">Golongan Darah</label>
                         <div class="col-sm-10">
-                            <select class="form-control" id="golongan_darah">
+                            <select class="form-control" name="golongan_darah" id="golongan_darah">
                                 <option value=""></option>
                                 <option value="A">A</option>
                                 <option value="B">B</option>
@@ -281,7 +281,7 @@
                     <div class="form-group row mb-4">
                         <label class="col-sm-2 col-form-label">Kepala Keluarga?</label>
                         <div class="col-sm-10">
-                            <select class="form-control" id="IsFamilyHead">
+                            <select class="form-control" name="isFamilyHead" id="IsFamilyHead">
                                 <option value=""></option>
                                 <option value="1">Iya</option>
                                 <option value="0">Tidak</option>
