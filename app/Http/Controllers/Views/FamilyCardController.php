@@ -53,8 +53,9 @@ class FamilyCardController extends Controller
             'isFamilyHead'=>$request->input('isFamilyHead'),
             'family_card_id'=>$request->input('nomor'),
         ];
-        $data = $request->except("_token");
+        // $data = $request->except("_token");
         FamilyMember::create($data);
+        dd($data2);
         return redirect()->route('data.index')
         ->with('success','Family created successfully.');
     }

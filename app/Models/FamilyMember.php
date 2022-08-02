@@ -11,7 +11,7 @@ class FamilyMember extends Model
 
     public $fillable = [
         'family_card_id', 'nama', 'nik', 'tempat_lahir', 'tanggal_lahir', 'jenis_kelamin',
-        'agama', 'pendidikan', 'pekerjaan', 'golongan_darah', 'isFamilyHead', 'family_card_id'
+        'agama', 'pendidikan', 'pekerjaan', 'golongan_darah', 'isFamilyHead'
     ];
 
     public function family_cards() {
