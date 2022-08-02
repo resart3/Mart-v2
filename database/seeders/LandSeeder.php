@@ -24,6 +24,12 @@ class LandSeeder extends Seeder
                 'house_number' => "c2-01"
             ],
             [
+                'family_card_id' => "3172022401096461",
+                'category_id' => 1,
+                'area' => 150,
+                'house_number' => "c2-02"
+            ],
+            [
                 'family_card_id' => "3216060701130313",
                 'category_id' => 2,
                 'area' => 170,

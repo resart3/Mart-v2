@@ -28,7 +28,7 @@ class LandController extends Controller
     public function index()
     {
         try {
-            $response = Land::query();            
+            $response = Land::query();
             $this->response = Api::pagination($response);
         } catch (Exception $e){            
             $this->code = 500;
@@ -75,7 +75,25 @@ class LandController extends Controller
      */
     public function show($id)
     {
-        //
+        try {
+            // $this->response = Land::with('relation');
+            $this->response = Land::with(['family_cards','categories'])->where('family_card_id', $id)->get();
+            // // kalo hitungan dari backend
+            // $amounts = 0;
+            // foreach ($this->response as $response) {
+            //     $rt_rw = $response->family_cards->rt_rw;
+            //     $amounts += $response->categories->amount;
+            // }
+        } catch (Exception $e){
+            if ($e instanceof ModelNotFoundException){
+                $this->code = 404;
+            } else {
+                $this->code = 500;
+            }
+
+            $this->response = $e->getMessage();
+        }
+        return Api::apiRespond($this->code, $this->response);
     }
 
     /**

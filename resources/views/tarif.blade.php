@@ -48,8 +48,7 @@
                                 <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th style="width: 20%">Kategori</th>
-                                    <th>Detail</th>
+                                    <th style="width: 50%">Kategori</th>
                                     <th>Nominal</th>
                                     <th>Action</th>
                                 </tr>
@@ -58,9 +57,8 @@
                                 @foreach ($tarif as $key => $data)
                                     <tr>
                                         <td>{{ $key + 1 }}</td>
-                                        <td>{{ $data->kategori }}</td>
-                                        <td>{{ $data->detail }}</td>
-                                        <td>{{ $data->nominal }}</td>
+                                        <td>{{ $data->category_name }}</td>
+                                        <td>{{ $data->amount }}</td>
                                         <td>
                                             <a href="" class="btn btn-primary">
                                                 Edit
