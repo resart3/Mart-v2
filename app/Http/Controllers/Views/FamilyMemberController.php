@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class FamilyMemberController extends Controller
 {
     public function index()
-    {        
+    {
         $title = 'Detail Anggota Keluarga ('. $id .')';
         $family_member = FamilyMember::where('family_card_id', $id)->get();
 
@@ -22,26 +22,26 @@ class FamilyMemberController extends Controller
      * @param FamilyMemberRequest $request
      * @return Response
      */
-    public function store(FamilyMemberRequest $request)
+    public function store(Request $request)
     {
         $data = [
+            'family_card_id'=>$request->input('nomor'),
             'nama'=>$request->input('nama'),
             'nik'=>$request->input('nik'),
             'tempat_lahir'=>$request->input('tempat_lahir'),
             'tanggal_lahir'=>$request->input('tanggal_lahir'),
-            'jenis_kelamin'=>$request->input('jenis_kelamin'),
+            'jenis_kelamin'=>'Laki - Laki',
             'agama'=>$request->input('agama'),
             'pendidikan'=>$request->input('pendidikan'),
             'pekerjaan'=>$request->input('pekerjaan'),
             'golongan_darah'=>$request->input('golongan_darah'),
             'isFamilyHead'=>$request->input('isFamilyHead'),
-            'family_card_id'=>$request->input('nomor'),
         ];
-        $data = $request->except("_token");
         FamilyMember::create($data);
-
-        return redirect()->route('detail.index')
+        return redirect()->route('data.show',['data'=>$request->input('nomor')])
         ->with('success','Family created successfully.');
+        // return redirect()->route('detail.index')
+        // ->with('success','Family created successfully.');
     }
 
     /**
@@ -64,7 +64,20 @@ class FamilyMemberController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $family_member = FamilyMember::find($id);
+        $family_member->nama = $request->input('nama');
+        $family_member->nik = $request->input('nik');
+        $family_member->tempat_lahir = $request->input('tempat_lahir');
+        $family_member->tanggal_lahir = $request->input('tanggal_lahir');
+        $family_member->jenis_kelamin = $request->input('jenis_kelamin');
+        $family_member->agama = $request->input('agama');
+        $family_member->pendidikan = $request->input('pendidikan');
+        $family_member->pekerjaan = $request->input('pekerjaan');
+        $family_member->golongan_darah = $request->input('golongan_darah');
+        $family_member->isFamilyHead = $request->input('isFamilyHead');
+        $family_member->save();
+        return redirect()->route('data.show',['data'=>$request->input('nomor')])
+        ->with('success','Family created successfully.');
     }
 
     /**

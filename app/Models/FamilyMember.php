@@ -15,6 +15,6 @@ class FamilyMember extends Model
     ];
 
     public function family_cards() {
-        return $this->belongsTo(FamilyCard::class, 'family_card_id');
+        return $this->belongsTo(FamilyCard::class, 'family_card_id','nomor');
     }
 }
