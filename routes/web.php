@@ -37,6 +37,8 @@ Route::group(['prefix' => 'dashboard', 'middleware' => 'superuser'], function ()
 
     Route::group(['prefix' => 'tarif'], function () {
         Route::post('/tarif_warga', [TarifController::class, 'storeLand']);
+        Route::post('/nama_warga', [TarifController::class, 'ajaxGetName']);
+        Route::post('/category_amount', [TarifController::class, 'ajaxGetAmount']);
     });
     // Route::post('tarif.addnewtarif', [TarifController::class, 'addTarif']);
 });

@@ -90,7 +90,7 @@
                                 <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>NIK</th>
+                                    <th>Nomor KK</th>
                                     <th>Nama</th>
                                     <th>Luas Bangunan</th>
                                     <th>Nomor Rumah</th>
@@ -99,9 +99,26 @@
                                 </tr>
                                 </thead>
                                 <tbody style="font-size: 14px!important">
-                                @foreach ($tarif as $key => $data)
+                                @foreach ($land as $key => $data)
                                     <tr>
-                                        
+                                        <th>
+                                            {{$key+1}}
+                                        </th>
+                                        <th>
+                                            {{$data->nomor}}
+                                        </th>
+                                        <th>
+                                            {{$data->nama}}
+                                        </th>
+                                        <th>
+                                            {{$data->area}}
+                                        </th>
+                                        <th>
+                                            {{$data->house_number}}
+                                        </th>
+                                        <th>
+                                            {{$data->amount}}
+                                        </th>
                                     </tr>
                                 @endforeach
                                 </tbody>
@@ -151,7 +168,7 @@
     </div>
 
     <div class="modal fade" id="tarifWargaModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <form action="" >
+        <form method="POST" action="{{ url('/dashboard/tarif/tarif_warga') }}" >
             @csrf
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -162,35 +179,52 @@
                         </button>
                     </div>
                     <div class="modal-body" style="padding-bottom: 5px">
-                        <form action="" >
+                        <form action="" >  
                             <div class="form-group row mb-4">
-                                <label class="col-sm-2 col-form-label">Nama</label>
+                                <label class="col-sm-2 col-form-label">Nomor KK</label>
                                 <div class="col-sm-10">
-                                    <input id="name" type="text" name="name" class="form-control" >
+                                    <input id="nomorKk" type="text" name="nomor_kk" 
+                                        class="form-control" required>
                                 </div>
                             </div>
                             <div class="form-group row mb-4">
-                                <label class="col-sm-2 col-form-label">NIK</label>
+                                <label class="col-sm-2 col-form-label">Nama</label>
                                 <div class="col-sm-10">
-                                    <input id="nominal" type="text" name="nominal" class="form-control" >
+                                    <input id="name" type="text" name="name" 
+                                        class="form-control" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group row mb-4">
+                                <label class="col-sm-2 col-form-label">Luas Tanah</label>
+                                <div class="col-sm-10">
+                                    <input id="luasTanah" type="text" name="luasTanah" 
+                                        class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="form-group row mb-4">
+                                <label class="col-sm-2 col-form-label">Nomor Rumah</label>
+                                <div class="col-sm-10">
+                                    <input id="nomorRumah" type="text" name="nomorRumah" 
+                                        class="form-control" required>
                                 </div>
                             </div>
                             <div class="form-group row mb-4">
                                 <label class="col-sm-2 col-form-label">Kategori</label>
                                 <div class="col-sm-10">
-                                    <input id="kategori" type="text" name="kategori" class="form-control" placeholder="cth: Kategori 1">
-                                </div>
-                            </div>
-                            <div class="form-group row mb-4">
-                                <label class="col-sm-2 col-form-label">Detail Tarif</label>
-                                <div class="col-sm-10">
-                                    <textarea id="detail" name="detail" class="form-control" style="height: 80px" ></textarea>
+                                    <select class="form-control" id="kategoriWarga" name="kategoriWarga">
+                                        <option value=""></option>
+                                        @foreach ($tarif as $key => $data)
+                                            <option value="{{ $data->id }}">{{ $data->category_name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                             <div class="form-group row mb-4">
                                 <label class="col-sm-2 col-form-label">Nominal Tarif</label>
                                 <div class="col-sm-10">
-                                    <input id="nominal" type="text" name="nominal" class="form-control" >
+                                    <input id="nominalWarga" type="text" name="nominalWarga" 
+                                        class="form-control" readonly>
                                 </div>
                             </div>
                         </form>
@@ -202,3 +236,34 @@
             </div>
         </form>
     </div>
+    
+<script>
+    document.getElementById("nomorKk").addEventListener("change", function() {
+        $.ajax({
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            url: `/dashboard/tarif/nama_warga`,
+            type: 'POST',
+            data: {
+                nomorKk : $("#nomorKk").val(),
+            },
+            success: function(data) {
+                console.log(data[0].nama);
+                $("#name").val(data[0].nama);
+            }
+        });
+    });
+
+    document.getElementById("kategoriWarga").addEventListener("change", function() {
+        $.ajax({
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            url: `/dashboard/tarif/category_amount`,
+            type: 'POST',
+            data: {
+                category_id : $("#kategoriWarga").val(),
+            },
+            success: function(data) {
+                $("#nominalWarga").val(data[0].amount)
+            }
+        });
+    });
+</script>
