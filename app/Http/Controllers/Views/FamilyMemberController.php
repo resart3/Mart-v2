@@ -5,42 +5,26 @@ namespace App\Http\Controllers\Views;
 use App\Models\FamilyMember;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\FamilyCard;
 
-
-class FamilyCardController extends Controller
+class FamilyMemberController extends Controller
 {
     public function index()
-    {
+    {        
+        $title = 'Detail Anggota Keluarga ('. $id .')';
+        $family_member = FamilyMember::where('family_card_id', $id)->get();
 
-        $title = 'Halaman Data Warga';
-        $family_card = FamilyCard::with('family_head')->get();
-
-        return view('family_card', compact('family_card', 'title'));
+        return view('family_detail', compact('family_member', 'title'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param FamilyCardRequest $request
+     * @param FamilyMemberRequest $request
      * @return Response
      */
-    public function store(Request $request)
+    public function store(FamilyMemberRequest $request)
     {
         $data = [
-            'nomor'=>$request->input('nomor'),
-            'alamat'=>$request->input('alamat'),
-            'rt_rw'=>$request->input('rt_rw'),
-            'kode_pos'=>$request->input('kode_pos'),
-            'kecamatan'=>$request->input('kecamatan'),
-            'desa_kelurahan'=>$request->input('desa_kelurahan'),
-            'kabupaten_kota'=>$request->input('kabupaten_kota'),
-            'provinsi'=>$request->input('provinsi'),
-        ];
-        $data = $request->except("_token");
-        FamilyCard::create($data);
-
-        $data2 = [
             'nama'=>$request->input('nama'),
             'nik'=>$request->input('nik'),
             'tempat_lahir'=>$request->input('tempat_lahir'),
@@ -55,28 +39,20 @@ class FamilyCardController extends Controller
         ];
         $data = $request->except("_token");
         FamilyMember::create($data);
-        return redirect()->route('data.index')
-        ->with('success','Family created successfully.');
-    }
 
-    public function showForm()
-    {
-        return view('form_family_card');
+        return redirect()->route('detail.index')
+        ->with('success','Family created successfully.');
     }
 
     /**
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return Application|Factory|View
+     * @return Response
      */
     public function show($id)
     {
-
-        $title = 'Detail Anggota Keluarga ('. $id .')';
-        $family_member = FamilyMember::where('family_card_id', $id)->get();
-
-        return view('family_detail', compact('family_member', 'title'));
+        //
     }
 
     /**
@@ -99,8 +75,9 @@ class FamilyCardController extends Controller
      */
     public function destroy($id)
     {
+        //
         $user = FamilyMember::where('id', $id)->delete();
         // redirect ke parentView
-        return redirect()->route('data.index')->with('success','Data User berhasil dihapus!');
+        return redirect()->route('data.index')->with('success','Data Anggota berhasil dihapus!');
     }
 }

@@ -84,5 +84,8 @@ class TransactionController extends Controller
     public function destroy($id)
     {
         //
+        $transactions = Transaction::where('id', $id)->delete();
+        // redirect ke parentView
+        return redirect()->route('transaction.index')->with('success','Data Transaksi berhasil dihapus!');
     }
 }

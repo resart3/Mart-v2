@@ -4,6 +4,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Views\UserController;
 use App\Http\Controllers\Views\FamilyCardController;
+use App\Http\Controllers\Views\FamilyMemberController;
 use App\Http\Controllers\Views\TransactionController;
 use App\Http\Controllers\Views\TarifController;
 
@@ -32,6 +33,7 @@ Route::group(['prefix' => 'dashboard', 'middleware' => 'superuser'], function ()
     Route::resource('data', FamilyCardController::class);
     Route::resource('transaction', TransactionController::class);
     Route::resource('tarif', TarifController::class);
+    Route::resource('detail', FamilyMemberController::class);
 
     Route::group(['prefix' => 'tarif'], function () {
         Route::post('/tarif_warga', [TarifController::class, 'storeLand']);

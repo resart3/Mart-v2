@@ -27,9 +27,10 @@
     <div class="section-body">
         <div class="card">
             <div class="card-header d-flex justify-content-between">
-                <a href="{{ url('museum/create') }}" class="btn btn-icon icon-left btn-primary">
+                <a data-target="#form-add-keluarga" href="#" class="btn btn-icon icon-left btn-primary"
+                data-toggle="modal">
                     <i class="fa fa-plus"></i>
-                    &nbsp; Tambah Data Warga
+                    &nbsp; Tambah Data Anggota Warga
                 </a>
             </div>
             <div class="card-body">
@@ -68,11 +69,15 @@
                                         Edit
                                     </a>
                                     <a
-                                        href="#" data-id="{{ $data->id }}"
-                                        class="btn btn-danger delete"
-                                        data-toggle="modal"
-                                        data-target="#deleteModal">Hapus
+                                        href="{{ route('data.index') }}" 
+                                        onclick="event.preventDefault(); document.getElementById('delete-form-{{$data->id}}').submit();" 
+                                        class="btn btn-danger delete">Hapus
                                     </a>
+                                </td>
+                                <form id="delete-form-{{$data->id}}" + action="{{ route('data.destroy', $data->id)}}"
+                                    method="POST">
+                                    @csrf @method('DELETE')
+                                </form>
                                 </td>
                             </tr>
                         @endforeach
@@ -83,6 +88,112 @@
         </div>
     </div>
 @endsection
+
+
+<div class="modal fade" id="form-add-keluarga" tabindex="-1" role="dialog" aria-hidden="true">
+    <form action="{{route('detail.store')}}" method="POST">
+        @csrf
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Tambah Anggota Keluarga</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="padding-bottom: 5px">
+                    <form action="" >
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Nama</label>
+                            <div class="col-sm-10">
+                                <input id="nama" type="text" name="category_name" class="form-control" placeholder="">
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">NIK</label>
+                            <div class="col-sm-10">
+                                <input id="nik" type="text" name="amount" class="form-control" >
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Tempat Lahir</label>
+                            <div class="col-sm-10">
+                                <input id="tempat_lahir" type="text" name="tempat_lahir" class="form-control" >
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Tanggal Lahir</label>
+                            <div class="col-sm-10">
+                                <input id="tanggal_lahir" type="date" name="tanggal_lahir" class="form-control" >
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Jenis Kelamin</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" id="jenis_kelamin">
+                                    <option value=""></option>
+                                    <option value="Laki-Laki">Laki-Laki</option>
+                                    <option value="Perempuan">Perempuan</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Agama</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" id="agama">
+                                    <option value=""></option>
+                                    <option value="ISLAM">ISLAM</option>
+                                    <option value="PROTESTAN">PROTESTAN</option>
+                                    <option value="KATOLIK">KATOLIK</option>
+                                    <option value="HINDU">HINDU</option>
+                                    <option value="BUDDHA">BUDDHA</option>
+                                    <option value="KHONGHUCU">KHONGHUCU</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Pendidikan Terakhir</label>
+                            <div class="col-sm-10">
+                                <input id="pendidikan" type="text" name="pendidikan" class="form-control" >
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Pekerjaan</label>
+                            <div class="col-sm-10">
+                                <input id="pekerjaan" type="text" name="pekerjaan" class="form-control" >
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Golongan Darah</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" id="golongan_darah">
+                                    <option value=""></option>
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="AB">AB</option>
+                                    <option value="O">O</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Kepala Keluarga?</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" id="IsFamilyHead">
+                                    <option value=""></option>
+                                    <option value="1">Iya</option>
+                                    <option value="0">Tidak</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
 
 <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">

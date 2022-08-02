@@ -56,11 +56,15 @@
                                         Edit
                                     </a>
                                     <a
-                                        href="#" data-id="{{ $data->id }}"
-                                        class="btn btn-danger delete"
-                                        data-toggle="modal"
-                                        data-target="#deleteModal">Hapus
+                                        href="{{ route('user.index') }}" 
+                                        onclick="event.preventDefault(); document.getElementById('delete-form-{{$data->id}}').submit();" 
+                                        class="btn btn-danger delete">Hapus
                                     </a>
+                                </td>
+                                <form id="delete-form-{{$data->id}}" + action="{{ route('user.destroy', $data->id)}}"
+                                    method="POST">
+                                    @csrf @method('DELETE')
+                                </form>
                                 </td>
                             </tr>
                         @endforeach

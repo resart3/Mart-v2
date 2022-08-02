@@ -39,8 +39,8 @@ class TarifController extends Controller
     public function store(Request $request)
     {
         $data = [
-            'category_name'=>$request->input('kategori'),
-            'amount'=>$request->input('nominal')
+            'category_name'=>$request->input('category_name'),
+            'amount'=>$request->input('amount')
         ];
         Category::create($data);
         return redirect()->route('tarif.index')->with('success','Tarif K3 berhasil ditambahkan!');
@@ -72,7 +72,7 @@ class TarifController extends Controller
      */
     public function edit($id)
     {
-        dd('masul');
+        //
     }
 
     /**
@@ -96,7 +96,7 @@ class TarifController extends Controller
     public function destroy($id)
     {
         //
-        $tarif = Tarif::where('id', $id)->delete();
+        $tarif = Category::where('id', $id)->delete();
         // redirect ke parentView
         return redirect()->route('tarif.index')->with('success','Data Tarif K3 berhasil dihapus!');
     }
