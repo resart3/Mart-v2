@@ -22,19 +22,21 @@ class UserSeeder extends Seeder
                 'name' => "ADMIN",
                 'email' => "admin@gmail.com",
                 'email_verified_at' => now(),
-                'password' => bcrypt('123123'), // password
+                'password' => bcrypt('password'), // password
                 'remember_token' => Str::random(10),
                 'role' => "superuser",
-                'nik' => "13001170414"
+                'nik' => "13001170414",
+                'family_card_id' => "3172022401096461"
             ],
             [
-                'name' => "USER",
-                'email' => "user@gmail.com",
+                'name' => "HUANG CHIN CHANG",
+                'email' => "huang@gmail.com",
                 'email_verified_at' => now(),
-                'password' => bcrypt('123123'), // password
+                'password' => bcrypt('password'), // password
                 'remember_token' => Str::random(10),
                 'role' => "user",
-                'nik' => "1301170324"
+                'nik' => "1301170324",
+                'family_card_id' => "3172022401096461"
             ]
         ];
 

@@ -25,6 +25,7 @@ class User extends Authenticatable
         'password',
         'role',
         'nik',
+        'family_card_id',
         'remember_token'
     ];
 

@@ -19,6 +19,8 @@ use App\Http\Controllers\Views\TarifController;
 |
 */
 
+Route::redirect('/','user/login');
+
 Route::group(['prefix' => 'user'], function () {
     Route::get('/login', [UserController::class, 'view_login']);
     Route::post('/login', [UserController::class, 'login']);
@@ -38,3 +40,5 @@ Route::group(['prefix' => 'dashboard', 'middleware' => 'superuser'], function ()
     });
     // Route::post('tarif.addnewtarif', [TarifController::class, 'addTarif']);
 });
+
+
