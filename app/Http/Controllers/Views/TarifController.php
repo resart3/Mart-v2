@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Views;
 
 use App\Http\Controllers\Controller;
-// use App\Models\Tarif;
 use App\Models\Land;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TarifController extends Controller
 {
@@ -17,12 +17,17 @@ class TarifController extends Controller
      */
     public function index()
     {
-        $title = 'Halaman Tarif K3';
-        // $tarif = Tarif::get();
-        $tarif = Category::get();
-        $land = Land::with('tarif')->get();;
-        dd($land);
-        return view('tarif', compact('tarif','land', 'title'));
+        $title = 'Halaman Tarif K3';        
+        $tarif = Category::get();        
+        $land = DB::table('lands')
+        ->join('categories', 'categories.id', '=', 'lands.category_id')
+        ->join('family_cards', 'family_cards.nomor', '=', 'lands.family_card_id')
+        ->join('family_members', 'family_members.family_card_id', '=', 'family_cards.nomor')
+        ->where('isFamilyHead', 1)
+        ->select('family_cards.nomor', 'family_members.nama', 'lands.*', 'categories.amount')
+        ->get();
+
+        return view('tarif', compact('tarif', 'title', 'land'));
     }
 
     /**
@@ -40,6 +45,24 @@ class TarifController extends Controller
         ];
         Tarif::create($data);
         return redirect()->route('tarif.index')->with('success','Tarif K3 berhasil ditambahkan!');
+    }
+
+    /**
+     * Store ke data tabel land
+     *
+     * @param LandRequest $request
+     * @return Response
+     */
+    public function storeLand(Request $request){
+        $data = [
+            'family_card_id'=>$request->input('family_card_id'),
+            'category_id'=>$request->input('category_id'),
+            'area'=>$request->input('area'),
+            'house_number'=>$request->input('house_number')
+        ];
+
+        Land::create($data);
+        return redirect()->route('tarif.index')->with('success','Tarif K3 Warga berhasil ditambahkan!');
     }
 
     /**

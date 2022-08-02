@@ -91,7 +91,7 @@
                                 <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>NIK</th>
+                                    <th>Nomor KK</th>
                                     <th>Nama</th>
                                     <th>Luas Bangunan</th>
                                     <th>Nomor Rumah</th>
@@ -103,8 +103,11 @@
                                 @foreach ($land as $key => $data)
                                     <tr>
                                         <td>{{ $key + 1 }}</td>
-                                        <td>{{ $data->family_card_id }}</td>
-                                        <td>{{ $data->family_card_id }}</td>
+                                        <td>{{ $data->nomor }}</td>
+                                        <td>{{ $data->nama }}</td>                                        
+                                        <td>{{ $data->area }}</td>
+                                        <td>{{ $data->house_number }}</td>
+                                        <td>{{ $data->amount }}</td>
                                     </tr>
                                 @endforeach
                                 </tbody>

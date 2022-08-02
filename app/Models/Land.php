@@ -25,12 +25,4 @@ class Land extends Model
     public function categories(){
         return $this->belongsTo(Category::class, 'category_id');
     }
-    public function tarif(){
-        // dd('masuk');
-        return DB::table('lands')
-        ->join('family_cards', 'family_cards.nomor', '=', 'lands.family_card_id')
-        ->join('family_members', 'family_members.family_card_id', '=', 'family_cards.nomor')
-        ->join('categories', 'categories.id', '=', 'lands.category_id')->get();
-        // ->select('users.*', 'contacts.phone', 'orders.price');
-    }
 }
