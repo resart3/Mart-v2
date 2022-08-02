@@ -32,7 +32,7 @@ class FamilyMemberRequest extends FormRequest
             'jenis_kelamin' => ['required', 'string'],
             'agama' => ['required', 'string'],
             'pendidikan' => ['required', 'string'],
-            // 'kabupaten_kota' => ['required', 'string'],
+            'kabupaten_kota' => ['required', 'string'],
             'pekerjaan' => ['required', 'string'],
             'golongan_darah' => ['required', 'string'],
             'isFamilyHead' => ['required'],

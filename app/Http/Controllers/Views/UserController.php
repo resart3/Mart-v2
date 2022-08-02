@@ -63,9 +63,37 @@ class UserController extends Controller
             'email'=>$request->input('email'),
             'nik'=>$request->input('nik'),
             'role'=>$request->input('role'),
-            'password'=>$request->input('password'),
+            'password'=>bcrypt($request->input('password')),
         ];
         User::create($data);
         return redirect()->route('user.index')->with('success','User baru berhasil ditambahkan!');
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param UserRequest $request
+     * @return Response     
+     * @param  int  $id     
+     */
+    public function update(Request $request, $id)
+    {
+        $updateData = $request->all();
+        $userId = User::FindOrFail($id);
+        $userId->update($updateData);
+        dd("Berhasil Terganti");
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function destroy($id)
+    {
+        $tarif = User::where('id', $id)->delete();
+        // redirect ke parentView
+        return redirect()->route('user.index')->with('success','Data User berhasil dihapus!');
     }
 }

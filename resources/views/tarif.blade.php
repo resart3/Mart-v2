@@ -62,18 +62,19 @@
                                         <td>{{ $data->detail }}</td>
                                         <td>{{ $data->nominal }}</td>
                                         <td>
-                                            <a href="data/{{ $data->nomor }}" class="btn btn-outline-primary">
-                                                Detail
-                                            </a>
-                                            <a href="data/{{ $data->nomor }}/edit" class="btn btn-primary">
+                                            <a href="" class="btn btn-primary">
                                                 Edit
                                             </a>
                                             <a
-                                                href="tarif/{{ $data->id }}" data-id="{{ $data->id }}"
-                                                class="btn btn-danger delete"
-                                                data-toggle="modal"
-                                                data-target="#deleteModal">Hapus
+                                                href="{{ route('tarif.index') }}" 
+                                                onclick="event.preventDefault(); document.getElementById('delete-form-{{$data->id}}').submit();" 
+                                                class="btn btn-danger delete">Hapus
                                             </a>
+                                        </td>
+                                        <form id="delete-form-{{$data->id}}" + action="{{ route('tarif.destroy', $data->id)}}"
+                                            method="POST">
+                                            @csrf @method('DELETE')
+                                        </form>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -132,19 +133,13 @@
                             <div class="form-group row mb-4">
                                 <label class="col-sm-2 col-form-label">Kategori</label>
                                 <div class="col-sm-10">
-                                    <input id="kategori" type="text" name="kategori" class="form-control" placeholder="cth: Kategori 1">
-                                </div>
-                            </div>
-                            <div class="form-group row mb-4">
-                                <label class="col-sm-2 col-form-label">Detail Tarif</label>
-                                <div class="col-sm-10">
-                                    <textarea id="detail" name="detail" class="form-control" style="height: 80px" ></textarea>
+                                    <input id="category_name" type="text" name="category_name" class="form-control">
                                 </div>
                             </div>
                             <div class="form-group row mb-4">
                                 <label class="col-sm-2 col-form-label">Nominal Tarif</label>
                                 <div class="col-sm-10">
-                                    <input id="nominal" type="text" name="nominal" class="form-control" >
+                                    <input id="amount" type="text" name="amount" class="form-control" >
                                 </div>
                             </div>
                         </form>
