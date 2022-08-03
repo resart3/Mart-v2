@@ -91,6 +91,6 @@ class FamilyMemberController extends Controller
         //
         $user = FamilyMember::where('id', $id)->delete();
         // redirect ke parentView
-        return redirect()->route('data.index')->with('success','Data Anggota berhasil dihapus!');
+        return redirect()->route('data.show')->with('success','Data Anggota berhasil dihapus!');
     }
 }
