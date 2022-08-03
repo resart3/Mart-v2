@@ -8,6 +8,7 @@ use App\Models\Category;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Exception;
 use Api;
+use \DateTime;
 
 class CategoryController extends Controller
 {
@@ -65,7 +66,7 @@ class CategoryController extends Controller
         }
 
         return Api::apiRespond($this->code, $this->response);
-    }
+    }    
 
     /**
      * Display the specified resource.
@@ -110,5 +111,32 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function getUpdated(){
+                        
+        try {
+            $response = Category::query();            
+            $this->response = Api::pagination($response);
+            $arrMonth = [];
+
+            foreach($this->response as $data){
+                $updated_at = $data->updated_at;
+                $update_time = strtotime($updated_at);
+                $date = date("Y-m-d H:i:s", $update_time);
+                $month = date("m",strtotime($date));
+                array_push($arrMonth, $month);
+            }
+
+            $updated_month = (int)max($arrMonth);
+            $dateObj   = DateTime::createFromFormat('!m', $updated_month);
+            $monthName = $dateObj->format('F');
+
+        } catch (Exception $e){
+            $this->code = 500;
+            $this->response = $e->getMessage();
+        }
+
+        return Api::apiRespond($this->code, $monthName);
     }
 }
