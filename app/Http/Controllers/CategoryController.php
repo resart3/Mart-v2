@@ -132,40 +132,40 @@ class CategoryController extends Controller
             $updated_month = (int)max($arrMonth);            
             switch ($updated_month) {
                 case 1:
-                    $dataUpdated["month"] = "Januari";
+                    $dataUpdated["bulan"] = "Januari";
                     break;
                 case 2:
-                    $dataUpdated["month"] = "Februari";
+                    $dataUpdated["bulan"] = "Februari";
                     break;
                 case 3:
-                    $dataUpdated["month"] = "Maret";
+                    $dataUpdated["bulan"] = "Maret";
                     break;
                 case 4:
-                    $dataUpdated["month"] = "April";
+                    $dataUpdated["bulan"] = "April";
                     break;
                 case 5:
-                    $dataUpdated["month"] = "Mei";
+                    $dataUpdated["bulan"] = "Mei";
                     break;
                 case 6:
-                    $dataUpdated["month"] = "Juni";
+                    $dataUpdated["bulan"] = "Juni";
                     break;
                 case 7:
-                    $dataUpdated["month"] = "Juli";
+                    $dataUpdated["bulan"] = "Juli";
                     break;
                 case 8:
-                    $dataUpdated["month"] = "Agustus";
+                    $dataUpdated["bulan"] = "Agustus";
                     break;
                 case 9:
-                    $dataUpdated["month"] = "September";
+                    $dataUpdated["bulan"] = "September";
                     break;
                 case 10:
-                    $dataUpdated["month"] = "Oktober";
+                    $dataUpdated["bulan"] = "Oktober";
                     break;
                 case 11:
-                    $dataUpdated["month"] = "November";
+                    $dataUpdated["bulan"] = "November";
                     break;
                 case 12:
-                    $dataUpdated["month"] = "Desember";
+                    $dataUpdated["bulan"] = "Desember";
                     break;
             }            
 
