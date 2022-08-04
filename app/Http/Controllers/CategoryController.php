@@ -8,7 +8,6 @@ use App\Models\Category;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Exception;
 use Api;
-use \DateTime;
 
 class CategoryController extends Controller
 {
@@ -118,61 +117,63 @@ class CategoryController extends Controller
         try {
             $response = Category::query();            
             $this->response = Api::pagination($response);
-            $arrMonth = [];
+            $arrMonth = [];            
 
             foreach($this->response as $data){
                 $updated_at = $data->updated_at;
                 $update_time = strtotime($updated_at);
-                $date = date("Y-m-d H:i:s", $update_time);
+                $date = date("d-m-Y", $update_time);
+                $dataUpdated["tanggal"] = date("d",strtotime($date));
                 $month = date("m",strtotime($date));
                 array_push($arrMonth, $month);
+                $dataUpdated["tahun"] = date("Y",strtotime($date));
             }
 
             $updated_month = (int)max($arrMonth);            
             switch ($updated_month) {
                 case 1:
-                    $monthName = "Januari";
+                    $dataUpdated["month"] = "Januari";
                     break;
                 case 2:
-                    $monthName = "Februari";
+                    $dataUpdated["month"] = "Februari";
                     break;
                 case 3:
-                    $monthName = "Maret";
+                    $dataUpdated["month"] = "Maret";
                     break;
                 case 4:
-                    $monthName = "April";
+                    $dataUpdated["month"] = "April";
                     break;
                 case 5:
-                    $monthName = "Mei";
+                    $dataUpdated["month"] = "Mei";
                     break;
                 case 6:
-                    $monthName = "Juni";
+                    $dataUpdated["month"] = "Juni";
                     break;
                 case 7:
-                    $monthName = "Juli";
+                    $dataUpdated["month"] = "Juli";
                     break;
                 case 8:
-                    $monthName = "Agustus";
+                    $dataUpdated["month"] = "Agustus";
                     break;
                 case 9:
-                    $monthName = "September";
+                    $dataUpdated["month"] = "September";
                     break;
                 case 10:
-                    $monthName = "Oktober";
+                    $dataUpdated["month"] = "Oktober";
                     break;
                 case 11:
-                    $monthName = "November";
+                    $dataUpdated["month"] = "November";
                     break;
                 case 12:
-                    $monthName = "Desember";
+                    $dataUpdated["month"] = "Desember";
                     break;
-            }                        
+            }            
 
         } catch (Exception $e){
             $this->code = 500;
             $this->response = $e->getMessage();
         }
 
-        return Api::apiRespond($this->code, $monthName);
+        return Api::apiRespond($this->code, $dataUpdated);
     }
 }
