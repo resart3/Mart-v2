@@ -18,7 +18,7 @@ class TarifController extends Controller
     public function index()
     {
         $title = 'Halaman Tarif K3';        
-        $tarif = Category::get();        
+        $tarif = Category::get();             
         $land = DB::table('lands')
         ->join('categories', 'categories.id', '=', 'lands.category_id')
         ->join('family_cards', 'family_cards.nomor', '=', 'lands.family_card_id')
@@ -54,10 +54,10 @@ class TarifController extends Controller
      */
     public function storeLand(Request $request){
         $data = [
-            'family_card_id'=>$request->input('family_card_id'),
-            'category_id'=>$request->input('category_id'),
-            'area'=>$request->input('area'),
-            'house_number'=>$request->input('house_number')
+            'family_card_id'=>$request->input('nomor_kk'),
+            'category_id'=>$request->input('kategoriWarga'),
+            'area'=>$request->input('luasTanah'),
+            'house_number'=>$request->input('nomorRumah')
         ];
 
         Land::create($data);
@@ -125,5 +125,34 @@ class TarifController extends Controller
         $tarif = Category::where('id', $id)->delete();
         // redirect ke parentView
         return redirect()->route('tarif.index')->with('success','Data Tarif K3 berhasil dihapus!');
+    }
+
+    /**
+     * Ajax handler untuk get nama warga berdasarkan nomor KK
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function ajaxGetName(Request $request){        
+        $input = $request->all();
+        $nomor_kk = $input['nomorKk'];
+        
+        $nama = DB::table('family_members')
+        ->select('family_members.nama')
+        ->where('family_card_id', $nomor_kk)        
+        ->where('isFamilyHead', 1)      
+        ->get();
+        
+        return response()->json($nama);
+    }
+
+    public function ajaxGetAmount(Request $request){
+        $input = $request->all();
+        $category_id = $input['category_id'];
+
+        $amount = Category::select('amount')     
+        ->where('id', $category_id)      
+        ->get();
+
+        return response()->json($amount);
     }
 }

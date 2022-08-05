@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('password');
             $table->enum('role', ['user', 'superuser'])->default('user');
             $table->string('nik')->nullable();
+            $table->string('family_card_id')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

@@ -37,24 +37,7 @@ class FamilyCardController extends Controller
             'kabupaten_kota'=>$request->input('kabupaten_kota'),
             'provinsi'=>$request->input('provinsi'),
         ];
-        $data = $request->except("_token");
         FamilyCard::create($data);
-
-        $data2 = [
-            'nama'=>$request->input('nama'),
-            'nik'=>$request->input('nik'),
-            'tempat_lahir'=>$request->input('tempat_lahir'),
-            'tanggal_lahir'=>$request->input('tanggal_lahir'),
-            'jenis_kelamin'=>$request->input('jenis_kelamin'),
-            'agama'=>$request->input('agama'),
-            'pendidikan'=>$request->input('pendidikan'),
-            'pekerjaan'=>$request->input('pekerjaan'),
-            'golongan_darah'=>$request->input('golongan_darah'),
-            'isFamilyHead'=>$request->input('isFamilyHead'),
-            'family_card_id'=>$request->input('nomor'),
-        ];
-        $data = $request->except("_token");
-        FamilyMember::create($data);
         return redirect()->route('data.index')
         ->with('success','Family created successfully.');
     }
@@ -76,7 +59,18 @@ class FamilyCardController extends Controller
         $title = 'Detail Anggota Keluarga ('. $id .')';
         $family_member = FamilyMember::where('family_card_id', $id)->get();
 
-        return view('family_detail', compact('family_member', 'title'));
+        return view('family_detail', compact('family_member', 'title','id'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
     }
 
     /**
@@ -88,7 +82,18 @@ class FamilyCardController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $family_card = FamilyCard::find($id);
+        $family_card->nomor = $request->input('nomor'); 
+        $family_card->alamat = $request->input('alamat');
+        $family_card->rt_rw = $request->input('rt_rw');
+        $family_card->kode_pos = $request->input('kode_pos');
+        $family_card->desa_kelurahan = $request->input('desa_kelurahan');
+        $family_card->kecamatan = $request->input('kecamatan');
+        $family_card->kabupaten_kota = $request->input('kabupaten_kota');
+        $family_card->provinsi = $request->input('provinsi');
+        $family_card->save();
+        return redirect()->route('data.index')
+        ->with('success','Family Card Update Successfully.');
     }
 
     /**

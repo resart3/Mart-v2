@@ -65,7 +65,7 @@ class CategoryController extends Controller
         }
 
         return Api::apiRespond($this->code, $this->response);
-    }
+    }    
 
     /**
      * Display the specified resource.
@@ -110,5 +110,70 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function getUpdated(){
+                        
+        try {
+            $response = Category::query();            
+            $this->response = Api::pagination($response);
+            $arrMonth = [];            
+
+            foreach($this->response as $data){
+                $updated_at = $data->updated_at;
+                $update_time = strtotime($updated_at);
+                $date = date("d-m-Y", $update_time);
+                $dataUpdated["tanggal"] = date("d",strtotime($date));
+                $month = date("m",strtotime($date));
+                array_push($arrMonth, $month);
+                $dataUpdated["tahun"] = date("Y",strtotime($date));
+            }
+
+            $updated_month = (int)max($arrMonth);            
+            switch ($updated_month) {
+                case 1:
+                    $dataUpdated["bulan"] = "Januari";
+                    break;
+                case 2:
+                    $dataUpdated["bulan"] = "Februari";
+                    break;
+                case 3:
+                    $dataUpdated["bulan"] = "Maret";
+                    break;
+                case 4:
+                    $dataUpdated["bulan"] = "April";
+                    break;
+                case 5:
+                    $dataUpdated["bulan"] = "Mei";
+                    break;
+                case 6:
+                    $dataUpdated["bulan"] = "Juni";
+                    break;
+                case 7:
+                    $dataUpdated["bulan"] = "Juli";
+                    break;
+                case 8:
+                    $dataUpdated["bulan"] = "Agustus";
+                    break;
+                case 9:
+                    $dataUpdated["bulan"] = "September";
+                    break;
+                case 10:
+                    $dataUpdated["bulan"] = "Oktober";
+                    break;
+                case 11:
+                    $dataUpdated["bulan"] = "November";
+                    break;
+                case 12:
+                    $dataUpdated["bulan"] = "Desember";
+                    break;
+            }            
+
+        } catch (Exception $e){
+            $this->code = 500;
+            $this->response = $e->getMessage();
+        }
+
+        return Api::apiRespond($this->code, $dataUpdated);
     }
 }

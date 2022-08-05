@@ -43,8 +43,9 @@ Route::group(['middleware' => 'user'], function () {
     Route::post('transaction_receipt/{id}', [TransactionController::class, 'add_receipt']);
     Route::resource('family_card', FamilyCardController::class);
     Route::resource('family_member', FamilyMemberController::class);
-    Route::resource('land', LandController::class);
+    Route::resource('land', LandController::class);    
     Route::resource('category', CategoryController::class);
+    Route::get('getUpdated', [CategoryController::class, 'getUpdated']);
     
 //    Route::get('images/transaction/{id}/{filename}', [TransactionController::class, 'transaction_receipt']);
 });
