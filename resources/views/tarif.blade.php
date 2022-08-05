@@ -25,6 +25,7 @@
     @endif
 
     <div class="section-body">
+        <div id="success_message"></div>
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -38,6 +39,7 @@
             </div>
             <div class="card-body">
                 <div class="tab-content">
+                    <!-- Table Master Tarif -->
                     <div class="tab-pane active" id="homeTarif" role="tabpanel" aria-labelledby="home-tarif">
                         <a href="#tarifModal" class="btn btn-icon icon-left btn-primary" data-toggle="modal" data-target="#tarifModal">
                             <i class="fa fa-plus"></i>
@@ -60,7 +62,7 @@
                                         <td>{{ $data->category_name }}</td>
                                         <td>{{ $data->amount }}</td>
                                         <td>
-                                            <a href="" class="btn btn-primary">
+                                            <a href="#" class="edit_tarif btn btn-primary" data-id="{{$data->id}}">
                                                 Edit
                                             </a>
                                             <a
@@ -80,6 +82,8 @@
                             </table>
                         </div>
                     </div>
+
+                    <!-- Table Tarif K3 Warga -->
                     <div class="tab-pane" id="detailTarif" role="tabpanel" aria-labelledby="detail-tarif">
                         <a href="" class="btn btn-icon icon-left btn-primary" data-toggle="modal" data-target="#tarifWargaModal">
                             <i class="fa fa-plus"></i>
@@ -97,11 +101,40 @@
                                     <th>Nominal</th>
                                     <th>Action</th>
                                 </tr>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Nomor KK</th>
+                                        <th>Nama</th>
+                                        <th>Luas Bangunan</th>
+                                        <th>Nomor Rumah</th>
+                                        <th>Nominal</th>
+                                        <th>Action</th>
+                                    </tr>
                                 </thead>
                                 <tbody style="font-size: 14px!important">
                                 @foreach ($tarif as $key => $data)
                                     <tr>
-                                        
+                                        <td> {{$key+1}} </td>
+                                        <td> {{$data->nomor}} </td>
+                                        <td> {{$data->nama}} </td>
+                                        <td> {{$data->area}} </td>
+                                        <td> {{$data->house_number}} </td>
+                                        <td> {{$data->amount}} </td>
+                                        <td>
+                                            <a href="" class="btn btn-primary">
+                                                Edit
+                                            </a>
+                                            <a
+                                                href="{{ route('tarif.index') }}" 
+                                                onclick="event.preventDefault(); document.getElementById('delete-form-{{$data->id}}').submit();" 
+                                                class="btn btn-danger delete">Hapus
+                                            </a>
+                                        </td>
+                                        <form id="delete-form-{{$data->id}}" + action="{{ route('land.destroy', $data->id)}}"
+                                            method="POST">
+                                            @csrf @method('DELETE')
+                                        </form>
+                                        </td>
                                     </tr>
                                 @endforeach
                                 </tbody>
@@ -115,6 +148,7 @@
 
 @endsection
 
+    <!-- Modal Add Tarif  -->
     <div class="modal fade" id="tarifModal" tabindex="-1" role="dialog" aria-hidden="true">
         <form action="{{ route('tarif.store') }}" method="POST">
             @csrf
@@ -149,7 +183,10 @@
             </div>
         </form>
     </div>
+    <!-- End Modal Add Tarif -->
 
+
+    <!-- Modal Add Tarif Warga -->
     <div class="modal fade" id="tarifWargaModal" tabindex="-1" role="dialog" aria-hidden="true">
         <form action="" >
             @csrf
@@ -202,3 +239,146 @@
             </div>
         </form>
     </div>
+    </div>
+    <!-- End Modal Add Tarif Warga -->
+    
+    <!-- Modal Update Tarif -->
+    <div class="modal fade" id="tarifModalUpdate" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Update Tarif K3</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" style="padding-bottom: 5px">
+                        <input type="hidden" id="id" />
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Kategori</label>
+                            <div class="col-sm-10">
+                                <input id="category_name" type="text" name="category_name" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Nominal Tarif</label>
+                            <div class="col-sm-10">
+                                <input id="amount" type="text" name="amount" class="form-control" >
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary update_tarif">Update Data</button>
+                    </div>
+                </div>
+            </div>
+    </div>
+    <!-- End Modal Update Tarif -->
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script>
+    document.getElementById("nomorKk").addEventListener("change", function() {
+        $.ajax({
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            url: `/dashboard/tarif/nama_warga`,
+            type: 'POST',
+            data: {
+                nomorKk : $("#nomorKk").val(),
+            },
+            success: function(data) {
+                console.log(data[0].nama);
+                $("#name").val(data[0].nama);
+            }
+        });
+    });
+
+    document.getElementById("kategoriWarga").addEventListener("change", function() {
+        $.ajax({
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            url: `/dashboard/tarif/category_amount`,
+            type: 'POST',
+            data: {
+                category_id : $("#kategoriWarga").val(),
+            },
+            success: function(data) {
+                $("#nominalWarga").val(data[0].amount)
+            }
+        });
+    });
+
+    $(document).on('click', '.edit_tarif', function (e) {
+        e.preventDefault();
+        var id = $(this).data('id');
+        // console.log(id);
+        $('#tarifModalUpdate').modal('show');
+        $.ajax({
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            type: "GET",
+            url: "/dashboard/tarif/edit-tarif/" + id,
+            success: function (response) {
+                if (response.status == 404) {
+                    $('#success_message').addClass('alert alert-success');
+                    $('#success_message').text(response.message);
+                    $('#tarifModalUpdate').modal('hide');
+                } else {
+                    // console.log(response.land.category_name);
+                    $('#id').val(id);
+                    $('#category_name').val(response.tarif.category_name);
+                    $('#amount').val(response.tarif.amount);
+                }
+            }
+        });
+        $('.close').find('input').val('');
+
+    });
+
+    // $(document).on('click', '.update_tarif', function (e) {
+    //         e.preventDefault();
+
+    //         $(this).text('Updating..');
+    //         var id = $('#id').val();
+    //         // alert(id);
+
+    //         var data = {
+    //             'name': $('#name').val(),
+    //             'course': $('#course').val(),
+    //             'email': $('#email').val(),
+    //             'phone': $('#phone').val(),
+    //         }
+
+    //         $.ajaxSetup({
+    //             headers: {
+    //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    //             }
+    //         });
+
+    //         $.ajax({
+    //             type: "PUT",
+    //             url: "/update-student/" + id,
+    //             data: data,
+    //             dataType: "json",
+    //             success: function (response) {
+    //                 // console.log(response);
+    //                 if (response.status == 400) {
+    //                     $('#update_msgList').html("");
+    //                     $('#update_msgList').addClass('alert alert-danger');
+    //                     $.each(response.errors, function (key, err_value) {
+    //                         $('#update_msgList').append('<li>' + err_value +
+    //                             '</li>');
+    //                     });
+    //                     $('.update_student').text('Update');
+    //                 } else {
+    //                     $('#update_msgList').html("");
+
+    //                     $('#success_message').addClass('alert alert-success');
+    //                     $('#success_message').text(response.message);
+    //                     $('#editModal').find('input').val('');
+    //                     $('.update_student').text('Update');
+    //                     $('#editModal').modal('hide');
+    //                     fetchstudent();
+    //                 }
+    //             }
+    //         });
+
+    //     });
+</script>

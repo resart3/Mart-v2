@@ -7,6 +7,7 @@ use App\Http\Controllers\Views\FamilyCardController;
 use App\Http\Controllers\Views\FamilyMemberController;
 use App\Http\Controllers\Views\TransactionController;
 use App\Http\Controllers\Views\TarifController;
+use App\Http\Controllers\Views\LandController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,12 +34,19 @@ Route::group(['prefix' => 'dashboard', 'middleware' => 'superuser'], function ()
     Route::resource('data', FamilyCardController::class);
     Route::resource('transaction', TransactionController::class);
     Route::resource('tarif', TarifController::class);
+    Route::resource('land', LandController::class);
     Route::resource('detail', FamilyMemberController::class);
 
     Route::group(['prefix' => 'tarif'], function () {
         Route::post('/tarif_warga', [TarifController::class, 'storeLand']);
+        Route::post('/nama_warga', [TarifController::class, 'ajaxGetName']);
+        Route::post('/category_amount', [TarifController::class, 'ajaxGetAmount']);
+        Route::get('/edit-tarif/{id}', [TarifController::class], 'edit');
     });
-    // Route::post('tarif.addnewtarif', [TarifController::class, 'addTarif']);
+
+    Route::group(['prefix' => 'user'], function() {
+        Route::get('/edit-user/{id}', [UserController::class], 'edit');
+    });
 });
 
 

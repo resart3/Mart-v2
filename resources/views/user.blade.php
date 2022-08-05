@@ -25,6 +25,7 @@
     @endif
 
     <div class="section-body">
+        <div id="success_message"></div>
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <a href="#useraddModal" class="btn btn-icon icon-left btn-primary" data-toggle="modal" data-target="#useraddModal">
@@ -52,7 +53,7 @@
                                 <td>{{ $data->role }}</td>
                                 <td>{{ $data->created_at }}</td>
                                 <td>
-                                    <a href="museum/{{ $data->id }}/edit" class="btn btn-primary">
+                                    <a href="museum/{{ $data->id }}/edit" class="btn btn-primary editbtn">
                                         Edit
                                     </a>
                                     <a
@@ -132,3 +133,92 @@
             </div>
         </form>
     </div>
+
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <form action="">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Update Data User</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" style="padding-bottom: 5px">
+                        <form action="">
+                            <div class="form-group row mb-4">
+                                <label class="col-sm-2 col-form-label">Nama Lengkap</label>
+                                <div class="col-sm-10">
+                                    <input id="name" type="text" name="name" class="form-control" >
+                                </div>
+                            </div>
+                            <div class="form-group row mb-4">
+                                <label class="col-sm-2 col-form-label">Email</label>
+                                <div class="col-sm-10">
+                                    <input id="email" type="text" name="email" class="form-control" >
+                                </div>
+                            </div>
+                            <div class="form-group row mb-4">
+                                <label class="col-sm-2 col-form-label">NIK</label>
+                                <div class="col-sm-10">
+                                    <input id="nik" type="text" name="nik" class="form-control" >
+                                </div>
+                            </div>
+                            <div class="form-group row mb-4">
+                                <label class="col-sm-2 col-form-label">Role</label>
+                                <div class="col-sm-10">
+                                    <select class="form-control" id="role" name="role">
+                                        <option value=""></option>
+                                        <option value="user">user</option>
+                                        <option value="superuser">superuser</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row mb-4">
+                                <label class="col-sm-2 col-form-label">Password</label>
+                                <div class="col-sm-10">
+                                    <input type="password" class="form-control" id="password" name="password">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Update Data</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function(){
+        $(document).on('click', '.editbtn', function (e) {
+            e.preventDefault();
+            var id = $(this).val();
+            // alert(stud_id);
+            $('#editModal').modal('show');
+            $.ajax({
+                type: "GET",
+                url: "/dashboard/user/edit-user/" + id,
+                success: function (response) {
+                    if (response.status == 404) {
+                        $('#success_message').addClass('alert alert-success');
+                        $('#success_message').text(response.message);
+                        $('#editModal').modal('hide');
+                    } else {
+                        // console.log(response.student.name);
+                        $('#name').val(response.user.name);
+                        $('#email').val(response.user.email);
+                        $('#nik').val(response.user.nik);
+                        $('#role').val(response.user.role);
+                        $('#password').val(response.user.password);
+                        // $('#stud_id').val(stud_id);
+                    }
+                }
+            });
+            $('.close').find('input').val('');
+
+        });
+    });
+</script>
