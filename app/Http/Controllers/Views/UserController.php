@@ -97,4 +97,30 @@ class UserController extends Controller
         // redirect ke parentView
         return redirect()->route('user.index')->with('success','Data User berhasil dihapus!');
     }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
+        $user = User::find($id);
+        if($user)
+        {
+            return respond()->json([
+                'status'=>200,
+                'user'=>$user,
+            ]);
+        }
+        else
+        {
+            return respond()->json([
+                'status'=> 404,
+                'message'=>'Land Not Found',
+            ]);
+        }
+    }
 }

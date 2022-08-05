@@ -73,6 +73,32 @@ class TarifController extends Controller
     public function edit($id)
     {
         //
+        $tarif = Category::find($id);
+        if($tarif)
+        {
+            return respond()->json([
+                'status'=>200,
+                'tarif'=>$tarif
+            ]);
+        }
+        else
+        {
+            return respond()->json([
+                'status'=> 404,
+                'message'=>'Land Not Found'
+            ]);
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
     }
 
     /**
