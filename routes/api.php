@@ -40,7 +40,7 @@ Route::group(['middleware' => 'user'], function () {
     Route::get('family/{id}', [FamilyCardController::class, 'family_by_nik']);
     Route::get('transaction', [TransactionController::class, 'index']);
     Route::get('transaction/{id}', [TransactionController::class, 'show']);
-    Route::post('transaction_receipt/{id}', [TransactionController::class, 'add_receipt']);
+    Route::post('transaction_receipt', [TransactionController::class, 'add_receipt']);
     Route::resource('family_card', FamilyCardController::class);
     Route::resource('family_member', FamilyMemberController::class);
     Route::resource('land', LandController::class);    
