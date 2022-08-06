@@ -117,6 +117,16 @@ class TransactionController extends Controller
                     'status'  => 'Menunggu Konfirmasi'
                 ]);
 
+                // $data = [
+                //     'family_card_id'=>$request->input('family_card_id'),
+                //     'jumlah'=>$request->input('jumlah'),
+                //     'tahun'=>$request->input('tahun'),
+                //     'bulan'=>$request->input('bulan'),
+                //     'status' => $request->input('status'),
+                //     'receipt' => $name,
+                // ];
+                // Transaction::create($data);
+
                 $this->response = null;
                 $this->code = 200;
             }
