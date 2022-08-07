@@ -96,14 +96,15 @@
                         <div class="table-responsive">
                             <table id="dataTable" class="table-bordered table-md table">
                                 <thead>
-                                    <tr>                                        
-                                        <th>Nomor KK</th>
-                                        <th>Nama</th>
-                                        <th>Luas Bangunan</th>
-                                        <th>Nomor Rumah</th>
-                                        <th>Nominal</th>
-                                        <th>Action</th>
-                                    </tr>
+                                <tr>
+                                    <th>No</th>
+                                    <th>NIK</th>
+                                    <th>Nama</th>
+                                    <th>Luas Bangunan</th>
+                                    <th>Nomor Rumah</th>
+                                    <th>Nominal</th>
+                                    <th>Action</th>
+                                </tr>
                                 </thead>
                                 <tbody style="font-size: 14px!important">
                                 @foreach ($land as $key => $data)
@@ -115,19 +116,17 @@
                                         <td> {{$data->house_number}} </td>
                                         <td> {{$data->amount}} </td>
                                         <td>
-                                            <a href="" class="btn btn-primary">
+                                            <a href="#dataTarifModalUpdate" id='dataTarifUpdate' data-id="{{$data->id}}" data-toggle="modal" 
+                                                data-target="#dataTarifModalUpdate" class="btn btn-primary">
                                                 Edit
                                             </a>
-                                            <a
-                                                href="{{ route('tarif.index') }}" 
-                                                onclick="event.preventDefault(); document.getElementById('delete-form-{{$data->id}}').submit();" 
-                                                class="btn btn-danger delete">Hapus
-                                            </a>
-                                        </td>
-                                        <form id="delete-form-{{$data->id}}" + action="{{ route('land.destroy', $data->id)}}"
-                                            method="POST">
-                                            @csrf @method('DELETE')
-                                        </form>
+                                            <form action="{{ route('land.destroy', $data->id)}}" method="Post">
+                                            @csrf
+                                            @method('DELETE')
+                                                <button
+                                                    class="btn btn-danger delete">Hapus
+                                                </button>
+                                            </form>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -194,49 +193,47 @@
                         </button>
                     </div>
                     <div class="modal-body" style="padding-bottom: 5px">
-                        <form action="" >
-                            <div class="form-group row mb-4">
-                                <label class="col-sm-2 col-form-label">Nomor KK</label>
-                                <div class="col-sm-10">
-                                    <input id="nomor_kk" type="text" name="family_card_id" class="form-control" >
-                                </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Nomor KK</label>
+                            <div class="col-sm-10">
+                                <input id="nomor_kk" type="text" name="nomor_kk" class="form-control" >
                             </div>
-                            <div class="form-group row mb-4">
-                                <label class="col-sm-2 col-form-label">Nama</label>
-                                <div class="col-sm-10">
-                                    <input id="name" type="text" name="name" class="form-control" readonly>
-                                </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Nama</label>
+                            <div class="col-sm-10">
+                                <input id="name" type="text" name="name" class="form-control" readonly>
                             </div>
-                            <div class="form-group row mb-4">
-                                <label class="col-sm-2 col-form-label">Kategori</label>
-                                <div class="col-sm-10">                                    
-                                    <select class="form-control" id="kategoriWarga" name="category_id">
-                                        <option></option>
-                                        @foreach ($tarif as $key => $data)
-                                            <option value="{{$data->id}}">{{$data->category_name}}</option>     
-                                        @endforeach
-                                    </select>
-                                </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Kategori</label>
+                            <div class="col-sm-10">                                    
+                                <select class="form-control" id="kategoriWarga" name="kategoriWarga">
+                                    <option></option>
+                                    @foreach ($tarif as $key => $data)
+                                        <option value="{{$data->id}}">{{$data->category_name}}</option>     
+                                    @endforeach
+                                </select>
                             </div>
-                            <div class="form-group row mb-4">
-                                <label class="col-sm-2 col-form-label">Nominal Tarif</label>
-                                <div class="col-sm-10">
-                                    <input id="nominalWarga" type="text" name="nominalWarga" class="form-control" readonly>
-                                </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Nominal Tarif</label>
+                            <div class="col-sm-10">
+                                <input id="nominalWarga" type="text" name="nominalWarga" class="form-control" readonly>
                             </div>
-                            <div class="form-group row mb-4">
-                                <label class="col-sm-2 col-form-label">Luas Kavling</label>
-                                <div class="col-sm-10">
-                                    <input id="luasTanah" type="text" name="area" class="form-control" required>
-                                </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Luas Kavling</label>
+                            <div class="col-sm-10">
+                                <input id="luasTanah" type="text" name="luasTanah" class="form-control" required>
                             </div>
-                            <div class="form-group row mb-4">
-                                <label class="col-sm-2 col-form-label">Nomor Rumah</label>
-                                <div class="col-sm-10">
-                                    <input id="nomorRumah" type="text" name="house_number" class="form-control" required>
-                                </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Nomor Rumah</label>
+                            <div class="col-sm-10">
+                                <input id="nomorRumah" type="text" name="nomorRumah" class="form-control" required>
                             </div>
-                        </form>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">Simpan</button>
@@ -261,7 +258,7 @@
                     <div class="modal-body" style="padding-bottom: 5px">
                         <input type="hidden" id="categoryId" />
                         <div class="form-group row mb-4">
-                            <label class="col-sm-2 col-form-label">Kategori</label>
+                            <label class="col-sm-2 col-form-label">Masuk</label>
                             <div class="col-sm-10">
                                 <input id="categoryName" type="text" name="category_name" class="form-control">
                             </div>
@@ -279,7 +276,40 @@
                 </div>
             </div>
     </div>
-    <!-- End Modal Update Tarif -->
+    <!-- End Modal Update Data Tarif -->
+
+    <!-- Modal Update Data Tarif -->
+    <div class="modal fade" id="dataTarifModalUpdate" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Update Tarif K3</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" style="padding-bottom: 5px">
+                        <input type="hidden" id="id" />
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Masuk</label>
+                            <div class="col-sm-10">
+                                <input id="category_name" type="text" name="category_name" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Nominal Tarif</label>
+                            <div class="col-sm-10">
+                                <input id="amount" type="text" name="amount" class="form-control" >
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary update_tarif">Update Data</button>
+                    </div>
+                </div>
+            </div>
+    </div>
+    <!-- End Modal Update Data Tarif -->
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script>
@@ -339,7 +369,33 @@
         });
         $('.close').find('input').val('');
 
+        
     });
+    $(document).ready(function(){
+        $('#dataTarifUpdate').click(function(){
+            let id = $(this).data('id');
+            let url = `land/${id}/edit`
+            $.ajax({
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                type: "GET",
+                url: url,
+                success: function (response) {
+                    console.log(response)
+                    // if (response.status == 404) {
+                    //     $('#success_message').addClass('alert alert-success');
+                    //     $('#success_message').text(response.message);
+                    //     $('#tarifModalUpdate').modal('hide');
+                    // } else {
+                    //     // console.log(response.land.category_name);
+                    //     $('#id').val(id);
+                    //     $('#category_name').val(response.tarif.category_name);
+                    //     $('#amount').val(response.tarif.amount);
+                    // }
+                }
+            });
+        })
+
+    })
 
     // $(document).on('click', '.update_tarif', function (e) {
     //         e.preventDefault();

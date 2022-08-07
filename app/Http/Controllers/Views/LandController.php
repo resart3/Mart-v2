@@ -88,7 +88,7 @@ class LandController extends Controller
      */
     public function show($id)
     {
-        //
+        
     }
 
     /**
@@ -99,7 +99,22 @@ class LandController extends Controller
      */
     public function edit($id)
     {
-        //
+        $tarif = Category::find($id);
+        if($tarif)
+        {
+            return respond()->json([
+                'status'=>200,
+                'tarif'=>$tarif
+            ]);
+        }
+        else
+        {
+            return respond()->json([
+                'status'=> 404,
+                'message'=>'Land Not Found'
+            ]);
+        }
+        return response()->json('masuk');
     }
 
     /**
@@ -111,7 +126,7 @@ class LandController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        
     }
 
     /**
@@ -122,7 +137,6 @@ class LandController extends Controller
      */
     public function destroy($id)
     {
-        //
         $tarif = Land::where('id', $id)->delete();
         // redirect ke parentView
         return redirect()->route('tarif.index')->with('success','Data Tarif K3 Warga berhasil dihapus!');
