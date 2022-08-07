@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Views;
 use App\Http\Controllers\Controller;
 use App\Models\Land;
 use App\Models\Category;
+use App\Http\Requests\LandRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -72,21 +73,12 @@ class TarifController extends Controller
      */
     public function edit($id)
     {
-        //
         $tarif = Category::find($id);
-        if($tarif)
-        {
-            return respond()->json([
-                'status'=>200,
-                'tarif'=>$tarif
-            ]);
-        }
-        else
-        {
-            return respond()->json([
-                'status'=> 404,
-                'message'=>'Land Not Found'
-            ]);
+
+        if(isset($tarif) == TRUE){
+            return response()->json($tarif);
+        }else{
+            return response()->json("Data Tarif Not Found");
         }
     }
 
@@ -103,14 +95,17 @@ class TarifController extends Controller
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
+     *     
+     * @param LandRequest $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(LandRequest $request, $id)
     {
-        //
+        $category = Category::find($id);
+        $category->category_name = $request->input('category_name');
+        $category->amount = $request->input('amount');
+        $category->save();
     }
 
     /**
@@ -127,32 +122,5 @@ class TarifController extends Controller
         return redirect()->route('tarif.index')->with('success','Data Tarif K3 berhasil dihapus!');
     }
 
-    /**
-     * Ajax handler untuk get nama warga berdasarkan nomor KK
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function ajaxGetName(Request $request){        
-        $input = $request->all();
-        $nomor_kk = $input['nomorKk'];
-        
-        $nama = DB::table('family_members')
-        ->select('family_members.nama')
-        ->where('family_card_id', $nomor_kk)        
-        ->where('isFamilyHead', 1)      
-        ->get();
-        
-        return response()->json($nama);
-    }
-
-    public function ajaxGetAmount(Request $request){
-        $input = $request->all();
-        $category_id = $input['category_id'];
-
-        $amount = Category::select('amount')     
-        ->where('id', $category_id)      
-        ->get();
-
-        return response()->json($amount);
-    }
+    
 }

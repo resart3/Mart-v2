@@ -41,7 +41,8 @@
                 <div class="tab-content">
                     <!-- Table Master Tarif -->
                     <div class="tab-pane active" id="homeTarif" role="tabpanel" aria-labelledby="home-tarif">
-                        <a href="#tarifModal" class="btn btn-icon icon-left btn-primary" data-toggle="modal" data-target="#tarifModal">
+                        <a href="#tarifModal" class="btn btn-icon icon-left btn-primary mb-2" data-toggle="modal" 
+                            data-target="#tarifModal">
                             <i class="fa fa-plus"></i>
                             &nbsp; Tambah Data Tarif K3
                         </a>
@@ -87,7 +88,8 @@
 
                     <!-- Table Tarif K3 Warga -->
                     <div class="tab-pane" id="detailTarif" role="tabpanel" aria-labelledby="detail-tarif">
-                        <a href="" class="btn btn-icon icon-left btn-primary mb-2" data-toggle="modal" data-target="#tarifWargaModal">
+                        <a href="" class="btn btn-icon icon-left btn-primary mb-2" data-toggle="modal" 
+                            data-target="#tarifWargaModal">
                             <i class="fa fa-plus"></i>
                             &nbsp; Tambah Data Tarif K3 Warga
                         </a>
@@ -180,8 +182,9 @@
 
     <!-- Modal Add Tarif Warga -->
     <div class="modal fade" id="tarifWargaModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <form action="/dashboard/tarif/tarif_warga" method="POST">
+        <form action="/dashboard/land" method="POST">
             @csrf
+            @method('POST')
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -195,7 +198,7 @@
                             <div class="form-group row mb-4">
                                 <label class="col-sm-2 col-form-label">Nomor KK</label>
                                 <div class="col-sm-10">
-                                    <input id="nomor_kk" type="text" name="nomor_kk" class="form-control" >
+                                    <input id="nomor_kk" type="text" name="family_card_id" class="form-control" >
                                 </div>
                             </div>
                             <div class="form-group row mb-4">
@@ -207,7 +210,7 @@
                             <div class="form-group row mb-4">
                                 <label class="col-sm-2 col-form-label">Kategori</label>
                                 <div class="col-sm-10">                                    
-                                    <select class="form-control" id="kategoriWarga" name="kategoriWarga">
+                                    <select class="form-control" id="kategoriWarga" name="category_id">
                                         <option></option>
                                         @foreach ($tarif as $key => $data)
                                             <option value="{{$data->id}}">{{$data->category_name}}</option>     
@@ -224,13 +227,13 @@
                             <div class="form-group row mb-4">
                                 <label class="col-sm-2 col-form-label">Luas Kavling</label>
                                 <div class="col-sm-10">
-                                    <input id="luasTanah" type="text" name="luasTanah" class="form-control" required>
+                                    <input id="luasTanah" type="text" name="area" class="form-control" required>
                                 </div>
                             </div>
                             <div class="form-group row mb-4">
                                 <label class="col-sm-2 col-form-label">Nomor Rumah</label>
                                 <div class="col-sm-10">
-                                    <input id="nomorRumah" type="text" name="nomorRumah" class="form-control" required>
+                                    <input id="nomorRumah" type="text" name="house_number" class="form-control" required>
                                 </div>
                             </div>
                         </form>
@@ -256,17 +259,17 @@
                         </button>
                     </div>
                     <div class="modal-body" style="padding-bottom: 5px">
-                        <input type="hidden" id="id" />
+                        <input type="hidden" id="categoryId" />
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Kategori</label>
                             <div class="col-sm-10">
-                                <input id="category_name" type="text" name="category_name" class="form-control">
+                                <input id="categoryName" type="text" name="category_name" class="form-control">
                             </div>
                         </div>
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Nominal Tarif</label>
                             <div class="col-sm-10">
-                                <input id="amount" type="text" name="amount" class="form-control" >
+                                <input id="categoryAmount" type="text" name="amount" class="form-control" >
                             </div>
                         </div>
                     </div>
@@ -283,7 +286,7 @@
     $("#nomor_kk").change(() => {
         $.ajax({
             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            url: `/dashboard/tarif/nama_warga`,
+            url: `/dashboard/land/nama_warga`,            
             type: 'POST',
             data: {
                 nomorKk : $("#nomor_kk").val(),
@@ -297,7 +300,7 @@
     $("#kategoriWarga").change(() => {
         $.ajax({
             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            url: `/dashboard/tarif/category_amount`,
+            url: `/dashboard/land/category_amount`,
             type: 'POST',
             data: {
                 category_id : $("#kategoriWarga").val(),
@@ -310,24 +313,28 @@
 
     $(document).on('click', '.edit_tarif', function (e) {
         e.preventDefault();
-        var id = $(this).data('id');
-        console.log(id);
+        const id = $(this).data('id');        
         $('#tarifModalUpdate').modal('show');
         $.ajax({
-            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},            
+            url: "/dashboard/tarif/" + id + "/edit",
             type: "GET",
-            url: "/dashboard/tarif/edit-tarif/" + id,
-            success: function (response) {
-                if (response.status == 404) {
-                    $('#success_message').addClass('alert alert-success');
-                    $('#success_message').text(response.message);
-                    $('#tarifModalUpdate').modal('hide');
-                } else {
-                    // console.log(response.land.category_name);
-                    $('#id').val(id);
-                    $('#category_name').val(response.tarif.category_name);
-                    $('#amount').val(response.tarif.amount);
-                }
+            success: function (response) {                
+                $('#categoryId').val(id);
+                $('#categoryName').val(response.category_name);
+                $('#categoryAmount').val(response.amount);
+                // if (response.status == 404) {
+                //     console.log(response);
+                //     // $('#success_message').addClass('alert alert-success');
+                //     // $('#success_message').text(response.message);
+                //     // $('#tarifModalUpdate').modal('hide');
+                // } else {
+                //     console.log("TIDAK MASUK");
+                //     // console.log(response.land.category_name);
+                //     // $('#id').val(id);
+                //     // $('#category_name').val(response.tarif.category_name);
+                //     // $('#amount').val(response.tarif.amount);
+                // }
             }
         });
         $('.close').find('input').val('');

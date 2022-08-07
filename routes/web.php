@@ -37,11 +37,10 @@ Route::group(['prefix' => 'dashboard', 'middleware' => 'superuser'], function ()
     Route::resource('land', LandController::class);
     Route::resource('detail', FamilyMemberController::class);
 
-    Route::group(['prefix' => 'tarif'], function () {
-        Route::post('/tarif_warga', [TarifController::class, 'storeLand']);
-        Route::post('/nama_warga', [TarifController::class, 'ajaxGetName']);
-        Route::post('/category_amount', [TarifController::class, 'ajaxGetAmount']);
-        Route::get('/edit-tarif/{id}', [TarifController::class], 'edit');
+    Route::group(['prefix' => 'land'], function () {        
+        Route::post('/nama_warga', [LandController::class, 'ajaxGetName']);
+        Route::post('/category_amount', [LandController::class, 'ajaxGetAmount']);
+        // Route::get('/edit-tarif/{id}', [TarifController::class], 'edit');
     });
 
     Route::group(['prefix' => 'user'], function() {

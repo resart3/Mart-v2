@@ -30,7 +30,7 @@ class LandRequest extends FormRequest
             'family_card_id' => ['required'],
             'category_id' => ['required'],
             'area' => ['integer'],
-            'house_number' => ['string']            
+            'house_number' => ['string']
         ];
     }
 
