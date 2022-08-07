@@ -62,7 +62,9 @@
                                         <td>{{ $data->category_name }}</td>
                                         <td>{{ $data->amount }}</td>
                                         <td>
-                                            <a href="#" class="edit_tarif btn btn-primary" data-id="{{$data->id}}">
+                                            <a href="#tarifModalUpdate" class="edit_tarif btn btn-primary" 
+                                                data-id="{{$data->id}}" data-toggle="modal" 
+                                                data-target="#tarifModalUpdate">
                                                 Edit
                                             </a>
                                             <a
@@ -85,24 +87,14 @@
 
                     <!-- Table Tarif K3 Warga -->
                     <div class="tab-pane" id="detailTarif" role="tabpanel" aria-labelledby="detail-tarif">
-                        <a href="" class="btn btn-icon icon-left btn-primary" data-toggle="modal" data-target="#tarifWargaModal">
+                        <a href="" class="btn btn-icon icon-left btn-primary mb-2" data-toggle="modal" data-target="#tarifWargaModal">
                             <i class="fa fa-plus"></i>
                             &nbsp; Tambah Data Tarif K3 Warga
                         </a>
                         <div class="table-responsive">
                             <table id="dataTable" class="table-bordered table-md table">
                                 <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>NIK</th>
-                                    <th>Nama</th>
-                                    <th>Luas Bangunan</th>
-                                    <th>Nomor Rumah</th>
-                                    <th>Nominal</th>
-                                    <th>Action</th>
-                                </tr>
-                                    <tr>
-                                        <th>No</th>
+                                    <tr>                                        
                                         <th>Nomor KK</th>
                                         <th>Nama</th>
                                         <th>Luas Bangunan</th>
@@ -112,7 +104,7 @@
                                     </tr>
                                 </thead>
                                 <tbody style="font-size: 14px!important">
-                                @foreach ($tarif as $key => $data)
+                                @foreach ($land as $key => $data)
                                     <tr>
                                         <td> {{$key+1}} </td>
                                         <td> {{$data->nomor}} </td>
@@ -188,7 +180,7 @@
 
     <!-- Modal Add Tarif Warga -->
     <div class="modal fade" id="tarifWargaModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <form action="" >
+        <form action="/dashboard/tarif/tarif_warga" method="POST">
             @csrf
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -201,33 +193,44 @@
                     <div class="modal-body" style="padding-bottom: 5px">
                         <form action="" >
                             <div class="form-group row mb-4">
-                                <label class="col-sm-2 col-form-label">Nama</label>
+                                <label class="col-sm-2 col-form-label">Nomor KK</label>
                                 <div class="col-sm-10">
-                                    <input id="name" type="text" name="name" class="form-control" >
+                                    <input id="nomor_kk" type="text" name="nomor_kk" class="form-control" >
                                 </div>
                             </div>
                             <div class="form-group row mb-4">
-                                <label class="col-sm-2 col-form-label">NIK</label>
+                                <label class="col-sm-2 col-form-label">Nama</label>
                                 <div class="col-sm-10">
-                                    <input id="nominal" type="text" name="nominal" class="form-control" >
+                                    <input id="name" type="text" name="name" class="form-control" readonly>
                                 </div>
                             </div>
                             <div class="form-group row mb-4">
                                 <label class="col-sm-2 col-form-label">Kategori</label>
-                                <div class="col-sm-10">
-                                    <input id="kategori" type="text" name="kategori" class="form-control" placeholder="cth: Kategori 1">
-                                </div>
-                            </div>
-                            <div class="form-group row mb-4">
-                                <label class="col-sm-2 col-form-label">Detail Tarif</label>
-                                <div class="col-sm-10">
-                                    <textarea id="detail" name="detail" class="form-control" style="height: 80px" ></textarea>
+                                <div class="col-sm-10">                                    
+                                    <select class="form-control" id="kategoriWarga" name="kategoriWarga">
+                                        <option></option>
+                                        @foreach ($tarif as $key => $data)
+                                            <option value="{{$data->id}}">{{$data->category_name}}</option>     
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                             <div class="form-group row mb-4">
                                 <label class="col-sm-2 col-form-label">Nominal Tarif</label>
                                 <div class="col-sm-10">
-                                    <input id="nominal" type="text" name="nominal" class="form-control" >
+                                    <input id="nominalWarga" type="text" name="nominalWarga" class="form-control" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group row mb-4">
+                                <label class="col-sm-2 col-form-label">Luas Kavling</label>
+                                <div class="col-sm-10">
+                                    <input id="luasTanah" type="text" name="luasTanah" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="form-group row mb-4">
+                                <label class="col-sm-2 col-form-label">Nomor Rumah</label>
+                                <div class="col-sm-10">
+                                    <input id="nomorRumah" type="text" name="nomorRumah" class="form-control" required>
                                 </div>
                             </div>
                         </form>
@@ -277,22 +280,21 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script>
-    document.getElementById("nomorKk").addEventListener("change", function() {
+    $("#nomor_kk").change(() => {
         $.ajax({
             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             url: `/dashboard/tarif/nama_warga`,
             type: 'POST',
             data: {
-                nomorKk : $("#nomorKk").val(),
+                nomorKk : $("#nomor_kk").val(),
             },
-            success: function(data) {
-                console.log(data[0].nama);
+            success: function(data) {                
                 $("#name").val(data[0].nama);
             }
         });
-    });
+    })
 
-    document.getElementById("kategoriWarga").addEventListener("change", function() {
+    $("#kategoriWarga").change(() => {
         $.ajax({
             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             url: `/dashboard/tarif/category_amount`,
@@ -304,12 +306,12 @@
                 $("#nominalWarga").val(data[0].amount)
             }
         });
-    });
+    })
 
     $(document).on('click', '.edit_tarif', function (e) {
         e.preventDefault();
         var id = $(this).data('id');
-        // console.log(id);
+        console.log(id);
         $('#tarifModalUpdate').modal('show');
         $.ajax({
             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
