@@ -94,18 +94,22 @@ class TarifController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
-     *     
-     * @param LandRequest $request
+     * Update the specified resource in storage.     
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(LandRequest $request, $id)
+    public function update(Request $request, $id)
     {
+        $input = $request->all();
+        $kategori = $request["kategori"];
+        $amount = $request["amount"];
+
         $category = Category::find($id);
-        $category->category_name = $request->input('category_name');
-        $category->amount = $request->input('amount');
+        $category->category_name = $kategori;
+        $category->amount = $amount;
         $category->save();
+
+        return response()->json("Berhasil Dirubah!");
     }
 
     /**

@@ -49,7 +49,7 @@
                         <div class="table-responsive">
                             <table id="dataTable" class="table-bordered table-md table">
                                 <thead>
-                                <tr>
+                                <tr class="text-center">
                                     <th>No</th>
                                     <th style="width: 50%">Kategori</th>
                                     <th>Nominal</th>
@@ -59,24 +59,31 @@
                                 <tbody style="font-size: 14px!important">
                                 @foreach ($tarif as $key => $data)
                                     <tr>
-                                        <td>{{ $key + 1 }}</td>
+                                        <td class="text-center">{{ $key + 1 }}</td>
                                         <td>{{ $data->category_name }}</td>
-                                        <td>{{ $data->amount }}</td>
-                                        <td>
-                                            <a href="#tarifModalUpdate" class="edit_tarif btn btn-primary" 
-                                                data-id="{{$data->id}}" data-toggle="modal" 
-                                                data-target="#tarifModalUpdate">
-                                                Edit
-                                            </a>
-                                            <a
-                                                href="{{ route('tarif.index') }}" 
-                                                onclick="event.preventDefault(); document.getElementById('delete-form-{{$data->id}}').submit();" 
-                                                class="btn btn-danger delete">Hapus
-                                            </a>
+                                        <td class="text-center">{{ $data->amount }}</td>
+                                        <td class="d-flex justify-content-center">
+                                            <div class="mr-1">
+                                                <a href="#tarifModalUpdate" class="edit_tarif btn btn-primary" 
+                                                    data-id="{{$data->id}}" data-toggle="modal" 
+                                                    data-target="#tarifModalUpdate">
+                                                    Edit
+                                                </a>                                            
+                                            </div>
+                                            <div>
+                                                <form action="{{ route('tarif.destroy', $data->id)}}" method="Post">
+                                                @csrf
+                                                @method('DELETE')
+                                                    <button
+                                                        class="btn btn-danger delete">Hapus
+                                                    </button>
+                                                </form>                                                                                   
+                                            </div>
                                         </td>
                                         <form id="delete-form-{{$data->id}}" + action="{{ route('tarif.destroy', $data->id)}}"
                                             method="POST">
-                                            @csrf @method('DELETE')
+                                            @csrf 
+                                            @method('DELETE')
                                         </form>
                                         </td>
                                     </tr>
@@ -96,7 +103,7 @@
                         <div class="table-responsive">
                             <table id="dataTable" class="table-bordered table-md table">
                                 <thead>
-                                <tr>
+                                <tr class="text-center">
                                     <th>No</th>
                                     <th>NIK</th>
                                     <th>Nama</th>
@@ -109,24 +116,28 @@
                                 <tbody style="font-size: 14px!important">
                                 @foreach ($land as $key => $data)
                                     <tr>
-                                        <td> {{$key+1}} </td>
-                                        <td> {{$data->nomor}} </td>
+                                        <td class="text-center"> {{$key+1}} </td>
+                                        <td class="text-center"> {{$data->nomor}} </td>
                                         <td> {{$data->nama}} </td>
-                                        <td> {{$data->area}} </td>
-                                        <td> {{$data->house_number}} </td>
-                                        <td> {{$data->amount}} </td>
-                                        <td>
-                                            <a href="#dataTarifModalUpdate" id='dataTarifUpdate' data-id="{{$data->id}}" data-toggle="modal" 
-                                                data-target="#dataTarifModalUpdate" class="btn btn-primary">
-                                                Edit
-                                            </a>
-                                            <form action="{{ route('land.destroy', $data->id)}}" method="Post">
-                                            @csrf
-                                            @method('DELETE')
-                                                <button
-                                                    class="btn btn-danger delete">Hapus
-                                                </button>
-                                            </form>
+                                        <td class="text-center"> {{$data->area}} </td>
+                                        <td class="text-center"> {{$data->house_number}} </td>
+                                        <td class="text-center"> {{$data->amount}} </td>
+                                        <td class="d-flex justify-content-center">
+                                            <div class="mr-1">
+                                                <a href="#dataTarifModalUpdate" id='dataTarifUpdate' data-id="{{$data->id}}" data-toggle="modal" 
+                                                    data-target="#dataTarifModalUpdate" class="btn btn-primary">
+                                                    Edit
+                                                </a>
+                                            </div>
+                                            <div>
+                                                <form action="{{ route('land.destroy', $data->id)}}" method="Post">
+                                                @csrf
+                                                @method('DELETE')
+                                                    <button
+                                                        class="btn btn-danger delete">Hapus
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -258,7 +269,7 @@
                     <div class="modal-body" style="padding-bottom: 5px">
                         <input type="hidden" id="categoryId" />
                         <div class="form-group row mb-4">
-                            <label class="col-sm-2 col-form-label">Masuk</label>
+                            <label class="col-sm-2 col-form-label">Kategori</label>
                             <div class="col-sm-10">
                                 <input id="categoryName" type="text" name="category_name" class="form-control">
                             </div>
@@ -271,7 +282,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary update_tarif">Update Data</button>
+                        <button type="submit" class="btn btn-primary update_tarif" id="btnUpdateCategory">
+                            Update Data</button>
                     </div>
                 </div>
             </div>
@@ -371,29 +383,54 @@
 
         
     });
+
+    $("#btnUpdateCategory").click(() => {
+        const id = $("#categoryId").val();
+        const kategori = $("#categoryName").val();
+        const amount = $("#categoryAmount").val();        
+
+        $.ajax({
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},            
+            url: "/dashboard/tarif/" + id,
+            type: "PUT",
+            data: {
+                kategori: kategori,
+                amount: amount,
+            },
+            success: function (response) {
+                $('#tarifModalUpdate').modal('hide');
+                $('#success_message').addClass('alert alert-success');
+                $('#success_message').text("Data K3 Berhasil Di Update!");
+                setTimeout(() => {
+                    location.reload();
+                }, 1000);
+            }
+        });
+    })
+
     $(document).ready(function(){
-        $('#dataTarifUpdate').click(function(){
-            let id = $(this).data('id');
-            let url = `land/${id}/edit`
-            $.ajax({
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                type: "GET",
-                url: url,
-                success: function (response) {
-                    console.log(response)
-                    // if (response.status == 404) {
-                    //     $('#success_message').addClass('alert alert-success');
-                    //     $('#success_message').text(response.message);
-                    //     $('#tarifModalUpdate').modal('hide');
-                    // } else {
-                    //     // console.log(response.land.category_name);
-                    //     $('#id').val(id);
-                    //     $('#category_name').val(response.tarif.category_name);
-                    //     $('#amount').val(response.tarif.amount);
-                    // }
-                }
-            });
-        })
+        // $('#dataTarifUpdate').click(function(){
+        //     let id = $(this).data('id');
+        //     let url = `land/${id}/edit`
+        //     $.ajax({
+        //         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        //         type: "GET",
+        //         url: url,
+        //         success: function (response) {
+        //             console.log(response)
+        //             // if (response.status == 404) {
+        //             //     $('#success_message').addClass('alert alert-success');
+        //             //     $('#success_message').text(response.message);
+        //             //     $('#tarifModalUpdate').modal('hide');
+        //             // } else {
+        //             //     // console.log(response.land.category_name);
+        //             //     $('#id').val(id);
+        //             //     $('#category_name').val(response.tarif.category_name);
+        //             //     $('#amount').val(response.tarif.amount);
+        //             // }
+        //         }
+        //     });
+        // })
 
     })
 
