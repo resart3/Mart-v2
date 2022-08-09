@@ -66,7 +66,7 @@
                                             <div class="mr-1">
                                                 <a href="#tarifModalUpdate" class="edit_tarif btn btn-primary" 
                                                     data-id="{{$data->id}}" data-toggle="modal" 
-                                                    data-target="#tarifModalUpdate">
+                                                    data-target="#tarifModalUpdate" id="editTarif">
                                                     Edit
                                                 </a>                                            
                                             </div>
@@ -105,9 +105,9 @@
                                 <thead>
                                 <tr class="text-center">
                                     <th>No</th>
-                                    <th>NIK</th>
+                                    <th>Nomor KK</th>
                                     <th>Nama</th>
-                                    <th>Luas Bangunan</th>
+                                    <th>Luas Kavling</th>
                                     <th>Nomor Rumah</th>
                                     <th>Nominal</th>
                                     <th>Action</th>
@@ -124,8 +124,10 @@
                                         <td class="text-center"> {{$data->amount}} </td>
                                         <td class="d-flex justify-content-center">
                                             <div class="mr-1">
-                                                <a href="#dataTarifModalUpdate" id='dataTarifUpdate' data-id="{{$data->id}}" data-toggle="modal" 
-                                                    data-target="#dataTarifModalUpdate" class="btn btn-primary">
+                                                <a href="#dataTarifModalUpdate" id='editTarifWarga' 
+                                                    data-id="{{$data->id}}" data-toggle="modal"
+                                                    data-target="#dataTarifModalUpdate" 
+                                                    class="btn btn-primary">
                                                     Edit
                                                 </a>
                                             </div>
@@ -290,38 +292,72 @@
     </div>
     <!-- End Modal Update Data Tarif -->
 
-    <!-- Modal Update Data Tarif -->
+    <!-- Modal Update Data Tarif Warga-->
     <div class="modal fade" id="dataTarifModalUpdate" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Update Tarif K3</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Update Tarif K3 Warga</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">×</span>
                         </button>
                     </div>
                     <div class="modal-body" style="padding-bottom: 5px">
-                        <input type="hidden" id="id" />
+                        <input type="hidden" id="landId" />
                         <div class="form-group row mb-4">
-                            <label class="col-sm-2 col-form-label">Masuk</label>
+                            <label class="col-sm-2 col-form-label">Nomor KK</label>
                             <div class="col-sm-10">
-                                <input id="category_name" type="text" name="category_name" class="form-control">
+                                <input id="nomor_kk_update" type="text" name="family_card_id" 
+                                    class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Nama</label>
+                            <div class="col-sm-10">
+                                <input id="name_update" type="text" name="name" class="form-control" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Kategori</label>
+                            <div class="col-sm-10">                                    
+                                <select class="form-control" id="kategoriWargaUpdate" name="category_id">
+                                    <option></option>
+                                    @foreach ($tarif as $key => $data)
+                                        <option value="{{$data->id}}">{{$data->category_name}}</option>     
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Nominal Tarif</label>
                             <div class="col-sm-10">
-                                <input id="amount" type="text" name="amount" class="form-control" >
+                                <input id="nominalWargaUpdate" type="text" name="nominalWarga" 
+                                    class="form-control" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Luas Kavling</label>
+                            <div class="col-sm-10">
+                                <input id="luasTanahUpdate" type="text" name="area" class="form-control" 
+                                    required>
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Nomor Rumah</label>
+                            <div class="col-sm-10">
+                                <input id="nomorRumahUpdate" type="text" name="house_number" 
+                                    class="form-control" required>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary update_tarif">Update Data</button>
+                        <button type="submit" class="btn btn-primary update_tarif" 
+                            id="btnUpdateTarifWarga">Update Data</button>
                     </div>
                 </div>
             </div>
     </div>
-    <!-- End Modal Update Data Tarif -->
+    <!-- End Modal Update Data Tarif Warga-->
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script>
@@ -353,9 +389,9 @@
         });
     })
 
-    $(document).on('click', '.edit_tarif', function (e) {
+    $(document).on('click', '#editTarif', function (e) {
         e.preventDefault();
-        const id = $(this).data('id');        
+        const id = $(this).data('id');
         $('#tarifModalUpdate').modal('show');
         $.ajax({
             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},            
@@ -380,8 +416,6 @@
             }
         });
         $('.close').find('input').val('');
-
-        
     });
 
     $("#btnUpdateCategory").click(() => {
@@ -406,7 +440,81 @@
                 }, 1000);
             }
         });
+    });
+
+    $("#nomor_kk_update").change(() => {
+        $.ajax({
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            url: `/dashboard/land/nama_warga`,            
+            type: 'POST',
+            data: {
+                nomorKk : $("#nomor_kk_update").val(),
+            },
+            success: function(data) {                
+                $("#name_update").val(data[0].nama);
+            }
+        });
     })
+
+    $("#kategoriWargaUpdate").change(() => {
+        $.ajax({
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            url: `/dashboard/land/category_amount`,
+            type: 'POST',
+            data: {
+                category_id : $("#kategoriWargaUpdate").val(),
+            },
+            success: function(data) {
+                $("#nominalWargaUpdate").val(data[0].amount)
+            }
+        });
+    })
+
+    $(document).on('click', '#editTarifWarga', function (e) {
+        e.preventDefault();
+        const id = $(this).data('id');
+        $.ajax({
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},            
+            url: "/dashboard/land/" + id + "/edit",
+            type: "GET",
+            success: function (response) {                
+                console.log(response);
+                $('#landId').val(id);
+                $("#nomor_kk_update").val(response[0].family_card_id);
+                $("#name_update").val(response[0].nama);
+                $("#kategoriWargaUpdate").val(response[0].category_id);
+                $("#nominalWargaUpdate").val(response[0].amount);
+                $("#luasTanahUpdate").val(response[0].area);
+                $("#nomorRumahUpdate").val(response[0].house_number);
+            }
+        });
+    });
+
+    $("#btnUpdateTarifWarga").click(() => {
+        const id = $("#landId").val();        
+        // const kategori = $("#categoryName").val();
+        // const amount = $("#categoryAmount").val();        
+
+        $.ajax({
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},            
+            url: "/dashboard/land/" + id,
+            type: "PUT",
+            data: {
+                family_card_id: $("#nomor_kk_update").val(),
+                category_id: $("#kategoriWargaUpdate").val(),
+                area: $("#luasTanahUpdate").val(),
+                house_number: $("#nomorRumahUpdate").val(),
+            },
+            success: function (response) {
+                $('#dataTarifModalUpdate').modal('hide');
+                $('#success_message').addClass('alert alert-success');
+                $('#success_message').text("Data K3 Warga Berhasil Di Update!");
+                setTimeout(() => {
+                    location.reload();
+                }, 1000);
+            }
+        });
+    });
 
     $(document).ready(function(){
         // $('#dataTarifUpdate').click(function(){

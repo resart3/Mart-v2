@@ -99,22 +99,16 @@ class LandController extends Controller
      */
     public function edit($id)
     {
-        $tarif = Category::find($id);
-        if($tarif)
-        {
-            return respond()->json([
-                'status'=>200,
-                'tarif'=>$tarif
-            ]);
-        }
-        else
-        {
-            return respond()->json([
-                'status'=> 404,
-                'message'=>'Land Not Found'
-            ]);
-        }
-        return response()->json('masuk');
+        $land = DB::table('lands')
+        ->join('categories', 'categories.id', '=', 'lands.category_id')
+        ->join('family_cards', 'family_cards.nomor', '=', 'lands.family_card_id')
+        ->join('family_members', 'family_members.family_card_id', '=', 'family_cards.nomor')
+        ->where('isFamilyHead', 1)
+        ->select('family_cards.nomor', 'family_members.nama', 'lands.*', 'categories.amount')
+        ->where('lands.id', $id)
+        ->get();
+
+        return response()->json($land);
     }
 
     /**
@@ -126,7 +120,20 @@ class LandController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
+        $input = $request->all();
+        $family_card_id = $request["family_card_id"];
+        $category_id = $request["category_id"];
+        $area = $request["area"];
+        $house_number = $request["house_number"];
+
+        $land = Land::find($id);
+        $land->family_card_id = $family_card_id;
+        $land->category_id = $category_id;
+        $land->area = $area;
+        $land->house_number = $house_number;
+        $land->save();
+
+        return response()->json("Berhasil Dirubah!");
     }
 
     /**
