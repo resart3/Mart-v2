@@ -80,12 +80,6 @@
                                                 </form>                                                                                   
                                             </div>
                                         </td>
-                                        <form id="delete-form-{{$data->id}}" + action="{{ route('tarif.destroy', $data->id)}}"
-                                            method="POST">
-                                            @csrf 
-                                            @method('DELETE')
-                                        </form>
-                                        </td>
                                     </tr>
                                 @endforeach
                                 </tbody>
@@ -215,7 +209,7 @@
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Nama</label>
                             <div class="col-sm-10">
-                                <input id="name" type="text" name="name" class="form-control" readonly>
+                                <input id="name" type="text" name="name" class="form-control" readonly disabled>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
@@ -232,7 +226,7 @@
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Nominal Tarif</label>
                             <div class="col-sm-10">
-                                <input id="nominalWarga" type="text" name="nominalWarga" class="form-control" readonly>
+                                <input id="nominalWarga" type="text" name="nominalWarga" class="form-control" readonly disabled>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
@@ -314,7 +308,7 @@
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Nama</label>
                             <div class="col-sm-10">
-                                <input id="name_update" type="text" name="name" class="form-control" readonly>
+                                <input id="name_update" type="text" name="name" class="form-control" readonly disabled>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
@@ -332,7 +326,7 @@
                             <label class="col-sm-2 col-form-label">Nominal Tarif</label>
                             <div class="col-sm-10">
                                 <input id="nominalWargaUpdate" type="text" name="nominalWarga" 
-                                    class="form-control" readonly>
+                                    class="form-control" readonly disabled>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
@@ -359,7 +353,7 @@
     </div>
     <!-- End Modal Update Data Tarif Warga-->
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script>
     $("#nomor_kk").change(() => {
         $.ajax({
@@ -437,7 +431,7 @@
                 $('#success_message').text("Data K3 Berhasil Di Update!");
                 setTimeout(() => {
                     location.reload();
-                }, 1000);
+                }, 5000);
             }
         });
     });
@@ -511,84 +505,9 @@
                 $('#success_message').text("Data K3 Warga Berhasil Di Update!");
                 setTimeout(() => {
                     location.reload();
-                }, 1000);
+                }, 5000);
             }
         });
     });
 
-    $(document).ready(function(){
-        // $('#dataTarifUpdate').click(function(){
-        //     let id = $(this).data('id');
-        //     let url = `land/${id}/edit`
-        //     $.ajax({
-        //         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        //         type: "GET",
-        //         url: url,
-        //         success: function (response) {
-        //             console.log(response)
-        //             // if (response.status == 404) {
-        //             //     $('#success_message').addClass('alert alert-success');
-        //             //     $('#success_message').text(response.message);
-        //             //     $('#tarifModalUpdate').modal('hide');
-        //             // } else {
-        //             //     // console.log(response.land.category_name);
-        //             //     $('#id').val(id);
-        //             //     $('#category_name').val(response.tarif.category_name);
-        //             //     $('#amount').val(response.tarif.amount);
-        //             // }
-        //         }
-        //     });
-        // })
-
-    })
-
-    // $(document).on('click', '.update_tarif', function (e) {
-    //         e.preventDefault();
-
-    //         $(this).text('Updating..');
-    //         var id = $('#id').val();
-    //         // alert(id);
-
-    //         var data = {
-    //             'name': $('#name').val(),
-    //             'course': $('#course').val(),
-    //             'email': $('#email').val(),
-    //             'phone': $('#phone').val(),
-    //         }
-
-    //         $.ajaxSetup({
-    //             headers: {
-    //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    //             }
-    //         });
-
-    //         $.ajax({
-    //             type: "PUT",
-    //             url: "/update-student/" + id,
-    //             data: data,
-    //             dataType: "json",
-    //             success: function (response) {
-    //                 // console.log(response);
-    //                 if (response.status == 400) {
-    //                     $('#update_msgList').html("");
-    //                     $('#update_msgList').addClass('alert alert-danger');
-    //                     $.each(response.errors, function (key, err_value) {
-    //                         $('#update_msgList').append('<li>' + err_value +
-    //                             '</li>');
-    //                     });
-    //                     $('.update_student').text('Update');
-    //                 } else {
-    //                     $('#update_msgList').html("");
-
-    //                     $('#success_message').addClass('alert alert-success');
-    //                     $('#success_message').text(response.message);
-    //                     $('#editModal').find('input').val('');
-    //                     $('.update_student').text('Update');
-    //                     $('#editModal').modal('hide');
-    //                     fetchstudent();
-    //                 }
-    //             }
-    //         });
-
-    //     });
 </script>

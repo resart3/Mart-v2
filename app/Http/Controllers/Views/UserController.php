@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -58,16 +59,78 @@ class UserController extends Controller
      * @return Response
      */
     public function store(Request $request){
-        $data = [
-            'name'=>$request->input('name'),
-            'email'=>$request->input('email'),
-            'nik'=>$request->input('nik'),
-            'family_card_id' => $request->input('nomor'),
-            'role'=>$request->input('role'),
-            'password'=>bcrypt($request->input('password')),
-        ];
-        User::create($data);
-        return redirect()->route('user.index')->with('success','User baru berhasil ditambahkan!');
+
+        // $validator = Validator::make($request->all(), [
+        //     'name' => 'required|max:255',
+        //     'email' => 'required|email|unique:users,email',
+        //     'role' => 'required',
+        //     'password' => 'required|min:8',
+        //     'confirm password' => 'required|same:password'
+
+        // ]); // create the validations
+        // if ($validator->fails())   //check all validations are fine, if not then redirect and show error messages
+        // {
+        //     return redirect()->route('user.index')->with('failed','User baru gagal ditambahkan!');  
+        //     // validation failed return back to form
+
+        // } else {
+        //     //validations are passed, save new user in database
+        //     $User = new User;
+        //     $User->name = $request->name;
+        //     $User->email = $request->email;
+        //     $User->nik = $request->nik;
+        //     $User->password = bcrypt($request->password);
+        //     $User->role = $request->role;
+        //     $User->save();
+            
+        //     return redirect()->route('user.index')->with('success','User baru berhasil ditambahkan!');  
+           
+        // }
+
+        // $validateData = $request->validate([
+        //     'name' => 'required|max:255',
+        //     'email' => 'required|email|unique:users,email',
+        //     'role' => 'required',
+        //     'nik' => 'required',
+        //     'password' => 'required|min:8',
+        //     'confirm_password' => 'required|same:password'
+        // ]);
+
+        // // $data = [
+        // //     'name'=>$request->input('name'),
+        // //     'email'=>$request->input('email'),
+        // //     'nik'=>$request->input('nik'),
+        // //     // 'family_card_id' => $request->input('nomor'),
+        // //     'role'=>$request->input('role'),
+        // //     'password'=>bcrypt($request->input('password')),
+        // // ];
+        // User::create($validateData);
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email',   // required and email format validation
+            'password' => 'required|min:8', // required and number field validation
+            'confirm_password' => 'required|same:password',
+
+        ]); // create the validations
+        if ($validator->fails())   //check all validations are fine, if not then redirect and show error messages
+        {
+            return response()->json($validator->errors(),422);  
+            // validation failed return back to form
+
+        } else {
+            //validations are passed, save new user in database
+            $User = new User;
+            $User->name = $request->name;
+            $User->email = $request->email;
+            $User->nik = $request->nik;
+            $User->role = $request->role;
+            $User->password = bcrypt($request->password);
+            $User->save();
+            
+            return redirect()->route('user.index')->with('success','User baru berhasil ditambahkan!');
+        }
+        // return redirect()->route('user.index')->with('success','User baru berhasil ditambahkan!');
     }
 
     /**
@@ -108,19 +171,11 @@ class UserController extends Controller
     {
         //
         $user = User::find($id);
-        if($user)
-        {
-            return respond()->json([
-                'status'=>200,
-                'user'=>$user,
-            ]);
-        }
-        else
-        {
-            return respond()->json([
-                'status'=> 404,
-                'message'=>'Land Not Found',
-            ]);
+
+        if(isset($user) == TRUE){
+            return response()->json($user);
+        }else{
+            return response()->json("Data User Tidak Ditemukan!");
         }
     }
 }

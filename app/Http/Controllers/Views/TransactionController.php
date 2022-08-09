@@ -61,6 +61,13 @@ class TransactionController extends Controller
     public function edit($id)
     {
         //
+        $transactions = Transaction::find($id);
+
+        if(isset($transactions) == TRUE){
+            return response()->json($transactions);
+        }else{
+            return response()->json("Data Transaction Tidak Ditemukan!");
+        }
     }
 
     /**
