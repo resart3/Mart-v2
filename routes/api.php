@@ -31,8 +31,9 @@ Route::get('public/assets/images/transaction/{id}/{filename}', function ($id, $f
 });
 
 Route::group(['prefix' => 'user'], function () {
-    Route::post('login', [UserController::class, 'login']);
+    Route::post('login', [UserController::class, 'login']);    
     Route::get('profile', [UserController::class, 'profile'])->middleware('user');
+    Route::put('updatePassword/{id}', [UserController::class, 'updatePassword'])->middleware('user');
     Route::get('logout', [UserController::class, 'logout'])->middleware('user');
 });
 
