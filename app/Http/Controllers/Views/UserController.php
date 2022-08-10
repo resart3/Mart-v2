@@ -135,17 +135,26 @@ class UserController extends Controller
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param UserRequest $request
+     *     
      * @return Response     
      * @param  int  $id     
      */
     public function update(Request $request, $id)
     {
         $updateData = $request->all();
-        $userId = User::FindOrFail($id);
-        $userId->update($updateData);
-        dd("Berhasil Terganti");
+        $user = User::FindOrFail($id);
+
+        $user->name = $updateData['name'];
+        $user->email = $updateData['email'];
+        $user->nik = $updateData['nik'];
+        $user->role = $updateData['role'];
+
+        if(isset($updateData['password'])){
+            $user->password = bcrypt($updateData["password"]);
+        }
+        $user->save();
+
+        return response()->json("Berhasil Dirubah!");
     }
 
     /**

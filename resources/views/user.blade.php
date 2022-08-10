@@ -52,18 +52,22 @@
                                 <td>{{ $data->name }}</td>
                                 <td>{{ $data->role }}</td>
                                 <td>{{ $data->created_at }}</td>
-                                <td>
-                                    <a href="#" class="btn btn-primary"
-                                        id='editUser' 
-                                        data-id="{{$data->id}}" data-toggle="modal"
-                                        data-target="#editModal">
-                                        Edit
-                                    </a>
-                                    <form id="delete-form-{{$data->id}}" + action="{{ route('user.destroy', $data->id)}}"
-                                        method="POST">
-                                        @csrf @method('DELETE')
-                                        <button class="btn btn-danger delete">Hapus</button>
-                                    </form>
+                                <td class="d-flex justify-content-center">
+                                    <div class="mr-1">
+                                        <a href="#" class="btn btn-primary"
+                                            id='editUser' 
+                                            data-id="{{$data->id}}" data-toggle="modal"
+                                            data-target="#editModal">
+                                            Edit
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <form id="delete-form-{{$data->id}}" + action="{{ route('user.destroy', $data->id)}}"
+                                            method="POST">
+                                            @csrf @method('DELETE')
+                                            <button class="btn btn-danger delete">Hapus</button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach
@@ -157,8 +161,7 @@
 <!-- End Modal Add User -->
 
 <!-- Modal Edit User -->
-<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <form action="">
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-hidden="true">    
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -201,11 +204,11 @@
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Password</label>
                             <div class="col-sm-10">
-                            <div class="input-group">
-                                  <input type="password" class="form-control" id="edit_password" name="password" data-toggle="password" required>
-                                  <div class="input-group-append">
-                                    <div class="input-group-text"><i class="fa fa-eye"></i></div>
-                                  </div>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="edit_password" name="password" data-toggle="password">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text"><i class="fa fa-eye"></i></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -216,7 +219,6 @@
                 </div>
             </div>
         </div>
-    </form>
 </div>
 <!-- End Modal Edit User -->
 
@@ -271,7 +273,6 @@
         $(document).on('click', '#editUser', function (e) {
             e.preventDefault();
             const id = $(this).data('id');
-            console.log(id);
             $('#editModal').modal('show');
             $.ajax({
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},            
@@ -284,52 +285,40 @@
                     $('#edit_nik').val(response.nik);
                     $('#edit_role').val(response.role);
                     $('#edit_password').val(response.password);
-                    // if (response.status == 404) {
-                    //     console.log(response);
-                    //     // $('#success_message').addClass('alert alert-success');
-                    //     // $('#success_message').text(response.message);
-                    //     // $('#tarifModalUpdate').modal('hide');
-                    // } else {
-                    //     console.log("TIDAK MASUK");
-                    //     // console.log(response.land.category_name);
-                    //     // $('#id').val(id);
-                    //     // $('#category_name').val(response.tarif.category_name);
-                    //     // $('#amount').val(response.tarif.amount);
-                    // }
                 }
             });
             $('.close').find('input').val('');
         });
 
-    $("#btnUpdateUser").click(() => {
-        const id = $("#edit_id").val();
-        const name = $("#edit_name").val();
-        const email = $("#edit_email").val();  
-        const nik = $("#edit_nik").val();  
-        const role = $("#edit_role").val();  
-        const password = $("#edit_password").val(); 
+        $("#btnUpdateUser").click(() => {
+            const id = $("#edit_id").val();
+            const name = $("#edit_name").val();
+            const email = $("#edit_email").val();  
+            const nik = $("#edit_nik").val();  
+            const role = $("#edit_role").val();  
+            const password = $("#edit_password").val(); 
 
-        $.ajax({
-            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},            
-            url: "/dashboard/user/" + id,
-            type: "PUT",
-            data: {
-                name: name,
-                email: email,
-                nik: nik,
-                role: role,
-                password: password
-            },
-            success: function (response) {
-                $('#editModal').modal('hide');
-                $('#success_message').addClass('alert alert-success');
-                $('#success_message').text("Data User Berhasil Di Update!");
-                setTimeout(() => {
-                    location.reload();
-                }, 5000);
-            }
+            $.ajax({
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},            
+                url: "/dashboard/user/" + id,
+                type: "PUT",
+                data: {
+                    name: name,
+                    email: email,
+                    nik: nik,
+                    role: role,
+                    password: password
+                },
+                success: function (response) {
+                    $('#editModal').modal('hide');
+                    $('#success_message').addClass('alert alert-success');
+                    $('#success_message').text("Data User Berhasil Di Update!");
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                }
+            });
         });
-    });
 
         $('.AddSubmit').click(function(e){
             e.preventDefault();
