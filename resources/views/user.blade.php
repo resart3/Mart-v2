@@ -93,7 +93,7 @@
                 </div>
                 <div class="modal-body" style="padding-bottom: 5px">
                     <form action="">
-                        <div class="form-group row mb-4">
+                        <div class="form-group row mb-4" hidden>
                             <label class="col-sm-2 col-form-label" for="name">Nama Lengkap</label>
                             <div class="col-sm-10">
                                 <input id="name" type="text" name="name" class="form-control @error ('name') is-invalid @enderror" value="{{old('name')}}">
@@ -120,7 +120,6 @@
                             <label class="col-sm-2 col-form-label">Role</label>
                             <div class="col-sm-10">
                                 <select class="form-control" id="role" name="role" required>
-                                    <option value=""></option>
                                     <option value="user">user</option>
                                     <option value="superuser">superuser</option>
                                 </select>
@@ -130,10 +129,10 @@
                             <label class="col-sm-2 col-form-label">Password</label>
                             <div class="col-sm-10">
                                 <div class="input-group">
-                                  <input type="password" class="form-control" id="password" name="password" data-toggle="password" required>
-                                  <div class="input-group-append">
-                                    <div class="input-group-text"><i class="fa fa-eye"></i></div>
-                                  </div>
+                                    <input type="password" class="form-control" id="password" name="password" data-toggle="password" required>
+                                    <div class="input-group-append">
+                                        <div class="input-group-text"><i class="fa fa-eye"></i></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -141,10 +140,10 @@
                             <label class="col-sm-2 col-form-label">Konfirmasi Password</label>
                             <div class="col-sm-10">
                                 <div class="input-group">
-                                  <input type="password" class="form-control" id="confirm_password" name="confirm_password" data-toggle="password" required>
-                                  <div class="input-group-append">
-                                    <div class="input-group-text"><i class="fa fa-eye"></i></div>
-                                  </div>
+                                    <input type="password" class="form-control" id="confirm_password" name="confirm_password" data-toggle="password" required>
+                                    <div class="input-group-append">
+                                        <div class="input-group-text"><i class="fa fa-eye"></i></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -224,133 +223,113 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script>
-    $(document).ready(function(){
-        // $(document).on('click', '.editbtn', function (e) {
-        //     e.preventDefault();
-        //     var id = $(this).val();
-        //     // alert(stud_id);
-        //     $('#editModal').modal('show');
-        //     $.ajax({
-        //         type: "GET",
-        //         url: "/dashboard/user/edit-user/" + id,
-        //         success: function (response) {
-        //             if (response.status == 404) {
-        //                 $('#success_message').addClass('alert alert-success');
-        //                 $('#success_message').text(response.message);
-        //                 $('#editModal').modal('hide');
-        //             } else {
-        //                 // console.log(response.student.name);
-        //                 $('#name').val(response.user.name);
-        //                 $('#email').val(response.user.email);
-        //                 $('#nik').val(response.user.nik);
-        //                 $('#role').val(response.user.role);
-        //                 $('#password').val(response.user.password);
-        //                 // $('#stud_id').val(stud_id);
-        //             }
-        //         }
-        //     });
-        //     $('.close').find('input').val('');
+    $("#role").change(() => {
+        if($("#role").val() == "superuser"){
+            $("#name").prop("required", true);
+            $("#name").parent().parent().prop("hidden", false);
+        }else if ($("#role").val() == "user"){
+            $("#name").prop("required", false);
+            $("#name").parent().parent().prop("hidden", true);
+        }
+    })
 
-        // });
-
-        $('[data-toggle="password"]').each(function () {
-            var input = $(this);
-            var eye_btn = $(this).parent().find('.input-group-text');
-            eye_btn.css('cursor', 'pointer').addClass('input-password-hide');
-            eye_btn.on('click', function () {
-                if (eye_btn.hasClass('input-password-hide')) {
-                    eye_btn.removeClass('input-password-hide').addClass('input-password-show');
-                    eye_btn.find('.fa').removeClass('fa-eye').addClass('fa-eye-slash')
-                    input.attr('type', 'text');
-                } else {
-                    eye_btn.removeClass('input-password-show').addClass('input-password-hide');
-                    eye_btn.find('.fa').removeClass('fa-eye-slash').addClass('fa-eye')
-                    input.attr('type', 'password');
-                }
-            });
-        });
-
-        $(document).on('click', '#editUser', function (e) {
-            e.preventDefault();
-            const id = $(this).data('id');
-            $('#editModal').modal('show');
-            $.ajax({
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},            
-                url: "/dashboard/user/" + id + "/edit",
-                type: "GET",
-                success: function (response) {                
-                    $('#edit_id').val(id);
-                    $('#edit_name').val(response.name);
-                    $('#edit_email').val(response.email);
-                    $('#edit_nik').val(response.nik);
-                    $('#edit_role').val(response.role);
-                    $('#edit_password').val(response.password);
-                }
-            });
-            $('.close').find('input').val('');
-        });
-
-        $("#btnUpdateUser").click(() => {
-            const id = $("#edit_id").val();
-            const name = $("#edit_name").val();
-            const email = $("#edit_email").val();  
-            const nik = $("#edit_nik").val();  
-            const role = $("#edit_role").val();  
-            const password = $("#edit_password").val(); 
-
-            $.ajax({
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},            
-                url: "/dashboard/user/" + id,
-                type: "PUT",
-                data: {
-                    name: name,
-                    email: email,
-                    nik: nik,
-                    role: role,
-                    password: password
-                },
-                success: function (response) {
-                    $('#editModal').modal('hide');
-                    $('#success_message').addClass('alert alert-success');
-                    $('#success_message').text("Data User Berhasil Di Update!");
-                    setTimeout(() => {
-                        location.reload();
-                    }, 1000);
-                }
-            });
-        });
-
-        $('.AddSubmit').click(function(e){
-            e.preventDefault();
-            $.ajaxSetup({
-                headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')},
-            });
-            $.ajax({
-                url: `/dashboard/user`,
-                method:'post',
-                data:{
-                    name: $('name').val(),
-                    email: $('email').val(),
-                    nik: $('nik').val(),
-                    role: $('role').val(),
-                    password: $('password').val(),
-                    
-                },
-                success: function(result){
-                    if(result.errors)
-                    {
-                        $('.alert-danger').html('');
-                        $.each(result.errors, function(key, value){
-                            $('.alert-danger').show();
-                            $('.alert-danger').append('<li>'+value+'</li>');
-                            
-                        });
-                    }else{
-                        $('.alert-danger').hide();
-                        $('#useraddModal').modal('hide');
-                    }
-                }
-            });
+    $('[data-toggle="password"]').each(function () {
+        var input = $(this);
+        var eye_btn = $(this).parent().find('.input-group-text');
+        eye_btn.css('cursor', 'pointer').addClass('input-password-hide');
+        eye_btn.on('click', function () {
+            if (eye_btn.hasClass('input-password-hide')) {
+                eye_btn.removeClass('input-password-hide').addClass('input-password-show');
+                eye_btn.find('.fa').removeClass('fa-eye').addClass('fa-eye-slash')
+                input.attr('type', 'text');
+            } else {
+                eye_btn.removeClass('input-password-show').addClass('input-password-hide');
+                eye_btn.find('.fa').removeClass('fa-eye-slash').addClass('fa-eye')
+                input.attr('type', 'password');
+            }
         });
     });
+
+    $(document).on('click', '#editUser', function (e) {
+        e.preventDefault();
+        const id = $(this).data('id');
+        $('#editModal').modal('show');
+        $.ajax({
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},            
+            url: "/dashboard/user/" + id + "/edit",
+            type: "GET",
+            success: function (response) {                
+                $('#edit_id').val(id);
+                $('#edit_name').val(response.name);
+                $('#edit_email').val(response.email);
+                $('#edit_nik').val(response.nik);
+                $('#edit_role').val(response.role);
+                $('#edit_password').val(response.password);
+            }
+        });
+        $('.close').find('input').val('');
+    });
+
+    $("#btnUpdateUser").click(() => {
+        const id = $("#edit_id").val();
+        const name = $("#edit_name").val();
+        const email = $("#edit_email").val();  
+        const nik = $("#edit_nik").val();  
+        const role = $("#edit_role").val();  
+        const password = $("#edit_password").val(); 
+
+        $.ajax({
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},            
+            url: "/dashboard/user/" + id,
+            type: "PUT",
+            data: {
+                name: name,
+                email: email,
+                nik: nik,
+                role: role,
+                password: password
+            },
+            success: function (response) {
+                $('#editModal').modal('hide');
+                $('#success_message').addClass('alert alert-success');
+                $('#success_message').text("Data User Berhasil Di Update!");
+                setTimeout(() => {
+                    location.reload();
+                }, 1000);
+            }
+        });
+    });
+
+    $('.AddSubmit').click(function(e){
+        e.preventDefault();
+        $.ajaxSetup({
+            headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')},
+        });
+        $.ajax({
+            url: `/dashboard/user`,
+            method:'post',
+            data:{
+                name: $('name').val(),
+                email: $('email').val(),
+                nik: $('nik').val(),
+                role: $('role').val(),
+                password: $('password').val(),
+                
+            },
+            success: function(result){
+                if(result.errors)
+                {
+                    $('.alert-danger').html('');
+                    $.each(result.errors, function(key, value){
+                        $('.alert-danger').show();
+                        $('.alert-danger').append('<li>'+value+'</li>');
+                        
+                    });
+                }else{
+                    $('.alert-danger').hide();
+                    $('#useraddModal').modal('hide');
+                }
+            }
+        });
+    });    
 </script>
