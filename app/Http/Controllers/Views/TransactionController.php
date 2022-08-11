@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Views;
 
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
+use App\Models\FamilyCard;
 use Illuminate\Http\Request;
 
 class TransactionController extends Controller
@@ -16,7 +17,11 @@ class TransactionController extends Controller
     public function index()
     {
         $title = 'Halaman Transaksi Iuran';
-        $transactions = Transaction::get();
+        $detail_user = FamilyCard::with('family_members')->where('nomor',session()->get('user')->family_card_id)->get();
+        $rt_rw = explode("/",$detail_user[0]->rt_rw);
+        $familyCard = FamilyCard::where('rt_rw','like',$rt_rw[0].'%')->get();
+        $transactions = Transaction::with('familyCard')->get();
+        dd($transactions);
         return view('transaction.index', compact('transactions', 'title'));
     }
 

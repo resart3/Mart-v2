@@ -13,4 +13,8 @@ class Transaction extends Model
     public function get_family_card(){
         return FamilyMember::where('nik', auth()->guard('api')->user()->nik)->first()->family_card_id;
     }
+
+    public function familyCard(){
+        return $this->belongsTo(FamilyCard::class, 'category_id');
+    }
 }

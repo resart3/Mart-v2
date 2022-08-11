@@ -72,7 +72,6 @@
                             <span>Halaman Home</span>
                         </a>
                     </li>
-
                     <li class="{{ Request::is('dashboard/user') ? 'active' : '' }}">
                         <a class="nav-link" href="{{ url('dashboard/user') }}">
                             <i class="fa fa-user"></i> <span>Halaman User</span>

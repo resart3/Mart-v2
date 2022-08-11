@@ -29,6 +29,26 @@ class UserSeeder extends Seeder
                 'family_card_id' => "3172022401096461"
             ],
             [
+                'name' => "ADMIN",
+                'email' => "admin_rt@gmail.com",
+                'email_verified_at' => now(),
+                'password' => bcrypt('password'), // password
+                'remember_token' => Str::random(10),
+                'role' => "admin-rt",
+                'nik' => "13001170414",
+                'family_card_id' => "3172022401096461"
+            ],
+            [
+                'name' => "ADMIN",
+                'email' => "admin_rw@gmail.com",
+                'email_verified_at' => now(),
+                'password' => bcrypt('password'), // password
+                'remember_token' => Str::random(10),
+                'role' => "admin-rw",
+                'nik' => "13001170414",
+                'family_card_id' => "3172022401096461"
+            ],
+            [
                 'name' => "HUANG CHIN CHANG",
                 'email' => "huang@gmail.com",
                 'email_verified_at' => now(),

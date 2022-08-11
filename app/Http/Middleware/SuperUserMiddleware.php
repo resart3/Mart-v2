@@ -27,7 +27,7 @@ class SuperUserMiddleware
             return Api::apiRespond(401);
         } else {
             if(session()->has('user')){
-                if(session()->get('user')->role == 'superuser'){
+                if(session()->get('user')->role != 'user'){
                     return $next($request);
                 }
             }

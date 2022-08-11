@@ -31,12 +31,13 @@ class UserController extends Controller
         if(Auth::attempt(['email' => $request['email'], 'password' => $request['password']])) {
             $user = Auth::user();
 
-            if($user->role != 'superuser'){
-                return redirect()->back()->with('error', 'Email Atau Password Anda Salah');
+            if($user->role == 'user'){
+                dd('masuk if');
+                return redirect()->back()->with('error', 'Anda Tidak Memiliki Akses');
             }
-
             request()->session()->put('user', Auth::user());
             return redirect('dashboard');
+            // dd('diluar if');
         }
 
         return redirect()->back()->with('error', 'Email Atau Password Anda Salah');
