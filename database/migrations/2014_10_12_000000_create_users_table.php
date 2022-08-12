@@ -19,9 +19,10 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->enum('role', ['user', 'superuser'])->default('user');
+            $table->enum('role', ['user', 'superuser','admin_rt','admin_rw'])->default('user');
             $table->string('nik')->nullable();
-            $table->string('family_card_id')->nullable();
+            // $table->string('family_card_id')->nullable();
+            $table->string('rt_rw');
             $table->rememberToken();
             $table->timestamps();
         });

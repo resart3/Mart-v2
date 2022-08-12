@@ -72,11 +72,14 @@
                             <span>Halaman Home</span>
                         </a>
                     </li>
+                    
+                    <?php if (session()->get('user')->role != 'admin_rt'):?>
                     <li class="{{ Request::is('dashboard/user') ? 'active' : '' }}">
                         <a class="nav-link" href="{{ url('dashboard/user') }}">
                             <i class="fa fa-user"></i> <span>Halaman User</span>
                         </a>
                     </li>
+                    <?php endif ?>
 
                     <li class="{{ Request::is('dashboard/data') ? 'active' : '' }}">
                         <a class="nav-link" href="{{ url('dashboard/data') }}">
@@ -89,12 +92,14 @@
                             <i class="fa fa-book"></i> <span>Halaman Transaksi</span>
                         </a>
                     </li>
-
+                    
+                    <?php if (session()->get('user')->role != 'admin_rt'):?>
                     <li class="{{ Request::is('dashboard/tarif') ? 'active' : '' }}">
                         <a class="nav-link" href="{{ url('dashboard/tarif')}}">
                             <i class="fa fa-file-invoice"></i> <span>Halaman Tarif K3</span>
                         </a>
                     </li>
+                    <?php endif ?>
                 </ul>
             </aside>
         </div>

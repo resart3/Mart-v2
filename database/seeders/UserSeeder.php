@@ -26,7 +26,7 @@ class UserSeeder extends Seeder
                 'remember_token' => Str::random(10),
                 'role' => "superuser",
                 'nik' => "13001170414",
-                'family_card_id' => "3172022401096461"
+                'rt_rw' => "001/014"
             ],
             [
                 'name' => "ADMIN",
@@ -34,9 +34,9 @@ class UserSeeder extends Seeder
                 'email_verified_at' => now(),
                 'password' => bcrypt('password'), // password
                 'remember_token' => Str::random(10),
-                'role' => "admin-rt",
+                'role' => "admin_rt",
                 'nik' => "13001170414",
-                'family_card_id' => "3172022401096461"
+                'rt_rw' => "001/014"
             ],
             [
                 'name' => "ADMIN",
@@ -44,9 +44,9 @@ class UserSeeder extends Seeder
                 'email_verified_at' => now(),
                 'password' => bcrypt('password'), // password
                 'remember_token' => Str::random(10),
-                'role' => "admin-rw",
+                'role' => "admin_rw",
                 'nik' => "13001170414",
-                'family_card_id' => "3172022401096461"
+                'rt_rw' => "001/014"
             ],
             [
                 'name' => "HUANG CHIN CHANG",
@@ -56,7 +56,7 @@ class UserSeeder extends Seeder
                 'remember_token' => Str::random(10),
                 'role' => "user",
                 'nik' => "1301170324",
-                'family_card_id' => "3172022401096461"
+                'rt_rw' => "001/014"
             ]
         ];
 

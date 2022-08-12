@@ -17,11 +17,19 @@ class TransactionController extends Controller
     public function index()
     {
         $title = 'Halaman Transaksi Iuran';
-        $detail_user = FamilyCard::with('family_members')->where('nomor',session()->get('user')->family_card_id)->get();
-        $rt_rw = explode("/",$detail_user[0]->rt_rw);
-        $familyCard = FamilyCard::where('rt_rw','like',$rt_rw[0].'%')->get();
-        $transactions = Transaction::with('familyCard')->get();
-        dd($transactions);
+        if (session()->get('user')->role == 'admin_rt') {
+            $familyCard = FamilyCard::where('rt_rw',session()->get('user')->rt_rw)->get();
+        }
+        else if (session()->get('user')->role == 'admin_rw') {
+            $familyCard = FamilyCard::where('rt_rw','like','%'.explode("/",session()->get('user')->rt_rw)[1])->get();
+        }
+        else{
+            $familyCard = FamilyCard::get();
+        }
+        foreach ($familyCard as $data) {
+            $nomor[] = $data->nomor;
+        }
+        $transactions = Transaction::whereIn('family_card_id',$nomor)->get();
         return view('transaction.index', compact('transactions', 'title'));
     }
 

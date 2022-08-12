@@ -120,9 +120,17 @@
                             <label class="col-sm-2 col-form-label">Role</label>
                             <div class="col-sm-10">
                                 <select class="form-control" id="role" name="role" required>
-                                    <option value="user">user</option>
-                                    <option value="superuser">superuser</option>
+                                    <option value="user">User</option>
+                                    <option value="superuser">Super User</option>
+                                    <option value="admin_rt">Admin RT</option>
+                                    <option value="admin_rw">Admin RW</option>
                                 </select>
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">RT/RW</label>
+                            <div class="col-sm-10">
+                                <input id="rt_rw" type="text" name="rt_rw" class="form-control" value="{{old('email')}}" required>
                             </div>
                         </div>
                         <div class="form-group row mb-4">

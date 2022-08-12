@@ -13,13 +13,12 @@ class FamilyCardController extends Controller
     public function index()
     {
         $title = 'Halaman Data Warga';
-        $detail_user = FamilyCard::with('family_members')->where('nomor',session()->get('user')->family_card_id)->get();
-        $rt_rw = explode("/",$detail_user[0]->rt_rw);
+        // $rt_rw = explode("/",session()->get('user')->rt_rw);
         if (session()->get('user')->role=='admin-rt') {
-            $family_card = FamilyCard::with('family_head')->where('rt_rw','like',$rt_rw[0].'%')->get();
+            $family_card = FamilyCard::with('family_head')->where('rt_rw',session()->get('user')->rt_rw)->get();
         }
         else{
-            $family_card = FamilyCard::with('family_head')->where('rt_rw','like','%'.$rt_rw[1])->get();
+            $family_card = FamilyCard::with('family_head')->where('rt_rw','like','%'.explode("/",session()->get('user')->rt_rw)[1])->get();
         }
 
         return view('family_card', compact('family_card', 'title'));
