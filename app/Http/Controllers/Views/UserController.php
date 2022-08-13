@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Str;
 
 class UserController extends Controller
 {
@@ -70,7 +71,7 @@ class UserController extends Controller
         if ($validator->fails())   //check all validations are fine, if not then redirect and show error messages
         {
             // dd(response()->json($validator->errors(),422)['data']);
-            return response()->json($validator->errors(),422);  
+            return response()->json($validator->errors(),422);
             // validation failed return back to form
 
         } else {
@@ -89,14 +90,19 @@ class UserController extends Controller
                     return redirect()->route('user.index')->with('failed','NIK Tidak Terdaftar!');
                 }
 
-            }elseif($request->role == 'superuser'){
+            }elseif($request->role != 'user'){
                 $User->name = $request->name;
+
+                $rt = $request->rt;
+                $rw = $request->rw;
+                $User->rt_rw = $rt.'/'.$rw;
             }
 
             $User->email = $request->email;
             $User->nik = $request->nik;
             $User->role = $request->role;
             $User->password = bcrypt($request->password);
+            $User->remember_token = Str::random(10);
             $User->save();
             
             return redirect()->route('user.index')->with('success','User baru berhasil ditambahkan!');
@@ -121,6 +127,12 @@ class UserController extends Controller
 
         if(isset($updateData['password'])){
             $user->password = bcrypt($updateData["password"]);
+        }
+
+        if(isset($updateData['rt']) AND isset($updateData['rw'])){
+            $rt = $updateData['rt'];
+            $rw = $updateData['rw'];
+            $user->rt_rw = $rt.'/'.$rw;
         }
         $user->save();
 

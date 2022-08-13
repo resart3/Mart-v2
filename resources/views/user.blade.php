@@ -127,10 +127,16 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group row mb-4">
-                            <label class="col-sm-2 col-form-label">RT/RW</label>
+                        <div class="form-group row mb-4" hidden>
+                            <label class="col-sm-2 col-form-label">RT</label>
                             <div class="col-sm-10">
-                                <input id="rt_rw" type="text" name="rt_rw" class="form-control" value="{{old('email')}}" required>
+                                <input id="rt" type="text" name="rt" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4" hidden>
+                            <label class="col-sm-2 col-form-label">RW</label>
+                            <div class="col-sm-10">
+                                <input id="rw" type="text" name="rw" class="form-control">
                             </div>
                         </div>
                         <div class="form-group row mb-4">
@@ -203,16 +209,32 @@
                             <div class="col-sm-10">
                                 <select class="form-control" id="edit_role" name="role" required>
                                     <option value=""></option>
-                                    <option value="user">user</option>
-                                    <option value="superuser">superuser</option>
+                                    <option value="user">User</option>
+                                    <option value="superuser">Superuser</option>
+                                    <option value="admin_rt">Admin RT</option>
+                                    <option value="admin_rw">Admin RW</option>
                                 </select>
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4" hidden>
+                            <label class="col-sm-2 col-form-label">RT</label>
+                            <div class="col-sm-10">
+                                <input id="edit_rt" type="text" name="rt" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4" hidden>
+                            <label class="col-sm-2 col-form-label">RW</label>
+                            <div class="col-sm-10">
+                                <input id="edit_rw" type="text" name="rw" class="form-control">
                             </div>
                         </div>
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Password</label>
                             <div class="col-sm-10">
                                 <div class="input-group">
-                                    <input type="password" class="form-control" id="edit_password" name="password" data-toggle="password">
+                                    <input type="password" class="form-control" id="edit_password" 
+                                        name="password" data-toggle="password" 
+                                        placeholder="Kosongkan Bila Tidak Ingin Ubah Password!">
                                     <div class="input-group-append">
                                         <div class="input-group-text"><i class="fa fa-eye"></i></div>
                                     </div>
@@ -232,12 +254,20 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script>
     $("#role").change(() => {
-        if($("#role").val() == "superuser"){
+        if($("#role").val() != "user"){
             $("#name").prop("required", true);
+            $("#rt").prop("required", true);
+            $("#rw").prop("required", true);
             $("#name").parent().parent().prop("hidden", false);
+            $("#rt").parent().parent().prop("hidden", false);
+            $("#rw").parent().parent().prop("hidden", false);
         }else if ($("#role").val() == "user"){
             $("#name").prop("required", false);
+            $("#rt").prop("required", false);
+            $("#rw").prop("required", false);
             $("#name").parent().parent().prop("hidden", true);
+            $("#rt").parent().parent().prop("hidden", true);
+            $("#rw").parent().parent().prop("hidden", true);
         }
     })
 
@@ -266,13 +296,23 @@
             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},            
             url: "/dashboard/user/" + id + "/edit",
             type: "GET",
-            success: function (response) {                
+            success: function (response) {
+                console.log(response);
                 $('#edit_id').val(id);
                 $('#edit_name').val(response.name);
                 $('#edit_email').val(response.email);
                 $('#edit_nik').val(response.nik);
                 $('#edit_role').val(response.role);
                 $('#edit_password').val(response.password);
+
+                if(response.rt_rw){
+                    $("#edit_rt").parent().parent().prop("hidden", false);
+                    $("#edit_rw").parent().parent().prop("hidden", false);
+
+                    let temp = response.rt_rw.split("/");
+                    $('#edit_rt').val(temp[0]);
+                    $('#edit_rw').val(temp[1]);
+                }
             }
         });
         $('.close').find('input').val('');
@@ -284,7 +324,9 @@
         const email = $("#edit_email").val();  
         const nik = $("#edit_nik").val();  
         const role = $("#edit_role").val();  
-        const password = $("#edit_password").val(); 
+        const password = $("#edit_password").val();
+        const rt = $("#edit_rt").val();
+        const rw = $("#edit_rw").val();
 
         $.ajax({
             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},            
@@ -295,10 +337,13 @@
                 email: email,
                 nik: nik,
                 role: role,
+                rt: rt,
+                rw: rw,
                 password: password
             },
             success: function (response) {
                 $('#editModal').modal('hide');
+                window.scrollTo(0, 0);
                 $('#success_message').addClass('alert alert-success');
                 $('#success_message').text("Data User Berhasil Di Update!");
                 setTimeout(() => {
