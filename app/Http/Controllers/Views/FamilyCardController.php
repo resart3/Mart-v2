@@ -73,9 +73,16 @@ class FamilyCardController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($nomor)
     {
         //
+        $data = FamilyCard::find($nomor);
+
+        if(isset($data) == TRUE){
+            return response()->json($data);
+        }else{
+            return response()->json("Data Family Card Tidak Ditemukan!");
+        }
     }
 
     /**

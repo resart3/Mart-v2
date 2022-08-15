@@ -85,7 +85,11 @@
                                     <a href="data/{{ $data->nomor }}" class="btn btn-outline-primary">
                                         Detail
                                     </a>
-                                    <a href="data/{{ $data->nomor }}/edit" class="btn btn-primary">
+                                    <a href="#" class="btn btn-primary"
+                                        id='editCard' 
+                                        data-id="{{$data->id}}" data-toggle="modal"
+                                        data-target="#form-card-edit"
+                                    >
                                         Edit
                                     </a>
                                     <a
@@ -137,7 +141,7 @@
     </script>
 
 @endsection
-
+<!-- Modal Add Family Card -->
 <div class="modal fade" id="form-modal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -159,7 +163,7 @@
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Alamat</label>
                             <div class="col-sm-10">
-                                <textarea id="alamat" name="alamat" class="form-control" style="height: 80px" ></textarea>
+                                <textarea id="alamat" name="alamat" class="form-control" style="height: 80px" oninput="handleInput(event)"></textarea>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
@@ -177,25 +181,25 @@
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Kecamatan</label>
                             <div class="col-sm-10">
-                                <input id="kecamatan" type="text" name="kecamatan" class="form-control" >
+                                <input id="kecamatan" type="text" name="kecamatan" class="form-control" oninput="handleInput(event)">
                             </div>
                         </div>
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Desa / Kelurahan</label>
                             <div class="col-sm-10">
-                                <input id="desa_kelurahan" type="text" name="desa_kelurahan" class="form-control" >
+                                <input id="desa_kelurahan" type="text" name="desa_kelurahan" class="form-control" oninput="handleInput(event)">
                             </div>
                         </div>
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Kabupaten / Kota</label>
                             <div class="col-sm-10">
-                                <input id="kabupaten_kota" type="text" name="kabupaten_kota" class="form-control" >
+                                <input id="kabupaten_kota" type="text" name="kabupaten_kota" class="form-control" oninput="handleInput(event)">
                             </div>
                         </div>
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Provinsi</label>
                             <div class="col-sm-10">
-                                <input id="provinsi" type="text" name="provinsi" class="form-control" >
+                                <input id="provinsi" type="text" name="provinsi" class="form-control" oninput="handleInput(event)">
                             </div>
                         </div>
                         <button type="submit" class="btn btn-success">Submit</button>
@@ -204,3 +208,154 @@
         </div>
     </div>
 </div>
+<!-- End Modal Add Family Card -->
+
+<div class="modal fade" id="form-card-edit" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Update Data Warga</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+            </div>
+            <div class="modal-body" style="padding-bottom: 5px">
+                <form action="">
+                    <input type="hidden" id="edit_id" />
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Nomor Kartu Keluarga</label>
+                            <div class="col-sm-10">
+                                <input id="edit_nomor" type="text" name="nomor" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Alamat</label>
+                            <div class="col-sm-10">
+                                <textarea id="edit_alamat" name="alamat" class="form-control" style="height: 80px" oninput="handleInput(event)"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">RT/RW</label>
+                            <div class="col-sm-10">
+                                <input id="edit_rt_rw" type="text" name="rt_rw" class="form-control" >
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Kode Pos</label>
+                            <div class="col-sm-10">
+                                <input id="edit_kode_pos" type="text" name="kode_pos" class="form-control" >
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Kecamatan</label>
+                            <div class="col-sm-10">
+                                <input id="edit_kecamatan" type="text" name="kecamatan" class="form-control" oninput="handleInput(event)">
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Desa / Kelurahan</label>
+                            <div class="col-sm-10">
+                                <input id="edit_desa_kelurahan" type="text" name="desa_kelurahan" class="form-control" oninput="handleInput(event)">
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Kabupaten / Kota</label>
+                            <div class="col-sm-10">
+                                <input id="edit_kabupaten_kota" type="text" name="kabupaten_kota" class="form-control" oninput="handleInput(event)">
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Provinsi</label>
+                            <div class="col-sm-10">
+                                <input id="edit_provinsi" type="text" name="provinsi" class="form-control" oninput="handleInput(event)">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success" id="btnUpdateCard">Update Data</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@push('scripts')
+        <script>
+            function handleInput(e) {
+                var ss = e.target.selectionStart;
+                var se = e.target.selectionEnd;
+                e.target.value = e.target.value.toUpperCase();
+                e.target.selectionStart = ss;
+                e.target.selectionEnd = se;
+            }
+
+            $(document).on('click', '#editCard', function (e) {
+                e.preventDefault();
+                const nomor = $(this).data('nomor');
+                $('#form-card-edit').modal('show');
+                console.log(nomor);
+                $.ajax({
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},            
+                    url: "/dashboard/data/" + nomor + "/edit",
+                    type: "GET",
+                    success: function (response) {
+                        console.log(response);
+                        $('#edit_nomor').val(response.nomor);
+                        $('#edit_rt_rw').val(response.rt_rw);
+                        $('#edit_kode_pos').val(response.kode_pos);
+                        $('#edit_kecamatan').val(response.kecamatan);
+                        $('#edit_desa_kelurahan').val(response.desa_kelurahan);
+                        $('#edit_kabupaten_kota').val(response.kabupaten_kota);
+                        $('#edit_provinsi').val(response.provinsi);
+
+                        if(response.rt_rw){
+                            $("#edit_rt").parent().parent().prop("hidden", false);
+                            $("#edit_rw").parent().parent().prop("hidden", false);
+
+                            let temp = response.rt_rw.split("/");
+                            $('#edit_rt').val(temp[0]);
+                            $('#edit_rw').val(temp[1]);
+                        }
+                    }
+                });
+                $('.close').find('input').val('');
+            });
+
+            $("#btnUpdateMember").click(() => {
+                const id = $("#edit_id").val();
+                const nomor = $("#edit_nomor").val();  
+                const alamat = $("#edit_alamat").val();
+                const rt_rw = $("#edit_rt_rw").val();  
+                const kode_pos = $("#edit_kode_pos").val();  
+                const kecamatan = $("#edit_kecamatan").val();
+                const desa_kelurahan = $("#edit_desa_kelurahan").val();
+                const kabupaten_kota = $("#edit_kabupaten_kota").val();
+                const provinsi = $("#edit_provinsi").val();
+                
+
+                $.ajax({
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},            
+                    url: "/dashboard/detail/" + id,
+                    type: "PUT",
+                    data: {
+                        nomor: nomor,
+                        alamat: alamat,
+                        rt_rw: rt_rw,
+                        kode_pos: kode_pos,
+                        kecamatan: kecamatan,
+                        desa_kelurahan: desa_kelurahan,
+                        kabupaten_kota: kabupaten_kota,
+                        provinsi: provinsi,
+                    },
+                    success: function (response) {
+                        $('#form-edit-keluarga').modal('hide');
+                        window.scrollTo(0, 0);
+                        $('#success_message').addClass('alert alert-success');
+                        $('#success_message').text("Data Family Member Berhasil Di Update!");
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1000);
+                    }
+                });
+            });
+        </script>
+
+@endpush

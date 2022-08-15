@@ -65,7 +65,10 @@
                                     >
                                         Detail
                                     </a>
-                                    <a href="data/{{ $data->id }}/edit" class="btn btn-primary">
+                                    <a href="#" class="btn btn-primary"
+                                        id='editMember' 
+                                        data-id="{{$data->id}}" data-toggle="modal"
+                                        data-target="#form-edit-keluarga">
                                         Edit
                                     </a>
                                     <a
@@ -89,7 +92,7 @@
     </div>
 @endsection
 
-
+<!-- Modal Add Member -->
 <div class="modal fade" id="form-add-keluarga" tabindex="-1" role="dialog" aria-hidden="true">
     <form action="{{route('detail.store')}}" method="POST">
         @csrf
@@ -106,7 +109,7 @@
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Nama</label>
                             <div class="col-sm-10">
-                                <input id="nama" type="text" name="nama" class="form-control" placeholder="">
+                                <input id="nama" type="text" name="nama" class="form-control" oninput="handleInput(event)">
                             </div>
                         </div>
                         <div class="form-group row mb-4">
@@ -119,7 +122,7 @@
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Tempat Lahir</label>
                             <div class="col-sm-10">
-                                <input id="tempat_lahir" type="text" name="tempat_lahir" class="form-control" >
+                                <input id="tempat_lahir" type="text" name="tempat_lahir" class="form-control" oninput="handleInput(event)">
                             </div>
                         </div>
                         <div class="form-group row mb-4">
@@ -155,13 +158,13 @@
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Pendidikan Terakhir</label>
                             <div class="col-sm-10">
-                                <input id="pendidikan" type="text" name="pendidikan" class="form-control" >
+                                <input id="pendidikan" type="text" name="pendidikan" class="form-control" oninput="handleInput(event)">
                             </div>
                         </div>
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Pekerjaan</label>
                             <div class="col-sm-10">
-                                <input id="pekerjaan" type="text" name="pekerjaan" class="form-control" >
+                                <input id="pekerjaan" type="text" name="pekerjaan" class="form-control" oninput="handleInput(event)">
                             </div>
                         </div>
                         <div class="form-group row mb-4">
@@ -195,7 +198,9 @@
         </div>
     </form>
 </div>
+<!-- End Modal Add Member -->
 
+<!-- Modal Detail Member -->
 <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -236,6 +241,114 @@
         </div>
     </div>
 </div>
+<!-- End Modal Detail Member -->
+
+<!-- Modal Edit Member -->
+<div class="modal fade" id="form-edit-keluarga" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Update Anggota Keluarga</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body" style="padding-bottom: 5px">
+                <form action="">
+                    <input type="hidden" id="edit_id" />
+                    <div class="form-group row mb-4">
+                        <label class="col-sm-2 col-form-label">Nama</label>
+                        <div class="col-sm-10">
+                            <input id="edit_nama" type="text" name="nama" class="form-control" placeholder="" oninput="handleInput(event)">
+                        </div>
+                    </div>
+                    <div class="form-group row mb-4">
+                        <label class="col-sm-2 col-form-label">NIK</label>
+                        <div class="col-sm-10">
+                            <input id="edit_nik" type="text" name="nik" class="form-control" >
+                            <input id="nik" type="text" name="nomor" class="d-none form-control" value="{{ $id }}" >
+                        </div>
+                    </div>
+                    <div class="form-group row mb-4">
+                        <label class="col-sm-2 col-form-label">Tempat Lahir</label>
+                        <div class="col-sm-10">
+                            <input id="edit_tempat_lahir" type="text" name="tempat_lahir" class="form-control" oninput="handleInput(event)">
+                        </div>
+                    </div>
+                    <div class="form-group row mb-4">
+                        <label class="col-sm-2 col-form-label">Tanggal Lahir</label>
+                        <div class="col-sm-10">
+                            <input id="edit_tanggal_lahir" type="date" name="tanggal_lahir" class="form-control" >
+                        </div>
+                    </div>
+                    <div class="form-group row mb-4">
+                        <label class="col-sm-2 col-form-label">Jenis Kelamin</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" name="jenis_kelamin" id="edit_jenis_kelamin">
+                                <option value=""></option>
+                                <option value="Laki - Laki">Laki-Laki</option>
+                                <option value="Perempuan">Perempuan</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row mb-4">
+                        <label class="col-sm-2 col-form-label">Agama</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" name="agama" id="edit_agama">
+                                <option value=""></option>
+                                <option value="ISLAM">ISLAM</option>
+                                <option value="PROTESTAN">PROTESTAN</option>
+                                <option value="KATOLIK">KATOLIK</option>
+                                <option value="HINDU">HINDU</option>
+                                <option value="BUDDHA">BUDDHA</option>
+                                <option value="KHONGHUCU">KHONGHUCU</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row mb-4">
+                        <label class="col-sm-2 col-form-label">Pendidikan Terakhir</label>
+                        <div class="col-sm-10">
+                            <input id="edit_pendidikan" type="text" name="pendidikan" class="form-control" oninput="handleInput(event)">
+                        </div>
+                    </div>
+                    <div class="form-group row mb-4">
+                        <label class="col-sm-2 col-form-label">Pekerjaan</label>
+                        <div class="col-sm-10">
+                            <input id="edit_pekerjaan" type="text" name="pekerjaan" class="form-control" oninput="handleInput(event)">
+                        </div>
+                    </div>
+                    <div class="form-group row mb-4">
+                        <label class="col-sm-2 col-form-label">Golongan Darah</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" name="golongan_darah" id="edit_golongan_darah">
+                                <option value=""></option>
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="AB">AB</option>
+                                <option value="O">O</option>
+                                <option value="TIDAK TAHU">TIDAK TAHU</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row mb-4">
+                        <label class="col-sm-2 col-form-label">Kepala Keluarga?</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" name="isFamilyHead" id="edit_isFamilyHead">
+                                <option value=""></option>
+                                <option value="1">Iya</option>
+                                <option value="0">Tidak</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" id="btnUpdateMember">Simpan</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Modal Edit Member -->
 
 @push('scripts')
     <script>
@@ -263,5 +376,89 @@
                 });
             });
         });
+
+        function handleInput(e) {
+            var ss = e.target.selectionStart;
+            var se = e.target.selectionEnd;
+            e.target.value = e.target.value.toUpperCase();
+            e.target.selectionStart = ss;
+            e.target.selectionEnd = se;
+        }
+
+        $(document).on('click', '#editMember', function (e) {
+            e.preventDefault();
+            const id = $(this).data('id');
+            $('#form-edit-keluarga').modal('show');
+            $.ajax({
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},            
+                url: "/dashboard/detail/" + id + "/edit",
+                type: "GET",
+                success: function (response) {
+                    console.log(response);
+                    $('#edit_id').val(id);
+                    $('#edit_nama').val(response.nama);
+                    $('#edit_nik').val(response.nik);
+                    $('#edit_tempat_lahir').val(response.tempat_lahir);
+                    $('#edit_jenis_kelamin').val(response.jenis_kelamin);
+                    $('#edit_agama').val(response.agama);
+                    $('#edit_pendidikan').val(response.pendidikan);
+                    $('#edit_pekerjaan').val(response.pekerjaan);
+                    $('#edit_golongan_darah').val(response.golongan_darah);
+                    $('#edit_isFamilyHead').val(response.isFamilyHead);
+
+                    if(response.rt_rw){
+                        $("#edit_rt").parent().parent().prop("hidden", false);
+                        $("#edit_rw").parent().parent().prop("hidden", false);
+
+                        let temp = response.rt_rw.split("/");
+                        $('#edit_rt').val(temp[0]);
+                        $('#edit_rw').val(temp[1]);
+                    }
+                }
+            });
+            $('.close').find('input').val('');
+        });
+
+        $("#btnUpdateMember").click(() => {
+            const id = $("#edit_id").val();
+            const name = $("#edit_nama").val();  
+            const nik = $("#edit_nik").val();
+            const tempat_lahir = $("#edit_tempat_lahir").val();  
+            const jenis_kelamin = $("#edit_jenis_kelamin").val();  
+            const agama = $("#edit_agama").val();
+            const pendidikan = $("#edit_pendidikan").val();
+            const pekerjaan = $("#edit_pekerjaan").val();
+            const golongan_darah = $("#edit_golongan_darah").val();
+            const isFamilyHead = $("#edit_isFamilyHead").val();
+            
+
+            $.ajax({
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},            
+                url: "/dashboard/detail/" + id,
+                type: "PUT",
+                data: {
+                    nama: nama,
+                    nik: nik,
+                    tempat_lahir: tempat_lahir,
+                    tanggal_lahir: tanggal_lahir,
+                    jenis_kelamin: jenis_kelamin,
+                    agama: agama,
+                    pendidikan: pendidikan,
+                    pekerjaan: pekerjaan,
+                    golongan_darah: golongan_darah,
+                    isFamilyHead: isFamilyHead,
+                },
+                success: function (response) {
+                    $('#form-edit-keluarga').modal('hide');
+                    window.scrollTo(0, 0);
+                    $('#success_message').addClass('alert alert-success');
+                    $('#success_message').text("Data Family Member Berhasil Di Update!");
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                }
+            });
+        });
+
     </script>
 @endpush
