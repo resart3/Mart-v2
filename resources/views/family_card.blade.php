@@ -74,7 +74,7 @@
                         </tr>
                         </thead>
                         <tbody style="font-size: 14px!important">
-                        @foreach ($family_card as $key => $data)
+                        @foreach ($family_card as $key => $data)                            
                             <tr>
                                 <td>{{ $key + 1 }}</td>
                                 <td>{{ $data->nomor }}</td>
@@ -85,11 +85,8 @@
                                     <a href="data/{{ $data->nomor }}" class="btn btn-outline-primary">
                                         Detail
                                     </a>
-                                    <a href="#" class="btn btn-primary"
-                                        id='editCard' 
-                                        data-id="{{$data->id}}" data-toggle="modal"
-                                        data-target="#form-card-edit"
-                                    >
+                                    <a href="#" class="btn btn-primary" id='editCard' data-id="{{$data->nomor}}" 
+                                        data-toggle="modal" data-target="#form-card-edit">
                                         Edit
                                     </a>
                                     <a
@@ -210,6 +207,7 @@
 </div>
 <!-- End Modal Add Family Card -->
 
+{{-- Modal Edit Family Card --}}
 <div class="modal fade" id="form-card-edit" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -270,12 +268,15 @@
                                 <input id="edit_provinsi" type="text" name="provinsi" class="form-control" oninput="handleInput(event)">
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-success" id="btnUpdateCard">Update Data</button>
                 </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-success" id="btnUpdateCard">Update Data</button>
             </div>
         </div>
     </div>
 </div>
+{{-- End Modal Edit Family Card --}}
 
 @push('scripts')
         <script>
@@ -289,16 +290,15 @@
 
             $(document).on('click', '#editCard', function (e) {
                 e.preventDefault();
-                const nomor = $(this).data('nomor');
+                const nomor = $("#editCard").data('id');
                 $('#form-card-edit').modal('show');
-                console.log(nomor);
                 $.ajax({
                     headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},            
                     url: "/dashboard/data/" + nomor + "/edit",
                     type: "GET",
                     success: function (response) {
-                        console.log(response);
                         $('#edit_nomor').val(response.nomor);
+                        $('#edit_alamat').val(response.alamat);
                         $('#edit_rt_rw').val(response.rt_rw);
                         $('#edit_kode_pos').val(response.kode_pos);
                         $('#edit_kecamatan').val(response.kecamatan);
@@ -317,6 +317,33 @@
                     }
                 });
                 $('.close').find('input').val('');
+            });
+
+            $("#btnUpdateCard").click(() => {
+                const nomor = $('#edit_nomor').val();
+                $.ajax({
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},            
+                    url: "/dashboard/data/" + nomor,
+                    type: "PUT",
+                    data: {
+                        alamat: $('#edit_alamat').val(),
+                        rt_rw: $('#edit_rt_rw').val(),
+                        kode_pos: $('#edit_kode_pos').val(),
+                        kecamatan: $('#edit_kecamatan').val(),
+                        desa_kelurahan: $('#edit_desa_kelurahan').val(),
+                        kabupaten_kota: $('#edit_kabupaten_kota').val(),
+                        provinsi: $('#edit_provinsi').val()
+                    },
+                    success: function (response) {
+                        $('#form-card-edit').modal('hide');
+                        window.scrollTo(0, 0);
+                        $('#success_message').addClass('alert alert-success');
+                        $('#success_message').text("Data Family Card Berhasil Di Update!");
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1000);
+                    }
+                });
             });
 
             $("#btnUpdateMember").click(() => {
@@ -346,13 +373,14 @@
                         provinsi: provinsi,
                     },
                     success: function (response) {
-                        $('#form-edit-keluarga').modal('hide');
-                        window.scrollTo(0, 0);
-                        $('#success_message').addClass('alert alert-success');
-                        $('#success_message').text("Data Family Member Berhasil Di Update!");
-                        setTimeout(() => {
-                            location.reload();
-                        }, 1000);
+                        console.log(response);
+                        // $('#form-edit-keluarga').modal('hide');
+                        // window.scrollTo(0, 0);
+                        // $('#success_message').addClass('alert alert-success');
+                        // $('#success_message').text("Data Family Member Berhasil Di Update!");
+                        // setTimeout(() => {
+                        //     location.reload();
+                        // }, 1000);
                     }
                 });
             });

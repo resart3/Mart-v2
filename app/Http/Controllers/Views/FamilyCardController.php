@@ -78,7 +78,7 @@ class FamilyCardController extends Controller
         //
         $data = FamilyCard::find($nomor);
 
-        if(isset($data) == TRUE){
+        if(isset($data)){
             return response()->json($data);
         }else{
             return response()->json("Data Family Card Tidak Ditemukan!");
@@ -90,22 +90,23 @@ class FamilyCardController extends Controller
      *
      * @param Request $request
      * @param  int  $id
-     * @return Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $nomor)
     {
-        $family_card = FamilyCard::find($id);
-        $family_card->nomor = $request->input('nomor'); 
-        $family_card->alamat = $request->input('alamat');
-        $family_card->rt_rw = $request->input('rt_rw');
-        $family_card->kode_pos = $request->input('kode_pos');
-        $family_card->desa_kelurahan = $request->input('desa_kelurahan');
-        $family_card->kecamatan = $request->input('kecamatan');
-        $family_card->kabupaten_kota = $request->input('kabupaten_kota');
-        $family_card->provinsi = $request->input('provinsi');
+        $updateData = $request->all();
+        $family_card = FamilyCard::FindOrFail($nomor);
+
+        $family_card->nomor = $nomor;
+        $family_card->alamat = $updateData['alamat'];
+        $family_card->rt_rw = $updateData['rt_rw'];
+        $family_card->kode_pos = $updateData['kode_pos'];
+        $family_card->desa_kelurahan = $updateData['desa_kelurahan'];
+        $family_card->kecamatan = $updateData['kecamatan'];
+        $family_card->kabupaten_kota = $updateData['kabupaten_kota'];
+        $family_card->provinsi = $updateData['provinsi'];
         $family_card->save();
-        return redirect()->route('data.index')
-        ->with('success','Family Card Update Successfully.');
+
+        return response()->json("Data Berhasil Teganti");
     }
 
     /**
