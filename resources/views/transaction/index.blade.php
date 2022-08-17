@@ -26,12 +26,12 @@
 
     <div class="section-body">
         <div class="card">
-            <div class="card-header d-flex justify-content-between">
+            {{-- <div class="card-header d-flex justify-content-between">
                 <a href="{{ url('dashboard/data') }}" class="btn btn-icon icon-left btn-primary">
                     <i class="fa fa-plus"></i>
                     &nbsp; Tambah Data Iuran
                 </a>
-            </div>
+            </div> --}}
             <div class="card-body">
                 <div class="table-responsive">
                     <table id="dataTable" class="table-bordered table-md table">
@@ -61,10 +61,8 @@
                                 <td>{{ $data->status}}</td>
                                 <td>
                                     <a href="" class="btn btn-primary"
-                                        id='editTrans' 
-                                        data-id="{{$data->id}}" data-toggle="modal"
-                                        data-target="#editModal">
-                                        Edit
+                                        id='editTrans' data-id="{{$data->id}}" data-toggle="modal"
+                                        data-target="#editTransModal"> Edit
                                     </a>
                                     <form id="delete-form-{{$data->id}}" + action="{{ route('transaction.destroy', $data->id)}}"
                                         method="POST">
@@ -83,7 +81,7 @@
 @endsection
 
 <!-- Edit Modal Transaction -->
-<div class="modal fade" id="editTrans" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="editTransModal" tabindex="-1" role="dialog" aria-hidden="true">
     <form action="">
     <div class="modal-dialog">
             <div class="modal-content">
@@ -99,25 +97,29 @@
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">No Kartu Keluarga</label>
                             <div class="col-sm-10">
-                                <input id="edit_nomor" type="text" name="family_card_id" class="form-control" required>
+                                <input id="edit_no_kk" type="text" name="family_card_id" 
+                                    class="form-control" readonly>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Nominal</label>
                             <div class="col-sm-10">
-                                <input id="edit_amount" type="text" name="jumlah" class="form-control" required>
+                                <input id="edit_amount" type="text" name="jumlah" class="form-control" 
+                                    readonly>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Tahun</label>
                             <div class="col-sm-10">
-                                <input id="edit_tahun" type="text" name="tahun" class="form-control" required>
+                                <input id="edit_tahun" type="text" name="tahun" class="form-control" 
+                                    readonly>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Bulan</label>
                             <div class="col-sm-10">
-                                <input id="edit_bulan" type="text" name="bulan" class="form-control" required>
+                                <input id="edit_bulan" type="text" name="bulan" class="form-control" 
+                                    readonly>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
@@ -125,15 +127,17 @@
                             <div class="col-sm-10">
                                 <select class="form-control" id="edit_status" name="status" required>
                                     <option value="belum">Belum Membayar</option>
-                                    <option value="tunggu">Menunggu Konfirmasi</option>
-                                    <option value="lunas">Lunas</option>
+                                    <option value="Menunggu Konfirmasi">Menunggu Konfirmasi</option>
+                                    <option value="Lunas">Lunas</option>
+                                    <option value="Tidak Valid">Tidak Valid</option>
                                 </select>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">receipt</label>
                             <div class="col-sm-10">
-                                <input type="text" id="edit_status" name="receipt" class="form-control">
+                                {{-- <input type="text" id="edit_status" name="receipt" class="form-control"> --}}
+                                <img src="" alt="receipt_image" id="edit_receipt" name="receipt">
                             </div>
                         </div>
                     </form>
@@ -152,40 +156,44 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script>
     $(document).on('click', '#editTrans', function (e) {
-            e.preventDefault();
-            const id = $(this).data('id');
-            console.log(id);
-            $('#editTrans').modal('show');
-            $.ajax({
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},            
-                url: "/dashboard/transaction/" + id + "/edit",
-                type: "GET",
-                success: function (response) {                
-                    $('#edit_id').val(id);
-                    $('#edit_nomor').val(response.family_card_id);
-                    $('#edit_amount').val(response.email);
-                    $('#edit_nik').val(response.jumlah);
-                    $('#edit_tahun').val(response.tahun);
-                    $('#edit_bulan').val(response.bulan);
-                    $('#edit_status').val(response.status);
-                    $('#edit_receipt').val(response.receipt);
-                    
-                    // if (response.status == 404) {
-                    //     console.log(response);
-                    //     // $('#success_message').addClass('alert alert-success');
-                    //     // $('#success_message').text(response.message);
-                    //     // $('#tarifModalUpdate').modal('hide');
-                    // } else {
-                    //     console.log("TIDAK MASUK");
-                    //     // console.log(response.land.category_name);
-                    //     // $('#id').val(id);
-                    //     // $('#category_name').val(response.tarif.category_name);
-                    //     // $('#amount').val(response.tarif.amount);
-                    // }
+        const id = $(this).data('id');
+        // $('#editTrans').modal('show');
+        $.ajax({
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},            
+            url: "/dashboard/transaction/" + id + "/edit",
+            type: "GET",
+            success: function (response) {
+                $('#edit_id').val(id);
+                $('#edit_no_kk').val(response.family_card_id);
+
+                const rupiah = (number)=>{
+                    return new Intl.NumberFormat("id-ID", {
+                        style: "currency",
+                        currency: "IDR"
+                    }).format(number);
                 }
-            });
-            $('.close').find('input').val('');
+                $('#edit_amount').val(rupiah(response.jumlah));
+                $('#edit_tahun').val(response.tahun);
+                $('#edit_bulan').val(response.bulan);
+                $('#edit_status').val(response.status);
+                $('#edit_receipt').attr("src",`asset()` response.receipt);
+                
+                // if (response.status == 404) {
+                //     console.log(response);
+                //     // $('#success_message').addClass('alert alert-success');
+                //     // $('#success_message').text(response.message);
+                //     // $('#tarifModalUpdate').modal('hide');
+                // } else {
+                //     console.log("TIDAK MASUK");
+                //     // console.log(response.land.category_name);
+                //     // $('#id').val(id);
+                //     // $('#category_name').val(response.tarif.category_name);
+                //     // $('#amount').val(response.tarif.amount);
+                // }
+            }
         });
+        $('.close').find('input').val('');
+    });
 
     $("#btnUpdateUser").click(() => {
         const id = $("#edit_id").val();

@@ -45,6 +45,7 @@ class TransactionController extends Controller
             $arrDataBulan = [];
             $arrDataBulanKonfirm = [];
             $arrDataTransaksi = [];
+            $arrDataTransaksiSorted = [];
 
             foreach($this->response as $data){
                 if($data->status == "Menunggu Konfirmasi"){
@@ -106,13 +107,24 @@ class TransactionController extends Controller
                 $arrDataTransaksi = [];
             }
 
+            $arrBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", 
+                "September", "Oktober", "November", "Desember"];
+
+            $count = 0;
+            foreach($arrBulan as $bulan){
+                foreach($arrDataTransaksi as $data){
+                    if($data["bulan"] == $bulan){
+                        array_push($arrDataTransaksiSorted, $data);
+                    }
+                }
+            }
+
         } catch (Exception $e){
             $this->code = 500;
             $this->response = $e->getMessage();
         }
-
-        $tempDataTransaksi = $arrDataTransaksi;
-        return Api::apiRespond($this->code, $arrDataTransaksi);
+        
+        return Api::apiRespond($this->code, $arrDataTransaksiSorted);
     }
 
     public function show($id)
