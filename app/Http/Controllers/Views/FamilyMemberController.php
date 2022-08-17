@@ -64,20 +64,21 @@ class FamilyMemberController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $family_member = FamilyMember::find($id);
-        $family_member->nama = $request->input('nama');
-        $family_member->nik = $request->input('nik');
-        $family_member->tempat_lahir = $request->input('tempat_lahir');
-        $family_member->tanggal_lahir = $request->input('tanggal_lahir');
-        $family_member->jenis_kelamin = $request->input('jenis_kelamin');
-        $family_member->agama = $request->input('agama');
-        $family_member->pendidikan = $request->input('pendidikan');
-        $family_member->pekerjaan = $request->input('pekerjaan');
-        $family_member->golongan_darah = $request->input('golongan_darah');
-        $family_member->isFamilyHead = $request->input('isFamilyHead');
+        $updateData = $request->all();
+        $family_member = FamilyMember::FindOrFail($id);
+
+        $family_member->nama = $updateData['nama'];
+        $family_member->nik = $updateData['nik'];
+        $family_member->tempat_lahir = $updateData['tempat_lahir'];
+        $family_member->jenis_kelamin = $updateData['jenis_kelamin'];
+        $family_member->agama = $updateData['agama'];
+        $family_member->pendidikan = $updateData['pendidikan'];
+        $family_member->pekerjaan = $updateData['pekerjaan'];
+        $family_member->golongan_darah = $updateData['golongan_darah'];
+        $family_member->isFamilyHead = $updateData['isFamilyHead'];
+
         $family_member->save();
-        return redirect()->route('data.show',['data'=>$request->input('nomor')])
-        ->with('success','Family created successfully.');
+        return response()->json("Data Berhasil Diubah");
     }
 
     /**
