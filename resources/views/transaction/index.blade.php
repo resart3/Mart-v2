@@ -25,6 +25,7 @@
     @endif
 
     <div class="section-body">
+        <div id="success_message"></div>
         <div class="card">
             {{-- <div class="card-header d-flex justify-content-between">
                 <a href="{{ url('dashboard/data') }}" class="btn btn-icon icon-left btn-primary">
@@ -82,7 +83,6 @@
 
 <!-- Edit Modal Transaction -->
 <div class="modal fade" id="editTransModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <form action="">
     <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -136,7 +136,6 @@
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">receipt</label>
                             <div class="col-sm-10">
-                                {{-- <input type="text" id="edit_status" name="receipt" class="form-control"> --}}
                                 <img src="" alt="receipt_image" id="edit_receipt" name="receipt">
                             </div>
                         </div>
@@ -147,7 +146,6 @@
                 </div>
             </div>
         </div>
-    </form>
 </div>
 <!-- End Edit Modal Transaction -->
 
@@ -176,7 +174,7 @@
                 $('#edit_tahun').val(response.tahun);
                 $('#edit_bulan').val(response.bulan);
                 $('#edit_status').val(response.status);
-                $('#edit_receipt').attr("src",`asset()` response.receipt);
+                // $('#edit_receipt').attr("src",`asset()` response.receipt);
                 
                 // if (response.status == 404) {
                 //     console.log(response);
@@ -195,34 +193,23 @@
         $('.close').find('input').val('');
     });
 
-    $("#btnUpdateUser").click(() => {
+    $("#btnUpdateTrans").click(() => {
         const id = $("#edit_id").val();
-        const family_card_id = $("#edit_nomor").val();
-        const jumlah = $("#edit_amount").val();  
-        const tahun = $("#edit_tahun").val();  
-        const bulan = $("#edit_bulan").val();  
-        const status = $("#edit_status").val(); 
-        const receipt = $("#edit_receipt").val(); 
-
         $.ajax({
             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},            
             url: "/dashboard/transaction/" + id,
             type: "PUT",
             data: {
-                family_card_id: family_card_id,
-                jumlah: jumlah,
-                tahun: tahun,
-                bulan: bulan,
-                status: status,
-                receipt: receipt
+                status: $("#edit_status").val(),
             },
             success: function (response) {
-                $('#editTrans').modal('hide');
+                // console.log(response);
+                $('#editTransModal').modal('hide');
                 $('#success_message').addClass('alert alert-success');
                 $('#success_message').text("Data Transaction Berhasil Di Update!");
                 setTimeout(() => {
                     location.reload();
-                }, 5000);
+                }, 1000);
             }
         });
     });

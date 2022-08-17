@@ -92,7 +92,13 @@ class TransactionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $updateData = $request->all();
+        $transaction = Transaction::FindOrFail($id);
+
+        $transaction->status = $updateData['status'];
+        $transaction->save();
+
+        // return response()->json($transaction);
     }
 
     /**
