@@ -25,6 +25,7 @@
     @endif
 
     <div class="section-body">
+        <div id="success_message"></div>
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <a data-target="#form-add-keluarga" href="#" class="btn btn-icon icon-left btn-primary"
@@ -384,7 +385,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary" id="btnUpdateMember">Simpan</button>
+                <button type="submit" class="btn btn-primary" id="btnUpdateMember">Update Data</button>
             </div>
         </div>
     </div>
@@ -462,6 +463,7 @@
             e.preventDefault();
             const id = $(this).data('id');
             $('#form-edit-keluarga').modal('show');
+            console.log(id);
             $.ajax({
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},            
                 url: "/dashboard/detail/" + id + "/edit",
@@ -515,7 +517,7 @@
                     $('#success_message').text("Data Family Member Berhasil Di Update!");
                     setTimeout(() => {
                         location.reload();
-                    }, 1000);
+                    }, 5000);
                 }
             });
         });
