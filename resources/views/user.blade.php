@@ -113,7 +113,7 @@
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">NIK</label>
                             <div class="col-sm-10">
-                                <input id="nik" type="text" name="nik" class="form-control" value="{{old('nik')}}">
+                                <input id="nik" type="text" name="nik" class="form-control" value="{{old('nik')}}" required>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
@@ -139,7 +139,7 @@
                                 <input id="rw" type="text" name="rw" class="form-control">
                             </div>
                         </div>
-                        <div class="form-group row mb-4">
+                        <div class="form-group row mb-2">
                             <label class="col-sm-2 col-form-label">Password</label>
                             <div class="col-sm-10">
                                 <div class="input-group">
@@ -148,6 +148,7 @@
                                         <div class="input-group-text"><i class="fa fa-eye"></i></div>
                                     </div>
                                 </div>
+                                <p class="text-warning ml-1 mb-0">*)Password minimal 8 karakter</p>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
@@ -241,10 +242,10 @@
                                 </div>
                             </div>
                         </div>
+                        <button type="" class="btn btn-primary" id="btnUpdateUser">Update Data</button>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" id="btnUpdateUser">Update Data</button>
                 </div>
             </div>
         </div>
@@ -297,7 +298,6 @@
             url: "/dashboard/user/" + id + "/edit",
             type: "GET",
             success: function (response) {
-                console.log(response);
                 $('#edit_id').val(id);
                 $('#edit_name').val(response.name);
                 $('#edit_email').val(response.email);
@@ -318,7 +318,8 @@
         $('.close').find('input').val('');
     });
 
-    $("#btnUpdateUser").click(() => {
+    $("#btnUpdateUser").click((e) => {
+        event.preventDefault();
         const id = $("#edit_id").val();
         const name = $("#edit_name").val();
         const email = $("#edit_email").val();  
@@ -342,13 +343,27 @@
                 password: password
             },
             success: function (response) {
-                $('#editModal').modal('hide');
-                window.scrollTo(0, 0);
-                $('#success_message').addClass('alert alert-success');
-                $('#success_message').text("Data User Berhasil Di Update!");
-                setTimeout(() => {
-                    location.reload();
-                }, 1000);
+                let text = "";
+                if(response == "Data User Berhasil Di Update!"){
+                    text = response;
+                    $('#editModal').modal('hide');
+                    window.scrollTo(0, 0);
+                    $('#success_message').addClass('alert alert-success');
+                    $('#success_message').text(text);
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                }else{
+                    text = response;
+                    $('#editModal').modal('hide');
+                    window.scrollTo(0, 0);
+                    $('#success_message').addClass('alert alert-danger');
+                    $('#success_message').text(`Data gagal diubah, ${text}`);
+                    setTimeout(() => {
+                        location.reload();
+                    }, 3000);
+                }
+                
             }
         });
     });

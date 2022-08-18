@@ -35,16 +35,16 @@ class LandController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param LandRequest $request
+     * @param Request $request
      * @return Response
      */
-    public function store(LandRequest $request)
+    public function store(Request $request)
     {
         $data = [
-            'family_card_id'=>$request->input('family_card_id'),
-            'category_id'=>$request->input('category_id'),
-            'area'=>$request->input('area'),
-            'house_number'=>$request->input('house_number')
+            'family_card_id'=>$request->input('nomor_kk'),
+            'category_id'=>$request->input('kategoriWarga'),
+            'area'=>$request->input('luasTanah'),
+            'house_number'=>$request->input('nomorRumah')
         ];
 
         Land::create($data);

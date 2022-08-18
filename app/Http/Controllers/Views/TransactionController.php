@@ -16,6 +16,7 @@ class TransactionController extends Controller
      */
     public function index()
     {
+        // dd(asset('storage'));
         $title = 'Halaman Transaksi Iuran';
         if (session()->get('user')->role == 'admin_rt') {
             $familyCard = FamilyCard::where('rt_rw',session()->get('user')->rt_rw)->get();

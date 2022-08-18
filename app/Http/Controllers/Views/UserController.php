@@ -38,7 +38,6 @@ class UserController extends Controller
             }
             request()->session()->put('user', Auth::user());
             return redirect('dashboard');
-            // dd('diluar if');
         }
 
         return redirect()->back()->with('error', 'Email Atau Password Anda Salah');
@@ -70,10 +69,17 @@ class UserController extends Controller
         ]); // create the validations
         if ($validator->fails())   //check all validations are fine, if not then redirect and show error messages
         {
-            // dd(response()->json($validator->errors(),422)['data']);
-            return response()->json($validator->errors(),422);
-            // validation failed return back to form
+            $error = $validator->errors()->messages();
 
+            if(isset($error["email"])){
+                $message = "Email sudah terdaftar!";
+            }elseif(isset($error["password"])){
+                $message = "Password minimal 8 karakter!";
+            }elseif(isset($error["confirm_password"])){
+                $message = "Konfirmasi password tidak sama!";
+            }
+
+            return redirect()->route('user.index')->with('failed',$message);
         } else {
             //validations are passed, save new user in database
             $User = new User;
@@ -120,23 +126,63 @@ class UserController extends Controller
         $updateData = $request->all();
         $user = User::FindOrFail($id);
 
-        $user->name = $updateData['name'];
-        $user->email = $updateData['email'];
-        $user->nik = $updateData['nik'];
-        $user->role = $updateData['role'];
-
-        if(isset($updateData['password'])){
-            $user->password = bcrypt($updateData["password"]);
+        if($user->email != $updateData['email']){
+            if(isset($updateData['password'])){
+                $validator = Validator::make($updateData, [
+                    'email' => 'required|email|unique:users,email',   // required and email format validation
+                    'password' => 'required|min:8', // required and number field validation
+                ]);
+            }else{
+                $validator = Validator::make($updateData, [
+                    'email' => 'required|email|unique:users,email',   // required and email format validation
+                ]);
+            }
+        }elseif($user->email == $updateData['email']){
+            if(isset($updateData['password'])){
+                $validator = Validator::make($updateData, [
+                    'password' => 'required|min:8', // required and number field validation
+                ]);
+            }else{
+                $validator = Validator::make($updateData, [
+                    'email' => 'required|email',   // required and email format validation
+                ]);
+            }
         }
 
-        if(isset($updateData['rt']) AND isset($updateData['rw'])){
-            $rt = $updateData['rt'];
-            $rw = $updateData['rw'];
-            $user->rt_rw = $rt.'/'.$rw;
-        }
-        $user->save();
+        if ($validator->fails())   //check all validations are fine, if not then redirect and show error messages
+        {
+            $error = $validator->errors()->messages();
 
-        return response()->json("Berhasil Dirubah!");
+            if(isset($error["email"])){
+                $message = "Email sudah terdaftar!";
+            }elseif(isset($error["password"])){
+                $message = "Password minimal 8 karakter!";
+            }elseif(isset($error["confirm_password"])){
+                $message = "Konfirmasi password tidak sama!";
+            }
+
+            return response()->json($message);
+        }else{
+            $user->name = $updateData['name'];
+            $user->email = $updateData['email'];
+            $user->nik = $updateData['nik'];
+            $user->role = $updateData['role'];
+    
+            if(isset($updateData['password'])){
+                $user->password = bcrypt($updateData["password"]);
+            }
+    
+            if(isset($updateData['rt']) AND isset($updateData['rw'])){
+                $rt = $updateData['rt'];
+                $rw = $updateData['rw'];
+                $user->rt_rw = $rt.'/'.$rw;
+            }
+            $user->save();
+        }
+
+
+        return response()->json("Data User Berhasil Di Update!");
+        // return response()->json($updateData['email']);
     }
 
     /**

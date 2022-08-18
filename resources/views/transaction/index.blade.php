@@ -27,12 +27,6 @@
     <div class="section-body">
         <div id="success_message"></div>
         <div class="card">
-            {{-- <div class="card-header d-flex justify-content-between">
-                <a href="{{ url('dashboard/data') }}" class="btn btn-icon icon-left btn-primary">
-                    <i class="fa fa-plus"></i>
-                    &nbsp; Tambah Data Iuran
-                </a>
-            </div> --}}
             <div class="card-body">
                 <div class="table-responsive">
                     <table id="dataTable" class="table-bordered table-md table">
@@ -68,7 +62,7 @@
                                     <form id="delete-form-{{$data->id}}" + action="{{ route('transaction.destroy', $data->id)}}"
                                         method="POST">
                                         @csrf @method('DELETE')
-                                        <button class="btn btn-danger delete">Hapus</button>
+                                        <button class="btn btn-danger delete" onclick="return confirm('Apakah anda yakin ingin hapus?');">Hapus</button>
                                     </form>
                                 </td>
                             </tr>
@@ -126,7 +120,7 @@
                             <label class="col-sm-2 col-form-label">Status</label>
                             <div class="col-sm-10">
                                 <select class="form-control" id="edit_status" name="status" required>
-                                    <option value="belum">Belum Membayar</option>
+                                    <option value="Belum Membayar">Belum Membayar</option>
                                     <option value="Menunggu Konfirmasi">Menunggu Konfirmasi</option>
                                     <option value="Lunas">Lunas</option>
                                     <option value="Tidak Valid">Tidak Valid</option>
@@ -135,8 +129,8 @@
                         </div>
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">receipt</label>
-                            <div class="col-sm-10">
-                                <img src="" alt="receipt_image" id="edit_receipt" name="receipt">
+                            <div class="col-sm-10" id="receipt">
+                                <img src="" class="h-100 w-50" alt="receipt_image" id="edit_receipt" name="receipt">
                             </div>
                         </div>
                     </form>
@@ -155,7 +149,6 @@
 <script>
     $(document).on('click', '#editTrans', function (e) {
         const id = $(this).data('id');
-        // $('#editTrans').modal('show');
         $.ajax({
             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},            
             url: "/dashboard/transaction/" + id + "/edit",
@@ -174,20 +167,7 @@
                 $('#edit_tahun').val(response.tahun);
                 $('#edit_bulan').val(response.bulan);
                 $('#edit_status').val(response.status);
-                // $('#edit_receipt').attr("src",`asset()` response.receipt);
-                
-                // if (response.status == 404) {
-                //     console.log(response);
-                //     // $('#success_message').addClass('alert alert-success');
-                //     // $('#success_message').text(response.message);
-                //     // $('#tarifModalUpdate').modal('hide');
-                // } else {
-                //     console.log("TIDAK MASUK");
-                //     // console.log(response.land.category_name);
-                //     // $('#id').val(id);
-                //     // $('#category_name').val(response.tarif.category_name);
-                //     // $('#amount').val(response.tarif.amount);
-                // }
+                $("#edit_receipt").attr("src", `{{ URL::to('/') }}/assets/images/transaction/${response.family_card_id}/${response.receipt}`);
             }
         });
         $('.close').find('input').val('');
@@ -203,7 +183,6 @@
                 status: $("#edit_status").val(),
             },
             success: function (response) {
-                // console.log(response);
                 $('#editTransModal').modal('hide');
                 $('#success_message').addClass('alert alert-success');
                 $('#success_message').text("Data Transaction Berhasil Di Update!");
