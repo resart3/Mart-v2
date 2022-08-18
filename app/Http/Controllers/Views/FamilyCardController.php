@@ -17,8 +17,11 @@ class FamilyCardController extends Controller
         if (session()->get('user')->role=='admin-rt') {
             $family_card = FamilyCard::with('family_head')->where('rt_rw',session()->get('user')->rt_rw)->get();
         }
+        else if (session()->get('user')->role=='admin-rw') {
+            $family_card = FamilyCard::where('rt_rw','like','%'.explode("/",session()->get('user')->rt_rw)[1])->get();
+        }
         else{
-            $family_card = FamilyCard::with('family_head')->where('rt_rw','like','%'.explode("/",session()->get('user')->rt_rw)[1])->get();
+            $family_card = FamilyCard::get();
         }
 
         return view('family_card', compact('family_card', 'title'));
