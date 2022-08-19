@@ -165,13 +165,13 @@
                             <div class="form-group row mb-4">
                                 <label class="col-sm-2 col-form-label">Kategori</label>
                                 <div class="col-sm-10">
-                                    <input id="category_name" type="text" name="category_name" class="form-control">
+                                    <input id="category_name" type="text" name="category_name" class="form-control" required>
                                 </div>
                             </div>
                             <div class="form-group row mb-4">
                                 <label class="col-sm-2 col-form-label">Nominal Tarif</label>
                                 <div class="col-sm-10">
-                                    <input id="amount" type="text" name="amount" class="form-control" >
+                                    <input id="amount" type="text" name="amount" class="form-control" required>
                                 </div>
                             </div>
                         </form>
@@ -215,7 +215,7 @@
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Kategori</label>
                             <div class="col-sm-10">                                    
-                                <select class="form-control" id="kategoriWarga" name="kategoriWarga">
+                                <select class="form-control" id="kategoriWarga" name="kategoriWarga" required>
                                     <option></option>
                                     @foreach ($tarif as $key => $data)
                                         <option value="{{$data->id}}">{{$data->category_name}}</option>     
@@ -302,7 +302,7 @@
                             <label class="col-sm-2 col-form-label">Nomor KK</label>
                             <div class="col-sm-10">
                                 <input id="nomor_kk_update" type="text" name="family_card_id" 
-                                    class="form-control" required>
+                                    class="form-control" required disabled>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
@@ -485,9 +485,7 @@
     });
 
     $("#btnUpdateTarifWarga").click(() => {
-        const id = $("#landId").val();        
-        // const kategori = $("#categoryName").val();
-        // const amount = $("#categoryAmount").val();        
+        const id = $("#landId").val();
 
         $.ajax({
             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},            
@@ -505,7 +503,7 @@
                 $('#success_message').text("Data K3 Warga Berhasil Di Update!");
                 setTimeout(() => {
                     location.reload();
-                }, 5000);
+                }, 2500);
             }
         });
     });

@@ -23,11 +23,11 @@ class TransactionController extends Controller
     public function index()
     {
         try {
-            $response = Transaction::where('family_card_id', (new Transaction)->get_family_card());        
+            $response = Transaction::where('family_card_id', (new Transaction)->get_family_card());
             if(request()->has('tahun')){
                 $response = $response->where('tahun', request()->query('tahun'));
             }
-            $this->response = Api::pagination($response);            
+            $this->response = Api::pagination($response);
 
             $dataLand = DB::table('lands')
             ->join('categories', 'categories.id', '=', 'lands.category_id')
@@ -55,66 +55,89 @@ class TransactionController extends Controller
                 }
                 $tahun = $data->tahun;
             }
-            
-            foreach($arrDataBulan as $dataBulan){                
-                foreach($arrBulan as $bulan){                    
-                    if($dataBulan == $bulan){
-                        if (($key = array_search($bulan, $arrBulan)) !== false) {
-                            unset($arrBulan[$key]);
-                        }
-                    }                    
-                }
-            }
 
-            foreach($arrDataBulanKonfirm as $dataBulan){                
-                foreach($arrBulan as $bulan){                    
-                    if($dataBulan == $bulan){
-                        if (($key = array_search($bulan, $arrBulan)) !== false) {
-                            unset($arrBulan[$key]);
-                        }
-                    }                    
+            if(count($arrDataBulan) == 0){
+                $month = date('m');
+                $monthSplitted = str_split($month);
+                
+                if($monthSplitted[0] == 0){
+                    $index = $monthSplitted[1] - 1;
+                    $monthName = $arrBulan[$index];
+                }else{
+                    $index = $month - 1;
+                    $monthName = $arrBulan[$index];
                 }
-            }
 
-            if(isset($tahun)){                
-                foreach($arrBulan as $data){
+                for($i = $index; $i < 12; $i++){
                     $tempData["family_card_id"] = (new Transaction)->get_family_card();
                     $tempData["jumlah"] = $jumlahIuran;
-                    $tempData["tahun"] = $tahun;
-                    $tempData["bulan"] = $data;
+                    $tempData["tahun"] = date('Y');
+                    $tempData["bulan"] = $arrBulan[$i];
                     $tempData["status"] = "Belum Membayar";
-                    array_push($arrDataTransaksi, $tempData);
-                }
-    
-                foreach($arrDataBulan as $data){
-                    $tempData["family_card_id"] = (new Transaction)->get_family_card();
-                    $tempData["jumlah"] = $jumlahIuran;
-                    $tempData["tahun"] = $tahun;
-                    $tempData["bulan"] = $data;
-                    $tempData["status"] = "Lunas";
-                    array_push($arrDataTransaksi, $tempData);
-                }
-
-                foreach($arrDataBulanKonfirm as $data){
-                    $tempData["family_card_id"] = (new Transaction)->get_family_card();
-                    $tempData["jumlah"] = $jumlahIuran;
-                    $tempData["tahun"] = $tahun;
-                    $tempData["bulan"] = $data;
-                    $tempData["status"] = "Menunggu Konfirmasi";
-                    array_push($arrDataTransaksi, $tempData);
+                    array_push($arrDataTransaksiSorted, $tempData);
                 }
             }else{
-                $arrDataTransaksi = [];
-            }
-
-            $arrBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", 
-                "September", "Oktober", "November", "Desember"];
-
-            $count = 0;
-            foreach($arrBulan as $bulan){
-                foreach($arrDataTransaksi as $data){
-                    if($data["bulan"] == $bulan){
-                        array_push($arrDataTransaksiSorted, $data);
+                // pop bulan dari data 12 bulan default
+                foreach($arrDataBulan as $dataBulan){                
+                    foreach($arrBulan as $bulan){                    
+                        if($dataBulan == $bulan){
+                            if (($key = array_search($bulan, $arrBulan)) !== false) {
+                                unset($arrBulan[$key]);
+                            }
+                        }                    
+                    }
+                }
+    
+                foreach($arrDataBulanKonfirm as $dataBulan){                
+                    foreach($arrBulan as $bulan){                    
+                        if($dataBulan == $bulan){
+                            if (($key = array_search($bulan, $arrBulan)) !== false) {
+                                unset($arrBulan[$key]);
+                            }
+                        }                    
+                    }
+                }
+    
+                if(isset($tahun)){                
+                    foreach($arrBulan as $data){
+                        $tempData["family_card_id"] = (new Transaction)->get_family_card();
+                        $tempData["jumlah"] = $jumlahIuran;
+                        $tempData["tahun"] = $tahun;
+                        $tempData["bulan"] = $data;
+                        $tempData["status"] = "Belum Membayar";
+                        array_push($arrDataTransaksi, $tempData);
+                    }
+        
+                    foreach($arrDataBulan as $data){
+                        $tempData["family_card_id"] = (new Transaction)->get_family_card();
+                        $tempData["jumlah"] = $jumlahIuran;
+                        $tempData["tahun"] = $tahun;
+                        $tempData["bulan"] = $data;
+                        $tempData["status"] = "Lunas";
+                        array_push($arrDataTransaksi, $tempData);
+                    }
+    
+                    foreach($arrDataBulanKonfirm as $data){
+                        $tempData["family_card_id"] = (new Transaction)->get_family_card();
+                        $tempData["jumlah"] = $jumlahIuran;
+                        $tempData["tahun"] = $tahun;
+                        $tempData["bulan"] = $data;
+                        $tempData["status"] = "Menunggu Konfirmasi";
+                        array_push($arrDataTransaksi, $tempData);
+                    }
+                }else{
+                    $arrDataTransaksi = [];
+                }
+    
+                $arrBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", 
+                    "September", "Oktober", "November", "Desember"];
+    
+                $count = 0;
+                foreach($arrBulan as $bulan){
+                    foreach($arrDataTransaksi as $data){
+                        if($data["bulan"] == $bulan){
+                            array_push($arrDataTransaksiSorted, $data);
+                        }
                     }
                 }
             }
