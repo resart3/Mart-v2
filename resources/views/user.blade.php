@@ -113,7 +113,9 @@
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">NIK</label>
                             <div class="col-sm-10">
-                                <input id="nik" type="text" name="nik" class="form-control" value="{{old('nik')}}" required>
+                                <input id="nik" type="text" name="nik" class="form-control" 
+                                    value="{{old('nik')}}" onkeypress="disableSpacingAndLetter(event)" 
+                                    required>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
@@ -130,13 +132,15 @@
                         <div class="form-group row mb-4" hidden>
                             <label class="col-sm-2 col-form-label">RT</label>
                             <div class="col-sm-10">
-                                <input id="rt" type="text" name="rt" class="form-control">
+                                <input id="rt" type="text" name="rt" class="form-control" 
+                                    onkeypress="disableSpacingAndLetter(event)">
                             </div>
                         </div>
                         <div class="form-group row mb-4" hidden>
                             <label class="col-sm-2 col-form-label">RW</label>
                             <div class="col-sm-10">
-                                <input id="rw" type="text" name="rw" class="form-control">
+                                <input id="rw" type="text" name="rw" class="form-control"
+                                    onkeypress="disableSpacingAndLetter(event)">
                             </div>
                         </div>
                         <div class="form-group row mb-2">
@@ -202,7 +206,8 @@
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">NIK</label>
                             <div class="col-sm-10">
-                                <input id="edit_nik" type="text" name="nik" class="form-control" required>
+                                <input id="edit_nik" type="text" name="nik" class="form-control" 
+                                    onkeypress="disableSpacingAndLetter(event)" required>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
@@ -220,13 +225,15 @@
                         <div class="form-group row mb-4" hidden>
                             <label class="col-sm-2 col-form-label">RT</label>
                             <div class="col-sm-10">
-                                <input id="edit_rt" type="text" name="rt" class="form-control">
+                                <input id="edit_rt" type="text" name="rt" class="form-control" 
+                                    onkeypress="disableSpacingAndLetter(event)" >
                             </div>
                         </div>
                         <div class="form-group row mb-4" hidden>
                             <label class="col-sm-2 col-form-label">RW</label>
                             <div class="col-sm-10">
-                                <input id="edit_rw" type="text" name="rw" class="form-control">
+                                <input id="edit_rw" type="text" name="rw" class="form-control" 
+                                    onkeypress="disableSpacingAndLetter(event)">
                             </div>
                         </div>
                         <div class="form-group row mb-4">
@@ -254,6 +261,16 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script>
+    function disableSpacingAndLetter(e) {
+        if(e.which === 32){
+            e.preventDefault();
+        }else{
+            let charCode = (e.which) ? e.which : event.keyCode;
+            if (String.fromCharCode(charCode).match(/[^0-9]/g))
+                e.preventDefault();
+        }
+    }
+    
     $("#role").change(() => {
         if($("#role").val() != "user"){
             $("#name").prop("required", true);
