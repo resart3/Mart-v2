@@ -39,9 +39,7 @@ class FamilyMemberController extends Controller
         ];
         FamilyMember::create($data);
         return redirect()->route('data.show',['data'=>$request->input('nomor')])
-        ->with('success','Family Member created successfully.');
-        // return redirect()->route('detail.index')
-        // ->with('success','Family created successfully.');
+        ->with('success','Data Family Member berhasil dibuat!.');
     }
 
     /**
@@ -105,11 +103,12 @@ class FamilyMemberController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
+        // $updateData = $request->all();
         //
         $user = FamilyMember::where('id', $id)->delete();
         // redirect ke parentView
-        return redirect()->route('data.show')->with('success','Data Anggota berhasil dihapus!');
+        return redirect()->route('data.index')->with('success','Data Anggota berhasil dihapus!');
     }
 }

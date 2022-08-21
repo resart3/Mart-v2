@@ -35,19 +35,28 @@ class FamilyCardController extends Controller
      */
     public function store(Request $request)
     {
+        $rt = $request->input('rt');
+        $rw = $request->input('rw');
+        $rt_rw = $rt.'/'.$rw;
+
         $data = [
             'nomor'=>$request->input('nomor'),
             'alamat'=>$request->input('alamat'),
-            'rt_rw'=>$request->input('rt_rw'),
+            'rt_rw'=>$rt_rw,
             'kode_pos'=>$request->input('kode_pos'),
             'kecamatan'=>$request->input('kecamatan'),
             'desa_kelurahan'=>$request->input('desa_kelurahan'),
             'kabupaten_kota'=>$request->input('kabupaten_kota'),
             'provinsi'=>$request->input('provinsi'),
         ];
-        FamilyCard::create($data);
-        return redirect()->route('data.index')
-        ->with('success','Family created successfully.');
+
+        $no_kk = FamilyCard::find($data['nomor']);
+        if(isset($no_kk)){
+            return redirect()->route('data.index')->with('failed','Nomor KK sudah terdaftar!');
+        }else{
+            FamilyCard::create($data);
+            return redirect()->route('data.index')->with('success','Data keluarga berhasil dibuat!');
+        }
     }
 
     public function showForm()
@@ -94,12 +103,12 @@ class FamilyCardController extends Controller
      * @param Request $request
      * @param  int  $id
      */
-    public function update(Request $request, $nomor)
+    public function update(Request $request, $no_kk)
     {
         $updateData = $request->all();
-        $family_card = FamilyCard::FindOrFail($nomor);
+        $family_card = FamilyCard::FindOrFail($no_kk);
 
-        $family_card->nomor = $nomor;
+        $family_card->nomor = $updateData['nomor'];
         $family_card->alamat = $updateData['alamat'];
         $family_card->rt_rw = $updateData['rt_rw'];
         $family_card->kode_pos = $updateData['kode_pos'];
@@ -107,9 +116,10 @@ class FamilyCardController extends Controller
         $family_card->kecamatan = $updateData['kecamatan'];
         $family_card->kabupaten_kota = $updateData['kabupaten_kota'];
         $family_card->provinsi = $updateData['provinsi'];
+
         $family_card->save();
 
-        return response()->json("Data Berhasil Teganti");
+        return response()->json("Success");
     }
 
     /**
@@ -118,10 +128,10 @@ class FamilyCardController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function destroy($id)
+    public function destroy($nomor)
     {
-        $user = FamilyMember::where('id', $id)->delete();
+        $user = FamilyCard::where('nomor', $nomor)->delete();
         // redirect ke parentView
-        return redirect()->route('data.index')->with('success','Data User berhasil dihapus!');
+        return redirect()->route('data.index')->with('success','Data Family Card berhasil dihapus!');
     }
 }

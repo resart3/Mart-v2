@@ -74,9 +74,9 @@
                                                 <form action="{{ route('tarif.destroy', $data->id)}}" method="Post">
                                                 @csrf
                                                 @method('DELETE')
-                                                    <button
-                                                        class="btn btn-danger delete">Hapus
-                                                    </button>
+                                                    <button class="btn btn-danger delete" 
+                                                        onclick="return confirm('Apakah anda yakin hapus?');">
+                                                        Hapus </button>
                                                 </form>                                                                                   
                                             </div>
                                         </td>
@@ -129,9 +129,9 @@
                                                 <form action="{{ route('land.destroy', $data->id)}}" method="Post">
                                                 @csrf
                                                 @method('DELETE')
-                                                    <button
-                                                        class="btn btn-danger delete">Hapus
-                                                    </button>
+                                                    <button class="btn btn-danger delete" 
+                                                        onclick="return confirm('Apakah anda yakin hapus?');">
+                                                        Hapus </button>
                                                 </form>
                                             </div>
                                         </td>
@@ -203,13 +203,13 @@
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Nomor KK</label>
                             <div class="col-sm-10">
-                                <input id="nomor_kk" type="text" name="nomor_kk" class="form-control" >
+                                <input id="nomor_kk" type="text" name="nomor_kk" class="form-control" required>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Nama</label>
                             <div class="col-sm-10">
-                                <input id="name" type="text" name="name" class="form-control" readonly disabled>
+                                <input id="name" type="text" name="name" class="form-control" required>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
@@ -226,7 +226,7 @@
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Nominal Tarif</label>
                             <div class="col-sm-10">
-                                <input id="nominalWarga" type="text" name="nominalWarga" class="form-control" readonly disabled>
+                                <input id="nominalWarga" type="text" name="nominalWarga" class="form-control" required readonly>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
@@ -267,13 +267,13 @@
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Kategori</label>
                             <div class="col-sm-10">
-                                <input id="categoryName" type="text" name="category_name" class="form-control">
+                                <input id="categoryName" type="text" name="category_name" class="form-control" required>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Nominal Tarif</label>
                             <div class="col-sm-10">
-                                <input id="categoryAmount" type="text" name="amount" class="form-control" >
+                                <input id="categoryAmount" type="text" name="amount" class="form-control" required>
                             </div>
                         </div>
                     </div>
@@ -314,7 +314,7 @@
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Kategori</label>
                             <div class="col-sm-10">                                    
-                                <select class="form-control" id="kategoriWargaUpdate" name="category_id">
+                                <select class="form-control" id="kategoriWargaUpdate" name="category_id" required>
                                     <option></option>
                                     @foreach ($tarif as $key => $data)
                                         <option value="{{$data->id}}">{{$data->category_name}}</option>     
@@ -326,7 +326,7 @@
                             <label class="col-sm-2 col-form-label">Nominal Tarif</label>
                             <div class="col-sm-10">
                                 <input id="nominalWargaUpdate" type="text" name="nominalWarga" 
-                                    class="form-control" readonly disabled>
+                                    class="form-control" disabled>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
@@ -431,7 +431,7 @@
                 $('#success_message').text("Data K3 Berhasil Di Update!");
                 setTimeout(() => {
                     location.reload();
-                }, 5000);
+                }, 2500);
             }
         });
     });

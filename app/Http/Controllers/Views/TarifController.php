@@ -53,17 +53,17 @@ class TarifController extends Controller
      * @param LandRequest $request
      * @return Response
      */
-    public function storeLand(Request $request){
-        $data = [
-            'family_card_id'=>$request->input('nomor_kk'),
-            'category_id'=>$request->input('kategoriWarga'),
-            'area'=>$request->input('luasTanah'),
-            'house_number'=>$request->input('nomorRumah')
-        ];
+    // public function storeLand(Request $request){
+    //     $data = [
+    //         'family_card_id'=>$request->input('nomor_kk'),
+    //         'category_id'=>$request->input('kategoriWarga'),
+    //         'area'=>$request->input('luasTanah'),
+    //         'house_number'=>$request->input('nomorRumah')
+    //     ];
 
-        Land::create($data);
-        return redirect()->route('tarif.index')->with('success','Tarif K3 Warga berhasil ditambahkan!');
-    }
+    //     Land::create($data);
+    //     return redirect()->route('tarif.index')->with('success','Tarif K3 Warga berhasil ditambahkan!');
+    // }
 
     /**
      * Show the form for editing the specified resource.

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\LandRequest;
 use App\Models\Land;
 use App\Models\Category;
+use App\Models\FamilyCard;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 
@@ -47,8 +48,16 @@ class LandController extends Controller
             'house_number'=>$request->input('nomorRumah')
         ];
 
-        Land::create($data);
-        return redirect()->route('tarif.index')->with('success','Tarif K3 Warga berhasil ditambahkan!');
+        $no_kk = FamilyCard::find($data['family_card_id']);
+        if(isset($no_kk)){
+            Land::create($data);
+            return redirect()->route('tarif.index')->with('success','Tarif K3 Warga berhasil ditambahkan!');
+        }else{
+            return redirect()->route('tarif.index')->with('failed','Nomor KK Tidak Terdaftar!');
+        }
+
+        
+        
     }
 
     /**

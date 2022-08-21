@@ -57,28 +57,32 @@
                                 <td>{{ $data->tempat_lahir }}</td>
                                 <td>{{ date('d F Y', strtotime($data->tanggal_lahir  )) }}</td>
                                 <td>{{ $data->jenis_kelamin }}</td>
-                                <td>
-                                    <a href="#" data-id="{{ $data->id }}" 
-                                        class="detail btn btn-outline-primary" id="detailMember" 
-                                        data-toggle="modal" data-target="#detailModal">
-                                        Detail
-                                    </a>
-                                    <a href="#" class="btn btn-primary"
-                                        id='editMember' 
-                                        data-id="{{$data->id}}" data-toggle="modal"
-                                        data-target="#form-edit-keluarga">
-                                        Edit
-                                    </a>
-                                    <a
-                                        href="{{ route('data.index') }}" 
-                                        onclick="event.preventDefault(); document.getElementById('delete-form-{{$data->id}}').submit();" 
-                                        class="btn btn-danger delete">Hapus
-                                    </a>
-                                </td>
-                                <form id="delete-form-{{$data->id}}" + action="{{ route('data.destroy', $data->id)}}"
-                                    method="POST">
-                                    @csrf @method('DELETE')
-                                </form>
+                                <td class="d-flex justify-content-center">
+                                    <div class="mr-1">
+                                        <a href="#" data-id="{{ $data->id }}" 
+                                            class="detail btn btn-outline-primary" id="detailMember" 
+                                            data-toggle="modal" data-target="#detailModal">
+                                            Detail
+                                        </a>
+                                    </div>
+                                    <div class="mr-1">
+                                        <a href="#" class="btn btn-primary" id='editMember' 
+                                            data-id="{{$data->id}}" data-toggle="modal"
+                                            data-target="#form-edit-keluarga">
+                                            Edit
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <form action="{{ route('detail.destroy', $data->id)}}" 
+                                            method="POST">
+                                            @csrf @method('DELETE')
+                                            <input type="hidden" value="{{ $data->family_card_id }}" name="nomor"/>
+                                            <button class="btn btn-danger delete" 
+                                                onclick="return confirm('Apakah anda yakin hapus?');">
+                                                Hapus
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach
@@ -107,32 +111,38 @@
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Nama</label>
                             <div class="col-sm-10">
-                                <input id="nama" type="text" name="nama" class="form-control" oninput="handleInput(event)">
+                                <input id="nama" type="text" name="nama" class="form-control" 
+                                    oninput="handleInput(event)" required>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">NIK</label>
                             <div class="col-sm-10">
-                                <input id="nik" type="text" name="nik" class="form-control" >
-                                <input id="nik" type="text" name="nomor" class="d-none form-control" value="{{ $id }}" >
+                                <input id="nik" type="text" name="nik" class="form-control" 
+                                    onkeypress="disableSpacingAndLetter(event)" required>
+                                <input id="no_kk" type="text" name="nomor" class="d-none form-control" 
+                                    value="{{ $id }}" >
                             </div>
                         </div>
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Tempat Lahir</label>
                             <div class="col-sm-10">
-                                <input id="tempat_lahir" type="text" name="tempat_lahir" class="form-control" oninput="handleInput(event)">
+                                <input id="tempat_lahir" type="text" name="tempat_lahir" class="form-control" 
+                                    oninput="handleInput(event)" required>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Tanggal Lahir</label>
                             <div class="col-sm-10">
-                                <input id="tanggal_lahir" type="date" name="tanggal_lahir" class="form-control" >
+                                <input id="tanggal_lahir" type="date" name="tanggal_lahir" 
+                                    class="form-control" required>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Jenis Kelamin</label>
                             <div class="col-sm-10">
-                                <select class="form-control" name="jenis_kelamin" id="jenis_kelamin">
+                                <select class="form-control" name="jenis_kelamin" id="jenis_kelamin" 
+                                    required>
                                     <option value=""></option>
                                     <option value="Laki - Laki">Laki-Laki</option>
                                     <option value="Perempuan">Perempuan</option>
@@ -142,7 +152,7 @@
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Agama</label>
                             <div class="col-sm-10">
-                                <select class="form-control" name="agama" id="agama">
+                                <select class="form-control" name="agama" id="agama" required>
                                     <option value=""></option>
                                     <option value="ISLAM">ISLAM</option>
                                     <option value="PROTESTAN">PROTESTAN</option>
@@ -156,19 +166,22 @@
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Pendidikan Terakhir</label>
                             <div class="col-sm-10">
-                                <input id="pendidikan" type="text" name="pendidikan" class="form-control" oninput="handleInput(event)">
+                                <input id="pendidikan" type="text" name="pendidikan" class="form-control" 
+                                    oninput="handleInput(event)" required>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Pekerjaan</label>
                             <div class="col-sm-10">
-                                <input id="pekerjaan" type="text" name="pekerjaan" class="form-control" oninput="handleInput(event)">
+                                <input id="pekerjaan" type="text" name="pekerjaan" class="form-control" 
+                                    oninput="handleInput(event)" required>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Golongan Darah</label>
                             <div class="col-sm-10">
-                                <select class="form-control" name="golongan_darah" id="golongan_darah">
+                                <select class="form-control" name="golongan_darah" id="golongan_darah" 
+                                    required>
                                     <option value=""></option>
                                     <option value="A">A</option>
                                     <option value="B">B</option>
@@ -180,7 +193,8 @@
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Kepala Keluarga?</label>
                             <div class="col-sm-10">
-                                <select class="form-control" name="isFamilyHead" id="IsFamilyHead">
+                                <select class="form-control" name="isFamilyHead" id="IsFamilyHead" 
+                                    required>
                                     <option value=""></option>
                                     <option value="1">Iya</option>
                                     <option value="0">Tidak</option>
@@ -301,32 +315,36 @@
                     <div class="form-group row mb-4">
                         <label class="col-sm-2 col-form-label">Nama</label>
                         <div class="col-sm-10">
-                            <input id="edit_nama" type="text" name="nama" class="form-control" placeholder="" oninput="handleInput(event)">
+                            <input id="edit_nama" type="text" name="nama" class="form-control" 
+                                placeholder="Nama" oninput="handleInput(event)" required>
                         </div>
                     </div>
                     <div class="form-group row mb-4">
                         <label class="col-sm-2 col-form-label">NIK</label>
                         <div class="col-sm-10">
-                            <input id="edit_nik" type="text" name="nik" class="form-control" >
-                            <input id="nik" type="text" name="nomor" class="d-none form-control" value="{{ $id }}" >
+                            <input id="edit_nik" type="text" name="nik" class="form-control" 
+                                onkeypress="disableSpacingAndLetter(event)" required>
                         </div>
                     </div>
                     <div class="form-group row mb-4">
                         <label class="col-sm-2 col-form-label">Tempat Lahir</label>
                         <div class="col-sm-10">
-                            <input id="edit_tempat_lahir" type="text" name="tempat_lahir" class="form-control" oninput="handleInput(event)">
+                            <input id="edit_tempat_lahir" type="text" name="tempat_lahir" class="form-control" 
+                                oninput="handleInput(event)" required>
                         </div>
                     </div>
                     <div class="form-group row mb-4">
                         <label class="col-sm-2 col-form-label">Tanggal Lahir</label>
                         <div class="col-sm-10">
-                            <input id="edit_tanggal_lahir" type="date" name="tanggal_lahir" class="form-control" >
+                            <input id="edit_tanggal_lahir" type="date" name="tanggal_lahir" class="form-control" 
+                                required>
                         </div>
                     </div>
                     <div class="form-group row mb-4">
                         <label class="col-sm-2 col-form-label">Jenis Kelamin</label>
                         <div class="col-sm-10">
-                            <select class="form-control" name="jenis_kelamin" id="edit_jenis_kelamin">
+                            <select class="form-control" name="jenis_kelamin" id="edit_jenis_kelamin" 
+                                required>
                                 <option value=""></option>
                                 <option value="Laki - Laki">Laki-Laki</option>
                                 <option value="Perempuan">Perempuan</option>
@@ -336,7 +354,7 @@
                     <div class="form-group row mb-4">
                         <label class="col-sm-2 col-form-label">Agama</label>
                         <div class="col-sm-10">
-                            <select class="form-control" name="agama" id="edit_agama">
+                            <select class="form-control" name="agama" id="edit_agama" required>
                                 <option value=""></option>
                                 <option value="ISLAM">ISLAM</option>
                                 <option value="PROTESTAN">PROTESTAN</option>
@@ -350,19 +368,22 @@
                     <div class="form-group row mb-4">
                         <label class="col-sm-2 col-form-label">Pendidikan Terakhir</label>
                         <div class="col-sm-10">
-                            <input id="edit_pendidikan" type="text" name="pendidikan" class="form-control" oninput="handleInput(event)">
+                            <input id="edit_pendidikan" type="text" name="pendidikan" class="form-control" 
+                                oninput="handleInput(event)" required>
                         </div>
                     </div>
                     <div class="form-group row mb-4">
                         <label class="col-sm-2 col-form-label">Pekerjaan</label>
                         <div class="col-sm-10">
-                            <input id="edit_pekerjaan" type="text" name="pekerjaan" class="form-control" oninput="handleInput(event)">
+                            <input id="edit_pekerjaan" type="text" name="pekerjaan" class="form-control" 
+                                oninput="handleInput(event)" required>
                         </div>
                     </div>
                     <div class="form-group row mb-4">
                         <label class="col-sm-2 col-form-label">Golongan Darah</label>
                         <div class="col-sm-10">
-                            <select class="form-control" name="golongan_darah" id="edit_golongan_darah">
+                            <select class="form-control" name="golongan_darah" id="edit_golongan_darah" 
+                                required>
                                 <option value=""></option>
                                 <option value="A">A</option>
                                 <option value="B">B</option>
@@ -375,7 +396,8 @@
                     <div class="form-group row mb-4">
                         <label class="col-sm-2 col-form-label">Kepala Keluarga?</label>
                         <div class="col-sm-10">
-                            <select class="form-control" name="isFamilyHead" id="edit_isFamilyHead">
+                            <select class="form-control" name="isFamilyHead" id="edit_isFamilyHead" 
+                                required>
                                 <option value=""></option>
                                 <option value="1">Iya</option>
                                 <option value="0">Tidak</option>
@@ -418,6 +440,16 @@
         //         });
         //     });
         // });
+
+        function disableSpacingAndLetter(e) {
+            if(e.which === 32){
+                e.preventDefault();
+            }else{
+                let charCode = (e.which) ? e.which : event.keyCode;
+                if (String.fromCharCode(charCode).match(/[^0-9]/g))
+                    e.preventDefault();
+            }
+        }
 
         function handleInput(e) {
             var ss = e.target.selectionStart;
@@ -479,15 +511,6 @@
                     $('#edit_pekerjaan').val(response.pekerjaan);
                     $('#edit_golongan_darah').val(response.golongan_darah);
                     $('#edit_isFamilyHead').val(response.isFamilyHead);
-
-                    if(response.rt_rw){
-                        $("#edit_rt").parent().parent().prop("hidden", false);
-                        $("#edit_rw").parent().parent().prop("hidden", false);
-
-                        let temp = response.rt_rw.split("/");
-                        $('#edit_rt').val(temp[0]);
-                        $('#edit_rw').val(temp[1]);
-                    }
                 }
             });
             $('.close').find('input').val('');
@@ -517,7 +540,7 @@
                     $('#success_message').text("Data Family Member Berhasil Di Update!");
                     setTimeout(() => {
                         location.reload();
-                    }, 5000);
+                    }, 2000);
                 }
             });
         });

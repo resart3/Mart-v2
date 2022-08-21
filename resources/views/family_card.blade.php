@@ -50,6 +50,7 @@
     @endif
 
     <div class="section-body">
+        <div id="success_message"></div>
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <a data-target="#form-modal" href="#" class="btn btn-icon icon-left btn-primary"
@@ -81,21 +82,28 @@
                                 <td style="width: 20%">{{ $data->alamat }}</td>
                                 <td>{{ $data->rt_rw }}</td>
                                 <td>{{ $data->kode_pos }}</td>
-                                <td>
-                                    <a href="data/{{ $data->nomor }}" class="btn btn-outline-primary">
-                                        Detail
-                                    </a>
-                                    <a href="#" class="btn btn-primary" id='editCard' data-id="{{$data->nomor}}" 
-                                        data-toggle="modal" data-target="#form-card-edit">
-                                        Edit
-                                    </a>
-                                    <a
-                                        href="#" data-id="{{ $data->nomor }}"
-                                        data-alamat="{{ $data->alamat }}"
-                                        class="btn btn-danger delete"
-                                        data-toggle="modal"
-                                        data-target="#deleteModal">Hapus
-                                    </a>
+                                <td class="d-flex justify-content-center">
+                                    <div class="mr-1">
+                                        <a href="data/{{ $data->nomor }}" class="btn btn-outline-primary">
+                                            Detail
+                                        </a>
+                                    </div>
+                                    <div class="mr-1">
+                                        <a href="#" class="btn btn-primary" id='editCard' data-id="{{$data->nomor}}" 
+                                            data-toggle="modal" data-target="#form-card-edit">
+                                            Edit
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <form action="{{ route('data.destroy', $data->nomor)}}" 
+                                            method="POST">
+                                            @csrf @method('DELETE')
+                                            <button class="btn btn-danger delete" 
+                                                onclick="return confirm('Apakah anda yakin hapus?');">
+                                                Hapus
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach
@@ -154,49 +162,65 @@
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Nomor Kartu Keluarga</label>
                             <div class="col-sm-10">
-                                <input id="nomor" type="text" name="nomor" class="form-control" required>
+                                <input id="nomor" type="text" name="nomor" class="form-control" 
+                                    onkeypress="disableSpacingAndLetter(event)" required>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Alamat</label>
                             <div class="col-sm-10">
-                                <textarea id="alamat" name="alamat" class="form-control" style="height: 80px" oninput="handleInput(event)"></textarea>
+                                <textarea id="alamat" name="alamat" class="form-control" 
+                                    style="height: 80px" oninput="handleInput(event)" required>
+                                </textarea>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
-                            <label class="col-sm-2 col-form-label">RT/RW</label>
+                            <label class="col-sm-2 col-form-label">RT</label>
                             <div class="col-sm-10">
-                                <input id="rt_rw" type="text" name="rt_rw" class="form-control" >
+                                <input id="rt" type="text" name="rt" class="form-control" 
+                                    onkeypress="disableSpacingAndLetter(event)" required>
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">RW</label>
+                            <div class="col-sm-10">
+                                <input id="rw" type="text" name="rw" class="form-control" 
+                                    onkeypress="disableSpacingAndLetter(event)" required>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Kode Pos</label>
                             <div class="col-sm-10">
-                                <input id="kode_pos" type="text" name="kode_pos" class="form-control" >
+                                <input id="kode_pos" type="text" name="kode_pos" class="form-control" 
+                                    onkeypress="disableSpacingAndLetter(event)" required>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Kecamatan</label>
                             <div class="col-sm-10">
-                                <input id="kecamatan" type="text" name="kecamatan" class="form-control" oninput="handleInput(event)">
+                                <input id="kecamatan" type="text" name="kecamatan" class="form-control" 
+                                    oninput="handleInput(event)" required>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Desa / Kelurahan</label>
                             <div class="col-sm-10">
-                                <input id="desa_kelurahan" type="text" name="desa_kelurahan" class="form-control" oninput="handleInput(event)">
+                                <input id="desa_kelurahan" type="text" name="desa_kelurahan" 
+                                    class="form-control" oninput="handleInput(event)" required>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Kabupaten / Kota</label>
                             <div class="col-sm-10">
-                                <input id="kabupaten_kota" type="text" name="kabupaten_kota" class="form-control" oninput="handleInput(event)">
+                                <input id="kabupaten_kota" type="text" name="kabupaten_kota" 
+                                    class="form-control" oninput="handleInput(event)" required>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Provinsi</label>
                             <div class="col-sm-10">
-                                <input id="provinsi" type="text" name="provinsi" class="form-control" oninput="handleInput(event)">
+                                <input id="provinsi" type="text" name="provinsi" class="form-control" 
+                                    oninput="handleInput(event)" required>
                             </div>
                         </div>
                         <button type="submit" class="btn btn-success">Submit</button>
@@ -219,53 +243,63 @@
             </div>
             <div class="modal-body" style="padding-bottom: 5px">
                 <form action="">
-                    <input type="hidden" id="edit_id" />
+                        <input type="hidden" id="edit_no_kk" />
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Nomor Kartu Keluarga</label>
                             <div class="col-sm-10">
-                                <input id="edit_nomor" type="text" name="nomor" class="form-control" required>
+                                <input id="edit_nomor" type="text" name="nomor" class="form-control" 
+                                    onkeypress="disableSpacingAndLetter(event)" required>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Alamat</label>
                             <div class="col-sm-10">
-                                <textarea id="edit_alamat" name="alamat" class="form-control" style="height: 80px" oninput="handleInput(event)"></textarea>
+                                <textarea id="edit_alamat" name="alamat" class="form-control" style="height: 80px" oninput="handleInput(event)" requireds></textarea>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
-                            <label class="col-sm-2 col-form-label">RT/RW</label>
+                            <label class="col-sm-2 col-form-label">RT</label>
                             <div class="col-sm-10">
-                                <input id="edit_rt_rw" type="text" name="rt_rw" class="form-control" >
+                                <input id="edit_rt" type="text" name="rt" class="form-control" 
+                                    onkeypress="disableSpacingAndLetter(event)" required>
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">RW</label>
+                            <div class="col-sm-10">
+                                <input id="edit_rw" type="text" name="rw" class="form-control" 
+                                    onkeypress="disableSpacingAndLetter(event)" required>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Kode Pos</label>
                             <div class="col-sm-10">
-                                <input id="edit_kode_pos" type="text" name="kode_pos" class="form-control" >
+                                <input id="edit_kode_pos" type="text" name="kode_pos" class="form-control" 
+                                    onkeypress="disableSpacingAndLetter(event)" required>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Kecamatan</label>
                             <div class="col-sm-10">
-                                <input id="edit_kecamatan" type="text" name="kecamatan" class="form-control" oninput="handleInput(event)">
+                                <input id="edit_kecamatan" type="text" name="kecamatan" class="form-control" oninput="handleInput(event)" required>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Desa / Kelurahan</label>
                             <div class="col-sm-10">
-                                <input id="edit_desa_kelurahan" type="text" name="desa_kelurahan" class="form-control" oninput="handleInput(event)">
+                                <input id="edit_desa_kelurahan" type="text" name="desa_kelurahan" class="form-control" oninput="handleInput(event)" required>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Kabupaten / Kota</label>
                             <div class="col-sm-10">
-                                <input id="edit_kabupaten_kota" type="text" name="kabupaten_kota" class="form-control" oninput="handleInput(event)">
+                                <input id="edit_kabupaten_kota" type="text" name="kabupaten_kota" class="form-control" oninput="handleInput(event)" required>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Provinsi</label>
                             <div class="col-sm-10">
-                                <input id="edit_provinsi" type="text" name="provinsi" class="form-control" oninput="handleInput(event)">
+                                <input id="edit_provinsi" type="text" name="provinsi" class="form-control" oninput="handleInput(event)" required>
                             </div>
                         </div>
                 </form>
@@ -280,6 +314,16 @@
 
 @push('scripts')
         <script>
+            function disableSpacingAndLetter(e) {
+                if(e.which === 32){
+                    e.preventDefault();
+                }else{
+                    let charCode = (e.which) ? e.which : event.keyCode;
+                    if (String.fromCharCode(charCode).match(/[^0-9]/g))
+                        e.preventDefault();
+                }
+            }
+
             function handleInput(e) {
                 var ss = e.target.selectionStart;
                 var se = e.target.selectionEnd;
@@ -297,37 +341,38 @@
                     url: "/dashboard/data/" + nomor + "/edit",
                     type: "GET",
                     success: function (response) {
+                        $('#edit_no_kk').val(response.nomor);
                         $('#edit_nomor').val(response.nomor);
                         $('#edit_alamat').val(response.alamat);
-                        $('#edit_rt_rw').val(response.rt_rw);
+
+                        let temp = response.rt_rw.split("/");
+                        $('#edit_rt').val(temp[0]);
+                        $('#edit_rw').val(temp[1]);
+
                         $('#edit_kode_pos').val(response.kode_pos);
                         $('#edit_kecamatan').val(response.kecamatan);
                         $('#edit_desa_kelurahan').val(response.desa_kelurahan);
                         $('#edit_kabupaten_kota').val(response.kabupaten_kota);
                         $('#edit_provinsi').val(response.provinsi);
-
-                        if(response.rt_rw){
-                            $("#edit_rt").parent().parent().prop("hidden", false);
-                            $("#edit_rw").parent().parent().prop("hidden", false);
-
-                            let temp = response.rt_rw.split("/");
-                            $('#edit_rt').val(temp[0]);
-                            $('#edit_rw').val(temp[1]);
-                        }
                     }
                 });
                 $('.close').find('input').val('');
             });
 
             $("#btnUpdateCard").click(() => {
-                const nomor = $('#edit_nomor').val();
+                const no_kk = $('#edit_no_kk').val();
+                const rt = $("#edit_rt").val();
+                const rw = $("#edit_rw").val();
+                const rt_rw = `${rt}/${rw}`;
+
                 $.ajax({
                     headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},            
-                    url: "/dashboard/data/" + nomor,
+                    url: "/dashboard/data/" + no_kk,
                     type: "PUT",
                     data: {
+                        nomor: $('#edit_nomor').val(),
                         alamat: $('#edit_alamat').val(),
-                        rt_rw: $('#edit_rt_rw').val(),
+                        rt_rw: rt_rw,
                         kode_pos: $('#edit_kode_pos').val(),
                         kecamatan: $('#edit_kecamatan').val(),
                         desa_kelurahan: $('#edit_desa_kelurahan').val(),

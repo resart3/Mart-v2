@@ -65,7 +65,7 @@
                                         <form id="delete-form-{{$data->id}}" + action="{{ route('user.destroy', $data->id)}}"
                                             method="POST">
                                             @csrf @method('DELETE')
-                                            <button class="btn btn-danger delete">Hapus</button>
+                                            <button class="btn btn-danger delete" onclick="return confirm('Apakah anda yakin hapus?');">Hapus</button>
                                         </form>
                                     </div>
                                 </td>
