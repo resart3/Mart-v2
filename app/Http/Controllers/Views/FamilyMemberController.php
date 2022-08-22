@@ -35,7 +35,7 @@ class FamilyMemberController extends Controller
             'pendidikan'=>$request->input('pendidikan'),
             'pekerjaan'=>$request->input('pekerjaan'),
             'golongan_darah'=>$request->input('golongan_darah'),
-            'isFamilyHead'=>$request->input('isFamilyHead'),
+            'isFamilyHead'=>0
         ];
         FamilyMember::create($data);
         return redirect()->route('data.show',['data'=>$request->input('nomor')])

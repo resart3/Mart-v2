@@ -58,7 +58,7 @@
 
                 >
                     <i class="fa fa-plus"></i>
-                    &nbsp; Tambah Data Warga
+                    &nbsp; Tambah Data Kartu Keluarga
                 </a>
             </div>
             <div class="card-body">
@@ -147,80 +147,166 @@
 
 @endsection
 <!-- Modal Add Family Card -->
-<div class="modal fade" id="form-modal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+<div class="modal fade bd-example-modal-xl" id="form-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Tambah Data Warga</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
+                <h5 class="modal-title" id="exampleModalLabel">Tambah Data KK & Kepala Keluarga</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
             </div>
             <div class="modal-body" style="padding-bottom: 5px">
                 <form action="{{ route('data.store') }}" method="POST">
                     @csrf
-                        <div class="form-group row mb-4">
-                            <label class="col-sm-2 col-form-label">Nomor Kartu Keluarga</label>
-                            <div class="col-sm-10">
-                                <input id="nomor" type="text" name="nomor" class="form-control" 
-                                    onkeypress="disableSpacingAndLetter(event)" required>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group row mb-4">
+                                    <label class="col-sm-2 col-form-label">Nomor Kartu Keluarga</label>
+                                    <div class="col-sm-10">
+                                        <input id="nomor" type="text" name="nomor" class="form-control" 
+                                            onkeypress="disableSpacingAndLetter(event)" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row mb-4">
+                                    <label class="col-sm-2 col-form-label">Alamat</label>
+                                    <div class="col-sm-10">
+                                        <textarea id="alamat" name="alamat" class="form-control" 
+                                            style="height: 80px" oninput="handleInput(event)" required>
+                                        </textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group row mb-4">
+                                    <label class="col-sm-2 col-form-label">RT</label>
+                                    <div class="col-sm-10">
+                                        <input id="rt" type="text" name="rt" class="form-control" 
+                                            onkeypress="disableSpacingAndLetter(event)" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row mb-4">
+                                    <label class="col-sm-2 col-form-label">RW</label>
+                                    <div class="col-sm-10">
+                                        <input id="rw" type="text" name="rw" class="form-control" 
+                                            onkeypress="disableSpacingAndLetter(event)" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row mb-4">
+                                    <label class="col-sm-2 col-form-label">Kode Pos</label>
+                                    <div class="col-sm-10">
+                                        <input id="kode_pos" type="text" name="kode_pos" class="form-control" 
+                                            onkeypress="disableSpacingAndLetter(event)" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row mb-4">
+                                    <label class="col-sm-2 col-form-label">Kecamatan</label>
+                                    <div class="col-sm-10">
+                                        <input id="kecamatan" type="text" name="kecamatan" class="form-control" 
+                                            oninput="handleInput(event)" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row mb-4">
+                                    <label class="col-sm-2 col-form-label">Desa / Kelurahan</label>
+                                    <div class="col-sm-10">
+                                        <input id="desa_kelurahan" type="text" name="desa_kelurahan" 
+                                            class="form-control" oninput="handleInput(event)" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row mb-4">
+                                    <label class="col-sm-2 col-form-label">Kabupaten / Kota</label>
+                                    <div class="col-sm-10">
+                                        <input id="kabupaten_kota" type="text" name="kabupaten_kota" 
+                                            class="form-control" oninput="handleInput(event)" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row mb-4">
+                                    <label class="col-sm-2 col-form-label">Provinsi</label>
+                                    <div class="col-sm-10">
+                                        <input id="provinsi" type="text" name="provinsi" class="form-control" 
+                                            oninput="handleInput(event)" required>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group row mb-4">
-                            <label class="col-sm-2 col-form-label">Alamat</label>
-                            <div class="col-sm-10">
-                                <textarea id="alamat" name="alamat" class="form-control" 
-                                    style="height: 80px" oninput="handleInput(event)" required>
-                                </textarea>
-                            </div>
-                        </div>
-                        <div class="form-group row mb-4">
-                            <label class="col-sm-2 col-form-label">RT</label>
-                            <div class="col-sm-10">
-                                <input id="rt" type="text" name="rt" class="form-control" 
-                                    onkeypress="disableSpacingAndLetter(event)" required>
-                            </div>
-                        </div>
-                        <div class="form-group row mb-4">
-                            <label class="col-sm-2 col-form-label">RW</label>
-                            <div class="col-sm-10">
-                                <input id="rw" type="text" name="rw" class="form-control" 
-                                    onkeypress="disableSpacingAndLetter(event)" required>
-                            </div>
-                        </div>
-                        <div class="form-group row mb-4">
-                            <label class="col-sm-2 col-form-label">Kode Pos</label>
-                            <div class="col-sm-10">
-                                <input id="kode_pos" type="text" name="kode_pos" class="form-control" 
-                                    onkeypress="disableSpacingAndLetter(event)" required>
-                            </div>
-                        </div>
-                        <div class="form-group row mb-4">
-                            <label class="col-sm-2 col-form-label">Kecamatan</label>
-                            <div class="col-sm-10">
-                                <input id="kecamatan" type="text" name="kecamatan" class="form-control" 
-                                    oninput="handleInput(event)" required>
-                            </div>
-                        </div>
-                        <div class="form-group row mb-4">
-                            <label class="col-sm-2 col-form-label">Desa / Kelurahan</label>
-                            <div class="col-sm-10">
-                                <input id="desa_kelurahan" type="text" name="desa_kelurahan" 
-                                    class="form-control" oninput="handleInput(event)" required>
-                            </div>
-                        </div>
-                        <div class="form-group row mb-4">
-                            <label class="col-sm-2 col-form-label">Kabupaten / Kota</label>
-                            <div class="col-sm-10">
-                                <input id="kabupaten_kota" type="text" name="kabupaten_kota" 
-                                    class="form-control" oninput="handleInput(event)" required>
-                            </div>
-                        </div>
-                        <div class="form-group row mb-4">
-                            <label class="col-sm-2 col-form-label">Provinsi</label>
-                            <div class="col-sm-10">
-                                <input id="provinsi" type="text" name="provinsi" class="form-control" 
-                                    oninput="handleInput(event)" required>
+                            <div class="col-6">
+                                <div class="form-group row mb-4">
+                                    <label class="col-sm-2 col-form-label">Nama</label>
+                                    <div class="col-sm-10">
+                                        <input id="nama" type="text" name="nama" class="form-control" 
+                                            oninput="handleInput(event)" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row mb-4">
+                                    <label class="col-sm-2 col-form-label">NIK</label>
+                                    <div class="col-sm-10">
+                                        <input id="nik" type="text" name="nik" class="form-control" 
+                                            onkeypress="disableSpacingAndLetter(event)" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row mb-4">
+                                    <label class="col-sm-2 col-form-label">Tempat Lahir</label>
+                                    <div class="col-sm-10">
+                                        <input id="tempat_lahir" type="text" name="tempat_lahir" class="form-control" 
+                                            oninput="handleInput(event)" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row mb-4">
+                                    <label class="col-sm-2 col-form-label">Tanggal Lahir</label>
+                                    <div class="col-sm-10">
+                                        <input id="tanggal_lahir" type="date" name="tanggal_lahir" 
+                                            class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row mb-4">
+                                    <label class="col-sm-2 col-form-label">Jenis Kelamin</label>
+                                    <div class="col-sm-10">
+                                        <select class="form-control" name="jenis_kelamin" id="jenis_kelamin" 
+                                            required>
+                                            <option value=""></option>
+                                            <option value="Laki - Laki">Laki-Laki</option>
+                                            <option value="Perempuan">Perempuan</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row mb-4">
+                                    <label class="col-sm-2 col-form-label">Agama</label>
+                                    <div class="col-sm-10">
+                                        <select class="form-control" name="agama" id="agama" required>
+                                            <option value=""></option>
+                                            <option value="ISLAM">ISLAM</option>
+                                            <option value="PROTESTAN">PROTESTAN</option>
+                                            <option value="KATOLIK">KATOLIK</option>
+                                            <option value="HINDU">HINDU</option>
+                                            <option value="BUDDHA">BUDDHA</option>
+                                            <option value="KHONGHUCU">KHONGHUCU</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row mb-4">
+                                    <label class="col-sm-2 col-form-label">Pendidikan Terakhir</label>
+                                    <div class="col-sm-10">
+                                        <input id="pendidikan" type="text" name="pendidikan" class="form-control" 
+                                            oninput="handleInput(event)" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row mb-4">
+                                    <label class="col-sm-2 col-form-label">Pekerjaan</label>
+                                    <div class="col-sm-10">
+                                        <input id="pekerjaan" type="text" name="pekerjaan" class="form-control" 
+                                            oninput="handleInput(event)" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row mb-4">
+                                    <label class="col-sm-2 col-form-label">Golongan Darah</label>
+                                    <div class="col-sm-10">
+                                        <select class="form-control" name="golongan_darah" id="golongan_darah" 
+                                            required>
+                                            <option value=""></option>
+                                            <option value="A">A</option>
+                                            <option value="B">B</option>
+                                            <option value="AB">AB</option>
+                                            <option value="O">O</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <button type="submit" class="btn btn-success">Submit</button>

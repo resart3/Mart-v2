@@ -39,7 +39,7 @@ class FamilyCardController extends Controller
         $rw = $request->input('rw');
         $rt_rw = $rt.'/'.$rw;
 
-        $data = [
+        $dataKk = [
             'nomor'=>$request->input('nomor'),
             'alamat'=>$request->input('alamat'),
             'rt_rw'=>$rt_rw,
@@ -50,12 +50,27 @@ class FamilyCardController extends Controller
             'provinsi'=>$request->input('provinsi'),
         ];
 
-        $no_kk = FamilyCard::find($data['nomor']);
+        $dataMember = [
+            'family_card_id'=>$request->input('nomor'),
+            'nama'=>$request->input('nama'),
+            'nik'=>$request->input('nik'),
+            'tempat_lahir'=>$request->input('tempat_lahir'),
+            'tanggal_lahir'=>$request->input('tanggal_lahir'),
+            'jenis_kelamin'=>$request->input('jenis_kelamin'),
+            'agama'=>$request->input('agama'),
+            'pendidikan'=>$request->input('pendidikan'),
+            'pekerjaan'=>$request->input('pekerjaan'),
+            'golongan_darah'=>$request->input('golongan_darah'),
+            'isFamilyHead'=>1
+        ];
+
+        $no_kk = FamilyCard::find($dataKk['nomor']);
         if(isset($no_kk)){
             return redirect()->route('data.index')->with('failed','Nomor KK sudah terdaftar!');
         }else{
-            FamilyCard::create($data);
-            return redirect()->route('data.index')->with('success','Data keluarga berhasil dibuat!');
+            FamilyCard::create($dataKk);
+            FamilyMember::create($dataMember);
+            return redirect()->route('data.index')->with('success','Data kartu keluarga berhasil dibuat!');
         }
     }
 

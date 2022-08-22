@@ -31,7 +31,7 @@
                 <a data-target="#form-add-keluarga" href="#" class="btn btn-icon icon-left btn-primary"
                 data-toggle="modal">
                     <i class="fa fa-plus"></i>
-                    &nbsp; Tambah Data Anggota Warga
+                    &nbsp; Tambah Data Anggota Keluarga
                 </a>
             </div>
             <div class="card-body">
@@ -187,17 +187,6 @@
                                     <option value="B">B</option>
                                     <option value="AB">AB</option>
                                     <option value="O">O</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group row mb-4">
-                            <label class="col-sm-2 col-form-label">Kepala Keluarga?</label>
-                            <div class="col-sm-10">
-                                <select class="form-control" name="isFamilyHead" id="IsFamilyHead" 
-                                    required>
-                                    <option value=""></option>
-                                    <option value="1">Iya</option>
-                                    <option value="0">Tidak</option>
                                 </select>
                             </div>
                         </div>
