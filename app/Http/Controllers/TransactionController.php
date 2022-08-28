@@ -250,7 +250,7 @@ class TransactionController extends Controller
 
             if(isset($request->receipt)){
                 $name = $request->receipt->getClientOriginalName();
-                $request->receipt->move(public_path('assets/images/transaction/'. (new Transaction)->get_family_card()), $name);
+                $request->receipt->move(public_path('assets/images/transaction/'. $request->input('family_card_id')), $name);
                 
                 $data = [
                     'family_card_id'=>$request->input('family_card_id'),
