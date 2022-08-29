@@ -35,6 +35,7 @@
                             <th>#</th>
                             <th style="width: 20%">Bukti Bayar</th>
                             <th>ID Kartu Keluarga</th>
+                            <th>Nama Kepala Keluarga</th>
                             <th>Bulan </th>
                             <th>Tahun</th>
                             <th style="width: 20%">Status</th>
@@ -42,24 +43,25 @@
                         </tr>
                         </thead>
                         <tbody style="font-size: 14px!important">
-                        @foreach ($transactions as $key => $data)
+                        @foreach ($arrDataTransaksi as $key => $data)
                             <tr>
                                 <td>{{ $key + 1 }}</td>
-                                @if($data->receipt)
-                                    <td>{{ $data->receipt }}</td>
+                                @if($data['receipt'])
+                                    <td>{{ $data['receipt'] }}</td>
                                 @else
                                     <td>Bukti Bayar Belum Tersedia</td>
                                 @endif
-                                <td>{{ $data->family_card_id }}</td>
-                                <td>{{ $data->bulan }}</td>
-                                <td>{{ $data->tahun }}</td>
-                                <td>{{ $data->status}}</td>
+                                <td>{{ $data['family_card_id'] }}</td>
+                                <td>{{ $data['nama'] }}</td>
+                                <td>{{ $data['bulan'] }}</td>
+                                <td>{{ $data['tahun'] }}</td>
+                                <td>{{ $data['status']}}</td>
                                 <td>
                                     <a href="" class="btn btn-primary"
-                                        id='editTrans' data-id="{{$data->id}}" data-toggle="modal"
+                                        id='editTrans' data-id="{{$data['id']}}" data-toggle="modal"
                                         data-target="#editTransModal"> Edit
                                     </a>
-                                    <form id="delete-form-{{$data->id}}" + action="{{ route('transaction.destroy', $data->id)}}"
+                                    <form id="delete-form-{{$data['id']}}" + action="{{ route('transaction.destroy', $data['id'])}}"
                                         method="POST">
                                         @csrf @method('DELETE')
                                         <button class="btn btn-danger delete" onclick="return confirm('Apakah anda yakin ingin hapus?');">Hapus</button>

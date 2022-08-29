@@ -166,21 +166,35 @@ class TransactionController extends Controller
             $this->response = "Resi Harus Di Upload";
 
             if(isset($request->receipt)){
-                $name = $request->receipt->getClientOriginalName();
-                $request->receipt->move(public_path('assets/images/transaction/'. $request->input('family_card_id')), $name);
+                $dataTransaction = DB::table('transactions')
+                ->where('family_card_id', $request->input('family_card_id'))
+                ->where('tahun', $request->input('tahun'))
+                ->where('bulan', $request->input('bulan'))
+                ->select('id')        
+                ->get();
+                $dataTransactionStatus = $dataTransaction->first();
                 
-                $data = [
-                    'family_card_id'=>$request->input('family_card_id'),
-                    'jumlah'=>$request->input('jumlah'),
-                    'tahun'=>$request->input('tahun'),
-                    'bulan'=>$request->input('bulan'),
-                    'status' => "Menunggu Konfirmasi",
-                    'receipt' => $name,
-                ];
-                Transaction::create($data);
+                if(isset($dataTransactionStatus) == false){
+                    $name = $request->receipt->getClientOriginalName();
+                    $request->receipt->move(public_path('assets/images/transaction/'. $request->input('family_card_id')), $name);
+                    
+                    $data = [
+                        'family_card_id'=>$request->input('family_card_id'),
+                        'jumlah'=>$request->input('jumlah'),
+                        'tahun'=>$request->input('tahun'),
+                        'bulan'=>$request->input('bulan'),
+                        'status' => "Menunggu Konfirmasi",
+                        'receipt' => $name,
+                    ];
+                    Transaction::create($data);
+    
+                    $this->response = null;
+                    $this->code = 200;
+                }else{
+                    $this->code = 500;
+                    return Api::apiRespond($this->code, "Data Transaksi Sudah Ada Sebelumnya");
+                }
 
-                $this->response = null;
-                $this->code = 200;
             }
         } catch (Exception $e){
             $this->code = 500;
