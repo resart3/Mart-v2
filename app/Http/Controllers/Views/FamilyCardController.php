@@ -14,10 +14,10 @@ class FamilyCardController extends Controller
     {
         $title = 'Halaman Data Warga';
         // $rt_rw = explode("/",session()->get('user')->rt_rw);
-        if (session()->get('user')->role=='admin-rt') {
+        if (session()->get('user')->role=='admin_rt') {
             $family_card = FamilyCard::with('family_head')->where('rt_rw',session()->get('user')->rt_rw)->get();
         }
-        else if (session()->get('user')->role=='admin-rw') {
+        else if (session()->get('user')->role=='admin_rw') {
             $family_card = FamilyCard::where('rt_rw','like','%'.explode("/",session()->get('user')->rt_rw)[1])->get();
         }
         else{

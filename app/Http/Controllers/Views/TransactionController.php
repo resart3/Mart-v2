@@ -28,49 +28,42 @@ class TransactionController extends Controller
         else{
             $familyCard = FamilyCard::get();
         }
-        
+        //menyimpan nomor kk yang se rt atau se rw
         foreach ($familyCard as $data) {
             $nomor[] = $data->nomor;
         }
-
         $transactions = Transaction::whereIn('family_card_id',$nomor)->get();
-
-        foreach($transactions as $data){
-            $transaction_family_card[] = $data->family_card_id;
-        }
-
-        $familyHeadName = DB::table('family_members')
-        ->whereIn('family_card_id', $transaction_family_card)
-        ->where('isFamilyHead', 1)
-        ->select('nama', 'family_card_id')        
-        ->get();
-
-        $arrDataTransaksi = [];
-        foreach($transactions as $key){
-            $tempData["family_card_id"] = $key->family_card_id;
-            foreach($familyHeadName as $data){
-                if($data->family_card_id == $key->family_card_id){
-                    $tempData["nama"] = $data->nama;
-                    break;
-                }
+        if (count($transactions) != 0) {
+            foreach($transactions as $data){
+                $transaction_family_card[] = $data->family_card_id;
             }
-            $tempData["id"] = $key->id;
-            $tempData["jumlah"] = $key->jumlah;
-            $tempData["tahun"] = $key->tahun;
-            $tempData["bulan"] = $key->bulan;
-            $tempData["status"] = $key->status;
-            $tempData["receipt"] = $key->receipt;
-            array_push($arrDataTransaksi, $tempData);
+    
+            $familyHeadName = DB::table('family_members')
+            ->whereIn('family_card_id', $transaction_family_card)
+            ->where('isFamilyHead', 1)
+            ->select('nama', 'family_card_id')        
+            ->get();
+    
+            $arrDataTransaksi = [];
+            foreach($transactions as $key){
+                $tempData["family_card_id"] = $key->family_card_id;
+                foreach($familyHeadName as $data){
+                    if($data->family_card_id == $key->family_card_id){
+                        $tempData["nama"] = $data->nama;
+                        break;
+                    }
+                }
+                $tempData["id"] = $key->id;
+                $tempData["jumlah"] = $key->jumlah;
+                $tempData["tahun"] = $key->tahun;
+                $tempData["bulan"] = $key->bulan;
+                $tempData["status"] = $key->status;
+                $tempData["receipt"] = $key->receipt;
+                array_push($arrDataTransaksi, $tempData);
+            }
+        }else{
+            $arrDataTransaksi = [];
         }
-        
-        // echo"<pre>";
-        // print_r($arrDataTransaksi);
-
-        // foreach($arrDataTransaksi as $data){
-        //     echo"<pre>";
-        //     print_r($data['tahun']);
-        // }
-        // die();
 
         return view('transaction.index', compact('arrDataTransaksi', 'title'));
     }
