@@ -39,6 +39,9 @@ class FamilyCardController extends Controller
         $rw = $request->input('rw');
         $rt_rw = $rt.'/'.$rw;
 
+        $nomor = preg_replace('/\s+/', '', $request->input('nomor'));
+        $nik = preg_replace('/\s+/', '', $request->input('nik'));
+
         $dataKk = [
             'nomor'=>$request->input('nomor'),
             'alamat'=>$request->input('alamat'),
