@@ -148,7 +148,10 @@ class FamilyCardController extends Controller
      */
     public function destroy($nomor)
     {
-        $user = FamilyCard::where('nomor', $nomor)->delete();
+        $user = FamilyCard::find($nomor);
+        $user->family_members()->delete();
+        $user->lands()->delete();
+        $user->delete();
         // redirect ke parentView
         return redirect()->route('data.index')->with('success','Data Family Card berhasil dihapus!');
     }
