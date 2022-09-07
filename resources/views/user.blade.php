@@ -226,14 +226,14 @@
                             <label class="col-sm-2 col-form-label">RT</label>
                             <div class="col-sm-10">
                                 <input id="edit_rt" type="text" name="rt" class="form-control" 
-                                    onkeypress="disableSpacingAndLetter(event)" >
+                                    onkeypress="disableSpacingAndLetter(event)" required>
                             </div>
                         </div>
                         <div class="form-group row mb-4" hidden>
                             <label class="col-sm-2 col-form-label">RW</label>
                             <div class="col-sm-10">
                                 <input id="edit_rw" type="text" name="rw" class="form-control" 
-                                    onkeypress="disableSpacingAndLetter(event)">
+                                    onkeypress="disableSpacingAndLetter(event)" required>
                             </div>
                         </div>
                         <div class="form-group row mb-4">

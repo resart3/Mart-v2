@@ -331,13 +331,6 @@
                 <form action="">
                         <input type="hidden" id="edit_no_kk" />
                         <div class="form-group row mb-4">
-                            <label class="col-sm-2 col-form-label">Nomor Kartu Keluarga</label>
-                            <div class="col-sm-10">
-                                <input id="edit_nomor" type="text" name="nomor" class="form-control" 
-                                    onkeypress="disableSpacingAndLetter(event)" required>
-                            </div>
-                        </div>
-                        <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Alamat</label>
                             <div class="col-sm-10">
                                 <textarea id="edit_alamat" name="alamat" class="form-control" style="height: 80px" oninput="handleInput(event)" requireds></textarea>
@@ -428,7 +421,6 @@
                     type: "GET",
                     success: function (response) {
                         $('#edit_no_kk').val(response.nomor);
-                        $('#edit_nomor').val(response.nomor);
                         $('#edit_alamat').val(response.alamat);
 
                         let temp = response.rt_rw.split("/");
@@ -456,7 +448,6 @@
                     url: "/dashboard/data/" + no_kk,
                     type: "PUT",
                     data: {
-                        nomor: $('#edit_nomor').val(),
                         alamat: $('#edit_alamat').val(),
                         rt_rw: rt_rw,
                         kode_pos: $('#edit_kode_pos').val(),
@@ -466,14 +457,13 @@
                         provinsi: $('#edit_provinsi').val()
                     },
                     success: function (response) {
-                        console.log(response);
-                        // $('#form-card-edit').modal('hide');
-                        // window.scrollTo(0, 0);
-                        // $('#success_message').addClass('alert alert-success');
-                        // $('#success_message').text("Data Family Card Berhasil Di Update!");
-                        // setTimeout(() => {
-                        //     location.reload();
-                        // }, 1000);
+                        $('#form-card-edit').modal('hide');
+                        window.scrollTo(0, 0);
+                        $('#success_message').addClass('alert alert-success');
+                        $('#success_message').text("Data Family Card Berhasil Di Update!");
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1000);
                     }
                 });
             });
@@ -505,14 +495,13 @@
                         provinsi: provinsi,
                     },
                     success: function (response) {
-                        console.log(response);
-                        // $('#form-edit-keluarga').modal('hide');
-                        // window.scrollTo(0, 0);
-                        // $('#success_message').addClass('alert alert-success');
-                        // $('#success_message').text("Data Family Member Berhasil Di Update!");
-                        // setTimeout(() => {
-                        //     location.reload();
-                        // }, 1000);
+                        $('#form-edit-keluarga').modal('hide');
+                        window.scrollTo(0, 0);
+                        $('#success_message').addClass('alert alert-success');
+                        $('#success_message').text("Data Family Member Berhasil Di Update!");
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1000);
                     }
                 });
             });
