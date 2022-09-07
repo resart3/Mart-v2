@@ -466,13 +466,14 @@
                         provinsi: $('#edit_provinsi').val()
                     },
                     success: function (response) {
-                        $('#form-card-edit').modal('hide');
-                        window.scrollTo(0, 0);
-                        $('#success_message').addClass('alert alert-success');
-                        $('#success_message').text("Data Family Card Berhasil Di Update!");
-                        setTimeout(() => {
-                            location.reload();
-                        }, 1000);
+                        console.log(response);
+                        // $('#form-card-edit').modal('hide');
+                        // window.scrollTo(0, 0);
+                        // $('#success_message').addClass('alert alert-success');
+                        // $('#success_message').text("Data Family Card Berhasil Di Update!");
+                        // setTimeout(() => {
+                        //     location.reload();
+                        // }, 1000);
                     }
                 });
             });

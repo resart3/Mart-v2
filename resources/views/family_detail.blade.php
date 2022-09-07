@@ -68,7 +68,9 @@
                                     <div class="mr-1">
                                         <a href="#" class="btn btn-primary" id='editMember' 
                                             data-id="{{$data->id}}" data-toggle="modal"
-                                            data-target="#form-edit-keluarga">
+                                            data-target="#form-edit-keluarga" onclick="(function(){
+                                                $('#alert_nik').addClass('d-none');
+                                            })()">
                                             Edit
                                         </a>
                                     </div>
@@ -313,6 +315,7 @@
                         <div class="col-sm-10">
                             <input id="edit_nik" type="text" name="nik" class="form-control" 
                                 onkeypress="disableSpacingAndLetter(event)" required>
+                            <p class="text-danger mb-0 mt-1 d-none" id="alert_nik">NIK telah terdaftar!</p>
                         </div>
                     </div>
                     <div class="form-group row mb-4">
@@ -405,31 +408,6 @@
 
 @push('scripts')
     <script>
-        // $(document).ready(function() {
-        //     $(document).on('click', '.detail', function(event) {
-        //         event.preventDefault();
-        //         const id = $(this).data('id');
-        //         $.ajax({
-        //             type: 'GET',
-        //             url: `{{ url('api/data') }}/${id}`,
-        //             success: (res) => {
-        //                 $('#titleModal').html('Detail Kartu Keluarga')
-        //                 $('#nomor').val(res.data.nomor);
-        //                 $('#alamat').val(res.data.alamat);
-        //                 $('#rt_rw').val(res.data.rt_rw);
-        //                 $('#kode_pos').val(res.data.kode_pos);
-        //                 $('#kecamatan').val(res.data.kecamatan);
-        //                 $('#kabupaten_kota').val(res.data.kabupaten_kota);
-        //                 $('#provinsi').val(res.data.provinsi);
-        //                 $('#detailModal').modal('show');
-        //             },
-        //             error: function(data) {
-        //                 console.log(data);
-        //             }
-        //         });
-        //     });
-        // });
-
         function disableSpacingAndLetter(e) {
             if(e.which === 32){
                 e.preventDefault();
@@ -450,7 +428,6 @@
 
         $(document).on('click', '#detailMember', function (e) {
             const id = $(this).data('id');
-            console.log(id);
             $.ajax({
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},            
                 url: "/dashboard/detail/" + id + "/edit",
@@ -484,7 +461,6 @@
             e.preventDefault();
             const id = $(this).data('id');
             $('#form-edit-keluarga').modal('show');
-            console.log(id);
             $.ajax({
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},            
                 url: "/dashboard/detail/" + id + "/edit",
@@ -523,13 +499,18 @@
                     isFamilyHead: $('#edit_isFamilyHead').val(),
                 },
                 success: function (response) {
-                    $('#form-edit-keluarga').modal('hide');
-                    window.scrollTo(0, 0);
-                    $('#success_message').addClass('alert alert-success');
-                    $('#success_message').text("Data Family Member Berhasil Di Update!");
-                    setTimeout(() => {
-                        location.reload();
-                    }, 2000);
+                    if(response == "Success"){
+                        $('#form-edit-keluarga').modal('hide');
+                        window.scrollTo(0, 0);
+                        $('#success_message').addClass('alert alert-success');
+                        $('#success_message').text("Data Family Member Berhasil Di Update!");
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2000);
+                    }else{
+                        $("#alert_nik").removeClass('d-none');
+                    }
+                    
                 }
             });
         });

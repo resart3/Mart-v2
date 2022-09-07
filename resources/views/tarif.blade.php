@@ -209,7 +209,7 @@
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Nama</label>
                             <div class="col-sm-10">
-                                <input id="name" type="text" name="name" class="form-control" required>
+                                <input id="name" type="text" name="name" class="form-control" required readonly>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
@@ -427,6 +427,7 @@
             },
             success: function (response) {
                 $('#tarifModalUpdate').modal('hide');
+                window.scrollTo(0, 0);
                 $('#success_message').addClass('alert alert-success');
                 $('#success_message').text("Data K3 Berhasil Di Update!");
                 setTimeout(() => {
@@ -499,6 +500,7 @@
             },
             success: function (response) {
                 $('#dataTarifModalUpdate').modal('hide');
+                window.scrollTo(0, 0);
                 $('#success_message').addClass('alert alert-success');
                 $('#success_message').text("Data K3 Warga Berhasil Di Update!");
                 setTimeout(() => {

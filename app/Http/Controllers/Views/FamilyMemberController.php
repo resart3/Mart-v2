@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Views;
 use App\Models\FamilyMember;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class FamilyMemberController extends Controller
 {
@@ -24,22 +25,36 @@ class FamilyMemberController extends Controller
      */
     public function store(Request $request)
     {
-        $data = [
-            'family_card_id'=>$request->input('nomor'),
-            'nama'=>$request->input('nama'),
-            'nik'=>$request->input('nik'),
-            'tempat_lahir'=>$request->input('tempat_lahir'),
-            'tanggal_lahir'=>$request->input('tanggal_lahir'),
-            'jenis_kelamin'=>$request->input('jenis_kelamin'),
-            'agama'=>$request->input('agama'),
-            'pendidikan'=>$request->input('pendidikan'),
-            'pekerjaan'=>$request->input('pekerjaan'),
-            'golongan_darah'=>$request->input('golongan_darah'),
-            'isFamilyHead'=>0
-        ];
-        FamilyMember::create($data);
-        return redirect()->route('data.show',['data'=>$request->input('nomor')])
-        ->with('success','Data Family Member berhasil dibuat!.');
+        
+        $get_nik = DB::table('family_members')
+        ->select('nik')
+        ->where('nik', $request->input('nik'))
+        ->get();
+        $cek_nik = $get_nik->first();
+
+        if(isset($cek_nik) == true){
+            return redirect()->route('data.show',['data'=>$request->input('nomor')])
+            ->with('failed','NIK sudah terdaftar!');
+        }else{
+            $nik = preg_replace('/\s+/', '', $request->input('nik'));
+            $data = [
+                'family_card_id'=>$request->input('nomor'),
+                'nama'=>$request->input('nama'),
+                'nik'=>$nik,
+                'tempat_lahir'=>$request->input('tempat_lahir'),
+                'tanggal_lahir'=>$request->input('tanggal_lahir'),
+                'jenis_kelamin'=>$request->input('jenis_kelamin'),
+                'agama'=>$request->input('agama'),
+                'pendidikan'=>$request->input('pendidikan'),
+                'pekerjaan'=>$request->input('pekerjaan'),
+                'golongan_darah'=>$request->input('golongan_darah'),
+                'isFamilyHead'=>0
+            ];
+            FamilyMember::create($data);
+            return redirect()->route('data.show',['data'=>$request->input('nomor')])
+            ->with('success','Data Family Member berhasil dibuat!.');
+        }
+
     }
 
     /**
@@ -65,8 +80,22 @@ class FamilyMemberController extends Controller
         $updateData = $request->all();
         $family_member = FamilyMember::FindOrFail($id);
 
+        if($family_member->nik != $updateData['nik']){
+            $get_nik = DB::table('family_members')
+            ->select('nik')
+            ->where('nik', $request->input('nik'))
+            ->get();
+            $cek_nik = $get_nik->first();
+
+            if(isset($cek_nik) == true){
+                return response()->json("Failed");
+            }else{
+                $nik = preg_replace('/\s+/', '', $updateData['nik']);
+                $family_member->nik = $nik;
+            }
+        }
+
         $family_member->nama = $updateData['nama'];
-        $family_member->nik = $updateData['nik'];
         $family_member->tempat_lahir = $updateData['tempat_lahir'];
         $family_member->jenis_kelamin = $updateData['jenis_kelamin'];
         $family_member->agama = $updateData['agama'];
@@ -76,7 +105,7 @@ class FamilyMemberController extends Controller
         $family_member->isFamilyHead = $updateData['isFamilyHead'];
 
         $family_member->save();
-        return response()->json("Data Berhasil Diubah");
+        return response()->json("Success");
     }
 
     /**

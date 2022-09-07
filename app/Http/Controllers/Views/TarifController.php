@@ -121,7 +121,9 @@ class TarifController extends Controller
     public function destroy($id)
     {
         //
-        $tarif = Category::where('id', $id)->delete();
+        $tarif = Category::find($id);
+        $tarif->lands()->delete();
+        $tarif->delete();
         // redirect ke parentView
         return redirect()->route('tarif.index')->with('success','Data Tarif K3 berhasil dihapus!');
     }
