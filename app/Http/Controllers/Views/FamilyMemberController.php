@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Views;
 
 use App\Models\FamilyMember;
+use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -92,10 +93,33 @@ class FamilyMemberController extends Controller
             }else{
                 $nik = preg_replace('/\s+/', '', $updateData['nik']);
                 $family_member->nik = $nik;
+                
+                $get_user_id = DB::table('users')
+                ->select('id')
+                ->where('family_member_id', $id)
+                ->get();
+                $user_id = $get_user_id->first()->id;
+
+                $user = User::FindOrFail($user_id);
+                $user->nik = $nik;
+                $user->save();
             }
         }
 
-        $family_member->nama = $updateData['nama'];
+        if($family_member->nama != $updateData['nama']){
+            $family_member->nama = $updateData['nama'];
+            
+            $get_user_id = DB::table('users')
+            ->select('id')
+            ->where('family_member_id', $id)
+            ->get();
+            $user_id = $get_user_id->first()->id;            
+
+            $user = User::FindOrFail($user_id);
+            $user->name = $updateData['nama'];
+            $user->save();
+        }
+
         $family_member->tempat_lahir = $updateData['tempat_lahir'];
         $family_member->jenis_kelamin = $updateData['jenis_kelamin'];
         $family_member->agama = $updateData['agama'];

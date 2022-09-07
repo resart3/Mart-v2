@@ -85,13 +85,16 @@ class UserController extends Controller
             $User = new User;
 
             if($request->role == 'user'){
-                $dataMember = DB::table('family_members')
-                ->select('family_members.nama')
-                ->where('nik', $request->nik)
+                $dataMember = DB::table('family_members as fm')
+                ->join('family_cards as fc', 'fm.family_card_id', '=', 'fc.nomor')
+                ->select('fm.nama', 'fm.id', 'fc.rt_rw')
+                ->where('fm.nik', $request->nik)
                 ->get();
                 
                 if(isset($dataMember[0])){
                     $User->name = $dataMember[0]->nama;
+                    $User->family_member_id = $dataMember[0]->id;
+                    $User->rt_rw = $dataMember[0]->rt_rw;
                 }else{
                     return redirect()->route('user.index')->with('failed','NIK Tidak Terdaftar!');
                 }

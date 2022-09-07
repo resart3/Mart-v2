@@ -126,9 +126,8 @@ class FamilyCardController extends Controller
         $updateData = $request->all();
         $family_card = FamilyCard::FindOrFail($no_kk);
 
-        $family_card->nomor = $updateData['nomor'];
-        $family_card->alamat = $updateData['alamat'];
         $family_card->rt_rw = $updateData['rt_rw'];
+        $family_card->alamat = $updateData['alamat'];
         $family_card->kode_pos = $updateData['kode_pos'];
         $family_card->desa_kelurahan = $updateData['desa_kelurahan'];
         $family_card->kecamatan = $updateData['kecamatan'];
