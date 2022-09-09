@@ -186,6 +186,7 @@
             },
             success: function (response) {
                 $('#editTransModal').modal('hide');
+                window.scrollTo(0, 0);
                 $('#success_message').addClass('alert alert-success');
                 $('#success_message').text("Data Transaction Berhasil Di Update!");
                 setTimeout(() => {
