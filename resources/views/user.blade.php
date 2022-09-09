@@ -194,7 +194,7 @@
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Nama Lengkap</label>
                             <div class="col-sm-10">
-                                <input id="edit_name" type="text" name="name" class="form-control" required>
+                                <input id="edit_name" type="text" name="name" class="form-control">
                             </div>
                         </div>
                         <div class="form-group row mb-4">
@@ -207,19 +207,14 @@
                             <label class="col-sm-2 col-form-label">NIK</label>
                             <div class="col-sm-10">
                                 <input id="edit_nik" type="text" name="nik" class="form-control" 
-                                    onkeypress="disableSpacingAndLetter(event)" required>
+                                    onkeypress="disableSpacingAndLetter(event)">
                             </div>
                         </div>
                         <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Role</label>
                             <div class="col-sm-10">
-                                <select class="form-control" id="edit_role" name="role" required>
-                                    <option value=""></option>
-                                    <option value="user">User</option>
-                                    <option value="superuser">Superuser</option>
-                                    <option value="admin_rt">Admin RT</option>
-                                    <option value="admin_rw">Admin RW</option>
-                                </select>
+                                <input id="edit_role" type="text" name="role" class="form-control" 
+                                    onkeypress="disableSpacingAndLetter(event)">
                             </div>
                         </div>
                         <div class="form-group row mb-4" hidden>
@@ -261,6 +256,10 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script>
+    function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
     function disableSpacingAndLetter(e) {
         if(e.which === 32){
             e.preventDefault();
@@ -319,16 +318,25 @@
                 $('#edit_name').val(response.name);
                 $('#edit_email').val(response.email);
                 $('#edit_nik').val(response.nik);
-                $('#edit_role').val(response.role);
+                $('#edit_role').val(capitalizeFirstLetter(response.role));
                 $('#edit_password').val(response.password);
 
                 if(response.rt_rw){
                     $("#edit_rt").parent().parent().prop("hidden", false);
                     $("#edit_rw").parent().parent().prop("hidden", false);
+                    $("#edit_name").prop("readonly", false);
+                    $("#edit_nik").prop("readonly", false);
+                    $("#edit_role").prop("readonly", false);
 
                     let temp = response.rt_rw.split("/");
                     $('#edit_rt').val(temp[0]);
                     $('#edit_rw').val(temp[1]);
+                }else{
+                    $("#edit_name").prop("readonly", true);
+                    $("#edit_nik").prop("readonly", true);
+                    $("#edit_role").prop("readonly", true);
+                    $("#edit_rt").parent().parent().prop("hidden", true);
+                    $("#edit_rw").parent().parent().prop("hidden", true);
                 }
             }
         });

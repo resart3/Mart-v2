@@ -110,6 +110,7 @@ class TransactionController extends Controller
                         array_push($arrDataTransaksi, $tempData);
                     }
 
+                    $counter = 0;
                     foreach($arrBulan as $bulan){
                         $found = 0;
                         foreach($arrDataTransaksi as $data){
@@ -120,13 +121,24 @@ class TransactionController extends Controller
                         }
 
                         if($found == 0){
-                            $tempData["family_card_id"] = $familyCard;
-                            $tempData["jumlah"] = $jumlahIuran;
-                            $tempData["tahun"] = $inputTahun;
-                            $tempData["bulan"] = $bulan;
-                            $tempData["status"] = "Belum Membayar";
-                            array_push($arrDataTransaksi, $tempData);
+                            if($counter < ((int)$getCreatedMonth - 1)) {
+                                $tempData["family_card_id"] = $familyCard;
+                                $tempData["jumlah"] = 0;
+                                $tempData["tahun"] = $inputTahun;
+                                $tempData["bulan"] = $bulan;
+                                $tempData["status"] = "Tidak Tersedia";
+                                array_push($arrDataTransaksi, $tempData);    
+                            }else{
+                                $tempData["family_card_id"] = $familyCard;
+                                $tempData["jumlah"] = $jumlahIuran;
+                                $tempData["tahun"] = $inputTahun;
+                                $tempData["bulan"] = $bulan;
+                                $tempData["status"] = "Belum Membayar";
+                                array_push($arrDataTransaksi, $tempData);
+                            }
                         }
+
+                        $counter++;
                     }
 
                     foreach($arrBulan as $bulan){

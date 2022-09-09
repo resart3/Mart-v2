@@ -98,11 +98,14 @@ class FamilyMemberController extends Controller
                 ->select('id')
                 ->where('family_member_id', $id)
                 ->get();
-                $user_id = $get_user_id->first()->id;
+                $cek_user_id = $get_user_id->first();
 
-                $user = User::FindOrFail($user_id);
-                $user->nik = $nik;
-                $user->save();
+                if(isset($cek_user_id)){
+                    $user_id = $get_user_id->first()->id;
+                    $user = User::FindOrFail($user_id);
+                    $user->nik = $nik;
+                    $user->save();
+                }
             }
         }
 
@@ -113,11 +116,14 @@ class FamilyMemberController extends Controller
             ->select('id')
             ->where('family_member_id', $id)
             ->get();
-            $user_id = $get_user_id->first()->id;            
+            $cek_user_id = $get_user_id->first();
 
-            $user = User::FindOrFail($user_id);
-            $user->name = $updateData['nama'];
-            $user->save();
+            if(isset($cek_user_id)){
+                $user_id = $get_user_id->first()->id;
+                $user = User::FindOrFail($user_id);
+                $user->name = $updateData['nama'];
+                $user->save();
+            }
         }
 
         $family_member->tempat_lahir = $updateData['tempat_lahir'];
