@@ -26,6 +26,10 @@ class FamilyCard extends Model
             ->select('family_card_id', 'nik', 'nama');
     }
 
+    public function with_family_head(){
+        return $this->hasMany(FamilyMember::class, 'family_card_id', 'nomor')->where('isFamilyHead', 1);
+    }
+
     public function categories()
     {
         return $this->belongsToMany(Category::class, 'land');

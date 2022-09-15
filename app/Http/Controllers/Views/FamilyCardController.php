@@ -15,13 +15,14 @@ class FamilyCardController extends Controller
         $title = 'Halaman Data Warga';
         // $rt_rw = explode("/",session()->get('user')->rt_rw);
         if (session()->get('user')->role=='admin_rt') {
-            $family_card = FamilyCard::with('family_head')->where('rt_rw',session()->get('user')->rt_rw)->get();
+            $family_card = FamilyCard::with('with_family_head')->where('rt_rw',session()->get('user')->rt_rw)->get();
         }
         else if (session()->get('user')->role=='admin_rw') {
-            $family_card = FamilyCard::where('rt_rw','like','%'.explode("/",session()->get('user')->rt_rw)[1])->get();
+            $family_card =  FamilyCard::with('with_family_head')->where('rt_rw','like','%'.explode("/",session()->get('user')->rt_rw)[1])->get();
         }
         else{
-            $family_card = FamilyCard::get();
+            $family_card = FamilyCard::with('with_family_head')->get();
+            // dd($family_card[1]);
         }
 
         return view('family_card', compact('family_card', 'title'));
