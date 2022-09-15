@@ -68,6 +68,7 @@
                         <tr>
                             <th>#</th>
                             <th style="width: 15%">Nomor KK</th>
+                            <th>Kepala Keluarga</th>
                             <th style="width: 20%">Alamat</th>
                             <th>RT / RW</th>
                             <th>Kode Pos</th>
@@ -79,6 +80,11 @@
                             <tr>
                                 <td>{{ $key + 1 }}</td>
                                 <td>{{ $data->nomor }}</td>
+                                <td>
+                                    @foreach ($data->with_family_head as $head )
+                                        {{ $head->nama }}
+                                    @endforeach
+                                </td>
                                 <td style="width: 20%">{{ $data->alamat }}</td>
                                 <td>{{ $data->rt_rw }}</td>
                                 <td>{{ $data->kode_pos }}</td>
