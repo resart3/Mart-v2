@@ -42,9 +42,10 @@ class FamilyCardController extends Controller
 
         $nomor = preg_replace('/\s+/', '', $request->input('nomor'));
         $nik = preg_replace('/\s+/', '', $request->input('nik'));
+        dd($nomor, $nik);
 
         $dataKk = [
-            'nomor'=>$request->input('nomor'),
+            'nomor'=>$nomor,
             'alamat'=>$request->input('alamat'),
             'rt_rw'=>$rt_rw,
             'kode_pos'=>$request->input('kode_pos'),
@@ -55,9 +56,9 @@ class FamilyCardController extends Controller
         ];
 
         $dataMember = [
-            'family_card_id'=>$request->input('nomor'),
+            'family_card_id'=>$nomor,
             'nama'=>$request->input('nama'),
-            'nik'=>$request->input('nik'),
+            'nik'=>$nik,
             'tempat_lahir'=>$request->input('tempat_lahir'),
             'tanggal_lahir'=>$request->input('tanggal_lahir'),
             'jenis_kelamin'=>$request->input('jenis_kelamin'),
