@@ -86,12 +86,13 @@ class UserController extends Controller
 
             if($request->role == 'user'){
                 $dataMember = DB::table('family_members')
-                ->select('family_members.nama')
+                ->select('family_members.nama', 'family_members.id')
                 ->where('nik', $request->nik)
                 ->get();
                 
                 if(isset($dataMember[0])){
                     $User->name = $dataMember[0]->nama;
+                    $User->family_member_id = $dataMember[0]->id;
                 }else{
                     return redirect()->route('user.index')->with('failed','NIK Tidak Terdaftar!');
                 }
@@ -210,6 +211,16 @@ class UserController extends Controller
         $user = User::find($id);
 
         if(isset($user) == TRUE){
+            // $list ="";
+            // $list .= 
+            // if ($user->rt_rw == NULL) {
+            //     $data = array(
+
+            //     )
+            // }
+            // else{
+                
+            // }
             return response()->json($user);
         }else{
             return response()->json("Data User Tidak Ditemukan!");
