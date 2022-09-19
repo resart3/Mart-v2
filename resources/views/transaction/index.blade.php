@@ -31,32 +31,27 @@
                 <div class="table-responsive">
                     <table id="dataTable" class="table-bordered table-md table">
                         <thead>
-                        <tr>
-                            <th>#</th>
-                            <th style="width: 20%">Bukti Bayar</th>
-                            <th>ID Kartu Keluarga</th>
+                        <tr class="text-center">
+                            <th>No</th>
+                            <th>Nomor KK</th>
                             <th>Nama Kepala Keluarga</th>
-                            <th>Bulan </th>
-                            <th>Tahun</th>
-                            <th style="width: 20%">Status</th>
                             <th>Action</th>
                         </tr>
                         </thead>
                         <tbody style="font-size: 14px!important">
-                        @foreach ($arrDataTransaksi as $key => $data)
-                            <tr>
+                        @foreach ($family_card as $key => $data)
+                            <tr class="text-center">
                                 <td>{{ $key + 1 }}</td>
-                                @if($data['receipt'])
-                                    <td>{{ $data['receipt'] }}</td>
-                                @else
-                                    <td>Bukti Bayar Belum Tersedia</td>
-                                @endif
-                                <td>{{ $data['family_card_id'] }}</td>
-                                <td>{{ $data['nama'] }}</td>
-                                <td>{{ $data['bulan'] }}</td>
-                                <td>{{ $data['tahun'] }}</td>
-                                <td>{{ $data['status']}}</td>
+                                <td>{{ $data->nomor }}</td>
                                 <td>
+                                    @foreach ($data->with_family_head as $head )
+                                        {{ $head->nama }}
+                                    @endforeach
+                                </td>
+                                <td>
+                                    <a href="" class="btn btn-primary"> Detail </a>
+                                </td>
+                                {{-- <td class="d-flex justify-content-center align-items-center">
                                     <a href="" class="btn btn-primary"
                                         id='editTrans' data-id="{{$data['id']}}" data-toggle="modal"
                                         data-target="#editTransModal"> Edit
@@ -66,7 +61,7 @@
                                         @csrf @method('DELETE')
                                         <button class="btn btn-danger delete" onclick="return confirm('Apakah anda yakin ingin hapus?');">Hapus</button>
                                     </form>
-                                </td>
+                                </td> --}}
                             </tr>
                         @endforeach
                         </tbody>

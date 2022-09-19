@@ -17,55 +17,55 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        // dd(asset('storage'));
         $title = 'Halaman Transaksi Iuran';
-        if (session()->get('user')->role == 'admin_rt') {
-            $familyCard = FamilyCard::where('rt_rw',session()->get('user')->rt_rw)->get();
-        }
-        else if (session()->get('user')->role == 'admin_rw') {
-            $familyCard = FamilyCard::where('rt_rw','like','%'.explode("/",session()->get('user')->rt_rw)[1])->get();
-        }
-        else{
-            $familyCard = FamilyCard::get();
-        }
-        //menyimpan nomor kk yang se rt atau se rw
-        foreach ($familyCard as $data) {
-            $nomor[] = $data->nomor;
-        }
-        $transactions = Transaction::whereIn('family_card_id',$nomor)->get();
-        if (count($transactions) != 0) {
-            foreach($transactions as $data){
-                $transaction_family_card[] = $data->family_card_id;
-            }
+        $family_card = FamilyCard::with('with_family_head')->orderBy('created_at', 'desc')->get();
+        // if (session()->get('user')->role == 'admin_rt') {
+        //     $familyCard = FamilyCard::where('rt_rw',session()->get('user')->rt_rw)->get();
+        // }
+        // else if (session()->get('user')->role == 'admin_rw') {
+        //     $familyCard = FamilyCard::where('rt_rw','like','%'.explode("/",session()->get('user')->rt_rw)[1])->get();
+        // }
+        // else{
+        //     $familyCard = FamilyCard::get();
+        // }
+        // //menyimpan nomor kk yang se rt atau se rw
+        // foreach ($familyCard as $data) {
+        //     $nomor[] = $data->nomor;
+        // }
+        // $transactions = Transaction::whereIn('family_card_id',$nomor)->get();
+        // if (count($transactions) != 0) {
+        //     foreach($transactions as $data){
+        //         $transaction_family_card[] = $data->family_card_id;
+        //     }
     
-            $familyHeadName = DB::table('family_members')
-            ->whereIn('family_card_id', $transaction_family_card)
-            ->where('isFamilyHead', 1)
-            ->select('nama', 'family_card_id')        
-            ->get();
+        //     $familyHeadName = DB::table('family_members')
+        //     ->whereIn('family_card_id', $transaction_family_card)
+        //     ->where('isFamilyHead', 1)
+        //     ->select('nama', 'family_card_id')        
+        //     ->get();
     
-            $arrDataTransaksi = [];
-            foreach($transactions as $key){
-                $tempData["family_card_id"] = $key->family_card_id;
-                foreach($familyHeadName as $data){
-                    if($data->family_card_id == $key->family_card_id){
-                        $tempData["nama"] = $data->nama;
-                        break;
-                    }
-                }
-                $tempData["id"] = $key->id;
-                $tempData["jumlah"] = $key->jumlah;
-                $tempData["tahun"] = $key->tahun;
-                $tempData["bulan"] = $key->bulan;
-                $tempData["status"] = $key->status;
-                $tempData["receipt"] = $key->receipt;
-                array_push($arrDataTransaksi, $tempData);
-            }
-        }else{
-            $arrDataTransaksi = [];
-        }
+        //     $arrDataTransaksi = [];
+        //     foreach($transactions as $key){
+        //         $tempData["family_card_id"] = $key->family_card_id;
+        //         foreach($familyHeadName as $data){
+        //             if($data->family_card_id == $key->family_card_id){
+        //                 $tempData["nama"] = $data->nama;
+        //                 break;
+        //             }
+        //         }
+        //         $tempData["id"] = $key->id;
+        //         $tempData["jumlah"] = $key->jumlah;
+        //         $tempData["tahun"] = $key->tahun;
+        //         $tempData["bulan"] = $key->bulan;
+        //         $tempData["status"] = $key->status;
+        //         $tempData["receipt"] = $key->receipt;
+        //         array_push($arrDataTransaksi, $tempData);
+        //     }
+        // }else{
+        //     $arrDataTransaksi = [];
+        // }
 
-        return view('transaction.index', compact('arrDataTransaksi', 'title'));
+        return view('transaction.index', compact('family_card', 'title'));
     }
 
     /**
