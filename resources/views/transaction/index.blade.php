@@ -49,7 +49,7 @@
                                     @endforeach
                                 </td>
                                 <td>
-                                    <a href="" class="btn btn-primary"> Detail </a>
+                                    <a href="{{ route('detail_transaction', ['nomor' => $data->nomor, 'tahun' => date('Y')]) }}" class="btn btn-primary"> Detail </a>
                                 </td>
                                 {{-- <td class="d-flex justify-content-center align-items-center">
                                     <a href="" class="btn btn-primary"

@@ -27,11 +27,23 @@
     <div class="section-body">
         <div id="success_message"></div>
         <div class="card">
-            <div class="card-header d-flex justify-content-between">
+            <div class="card-header d-flex flex-column align-items-start justify-content-start">
                 <a href="#" class="btn btn-icon icon-left btn-primary">
                     <i class="fa fa-plus"></i>
                     &nbsp; Tambah Data Transaksi Iuran
                 </a>
+                <div class="dropdown mt-2">
+                    <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" 
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" 
+                        style="background-color: #9f1521; color: white;">
+                        Pilih Tahun
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="{{ route('detail_transaction', ['nomor' => $nomor, 'tahun' => '2021']) }}">2021</a>
+                        <a class="dropdown-item" href="/transaction/{{ $nomor }}/{{ 2022 }}">2022</a>
+                        <a class="dropdown-item" href="{{ route('detail_transaction', ['nomor' => $nomor, 'tahun' => '2023']) }}">2023</a>
+                    </div>
+                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -39,27 +51,23 @@
                         <thead>
                             <tr class="text-center">
                                 <th>No</th>
-                                <th>Nomor KK</th>
-                                <th>Nama Kepala Keluarga</th>
-                                <th>Action</th>
+                                <th>Jumlah</th>
+                                <th>Tahun</th>
+                                <th>Bulan</th>
+                                <th>Status</th>
                             </tr>
-                        {{-- </thead>
+                        </thead>
                         <tbody style="font-size: 14px!important">
-                            @foreach ($family_card as $key => $data)
+                            @foreach ($arrDataTransaksiSorted as $key => $data)
                                 <tr class="text-center">
                                     <td>{{ $key + 1 }}</td>
-                                    <td>{{ $data->nomor }}</td>
-                                    <td>
-                                        @foreach ($data->with_family_head as $head )
-                                            {{ $head->nama }}
-                                        @endforeach
-                                    </td>
-                                    <td>
-                                        <a href="" class="btn btn-primary"> Detail </a>
-                                    </td>
+                                    <td>{{ $data["jumlah"] }}</td>
+                                    <td>{{ $data["tahun"] }}</td>
+                                    <td>{{ $data["bulan"] }}</td>
+                                    <td>{{ $data["status"] }}</td>
                                 </tr>
                             @endforeach
-                        </tbody> --}}
+                        </tbody>
                     </table>
                 </div>
             </div>
