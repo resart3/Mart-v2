@@ -104,123 +104,156 @@ class TransactionController extends Controller
     public function show_transaction($nomor, $tahun)
     {
         $title = 'Detail Transaksi ('. $nomor .')';
+        $array_bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", 
+                "September", "Oktober", "November", "Desember"];
+        $array_data_transaksi = [];
 
-        $getTransaction = DB::table('transactions')
-        ->where('family_card_id', $nomor)
-        ->select('*')
+        $get_total_iuran = DB::table('lands')
+        ->join('categories', 'lands.category_id', '=', 'categories.id')
+        ->where('lands.family_card_id', $nomor)
+        ->select(DB::raw('SUM(categories.amount) as total_amount'))
         ->get();
-        
-        $cekTransaction = $getTransaction->first();
-        
-        $createDate = DB::table('family_cards')
+
+        $get_created_date = DB::table('family_cards')
         ->where('nomor', $nomor)
         ->select('created_at')        
         ->get();
-        $getCreatedYear = substr($createDate[0]->created_at, 0, 4);
-        $getCreatedMonth = substr($createDate[0]->created_at, 5, 2);
-        
+        $get_created_year = substr($get_created_date[0]->created_at, 0, 4);
+        $get_created_month = substr($get_created_date[0]->created_at, 5, 2);
 
-        $dataLand = DB::table('lands')
-        ->join('categories', 'categories.id', '=', 'lands.category_id')
-        ->where('family_card_id', $nomor)
-        ->select('categories.amount')        
+        $get_transaction = DB::table('lands')
+        ->join('transactions', 'transactions.family_card_id', '=', 'lands.family_card_id')
+        ->join('categories', 'lands.category_id', '=', 'categories.id')
+        ->join('family_cards', 'family_cards.nomor', '=', 'transactions.family_card_id')
+        ->where('lands.family_card_id', $nomor)
+        ->where('transactions.tahun', $tahun)
+        ->select('lands.family_card_id', DB::raw('SUM(categories.amount) as total_amount'),
+            'transactions.bulan', 'transactions.tahun', 'transactions.status', 'family_cards.created_at')
+        ->groupBy('lands.family_card_id', 'transactions.bulan', 'transactions.tahun', 
+            'family_cards.created_at', 'transactions.status')
         ->get();
-        $dataLandStatus = $dataLand->first();
 
-        if(isset($dataLandStatus) == false){
-            dd("Tidak ada land data");
-        }else{
-            $jumlahIuran = 0;
-            foreach($dataLand as $data){
-                $jumlahIuran = $jumlahIuran + $data->amount;
-            }
+        $cek_transaction = $get_transaction->first();
 
-            $arrBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", 
-                "September", "Oktober", "November", "Desember"];
-            $arrDataTransaksi = [];
-            $arrDataTransaksiSorted = [];
+        if(isset($cek_transaction) == false){
+            $get_land = DB::table('lands')
+            ->where('family_card_id', $nomor)
+            ->select('*')
+            ->get();
 
-            if(isset($cekTransaction) == false){
-                if($getCreatedYear == $tahun){
-                    for($i = 0; $i < (int)$getCreatedMonth - 1; $i++){
+            $cek_land = $get_land->first();
+            if(isset($cek_land) == false){
+                dd("Data Land Belum Terdaftar");
+            }else{
+                if($tahun < $get_created_year){
+                    foreach($array_bulan as $bulan){
                         $tempData["jumlah"] = 0;
                         $tempData["tahun"] = $tahun;
-                        $tempData["bulan"] = $arrBulan[$i];
+                        $tempData["bulan"] = $bulan;
                         $tempData["status"] = "Tidak Tersedia";
-                        array_push($arrDataTransaksiSorted, $tempData);
+                        array_push($array_data_transaksi, $tempData);
+                    }
+                }elseif($tahun == $get_created_year){
+                    for($i = 0; $i < (int)$get_created_month - 1; $i++){
+                        $tempData["jumlah"] = 0;
+                        $tempData["tahun"] = $tahun;
+                        $tempData["bulan"] = $array_bulan[$i];
+                        $tempData["status"] = "Tidak Tersedia";
+                        array_push($array_data_transaksi, $tempData);
                     }
 
-                    for($i = (int)$getCreatedMonth - 1; $i < count($arrBulan); $i++){
-                        $tempData["jumlah"] = $jumlahIuran;
+                    for($i = (int)$get_created_month - 1; $i < count($array_bulan); $i++){
+                        $tempData["jumlah"] = $get_total_iuran->first()->total_amount;
                         $tempData["tahun"] = $tahun;
-                        $tempData["bulan"] = $arrBulan[$i];
+                        $tempData["bulan"] = $array_bulan[$i];
                         $tempData["status"] = "Belum Membayar";
-                        array_push($arrDataTransaksiSorted, $tempData);
-                    }
-                }elseif($getCreatedYear < $tahun){
-                    foreach($arrBulan as $bulan){
-                        $tempData["jumlah"] = $jumlahIuran;
-                        $tempData["tahun"] = $tahun;
-                        $tempData["bulan"] = $bulan;
-                        $tempData["status"] = "Belum Membayar";
-                        array_push($arrDataTransaksiSorted, $tempData);
+                        array_push($array_data_transaksi, $tempData);
                     }
                 }else{
-                    foreach($arrBulan as $bulan){
-                        $tempData["jumlah"] = 0;
+                    foreach($array_bulan as $bulan){
+                        $tempData["jumlah"] = $get_total_iuran->first()->total_amount;
                         $tempData["tahun"] = $tahun;
                         $tempData["bulan"] = $bulan;
-                        $tempData["status"] = "Tidak Tersedia";
-                        array_push($arrDataTransaksiSorted, $tempData);
+                        $tempData["status"] = "Belum Membayar";
+                        array_push($array_data_transaksi, $tempData);
                     }
+                }
+
+                dd($array_data_transaksi);
+            }
+        }else{
+            if($tahun == $get_created_year){
+                for($i = 0; $i < (int)$get_created_month - 1; $i++){
+                    $tempData["jumlah"] = 0;
+                    $tempData["tahun"] = $tahun;
+                    $tempData["bulan"] = $array_bulan[$i];
+                    $tempData["status"] = "Tidak Tersedia";
+                    array_push($array_data_transaksi, $tempData);
+                    unset($array_bulan[$i]);
+                }
+
+                foreach($get_transaction as $transaction){
+                    $tempData["jumlah"] = $transaction->total_amount;
+                    $tempData["tahun"] = $tahun;
+                    $tempData["bulan"] = $transaction->bulan;
+                    $tempData["status"] = $transaction->status;
+                    array_push($array_data_transaksi, $tempData);
+
+                    foreach($array_bulan as $bulan){
+                        if($bulan == $transaction->bulan){
+                            if (($key = array_search($bulan, $array_bulan)) !== false) {
+                                unset($array_bulan[$key]);
+                            }
+                        }
+                    }
+                }
+
+                foreach($array_bulan as $bulan){
+                    $tempData["jumlah"] = $get_total_iuran->first()->total_amount;
+                    $tempData["tahun"] = $tahun;
+                    $tempData["bulan"] = $bulan;
+                    $tempData["status"] = "Belum Membayar";
+                    array_push($array_data_transaksi, $tempData);
                 }
             }else{
-                foreach($getTransaction as $data){
-                    $tempData["jumlah"] = $data->jumlah;
-                    $tempData["tahun"] = $data->tahun;
-                    $tempData["bulan"] = $data->bulan;
-                    $tempData["status"] = $data->status;
-                    array_push($arrDataTransaksi, $tempData);
+                foreach($get_transaction as $transaction){
+                    $tempData["jumlah"] = $transaction->total_amount;
+                    $tempData["tahun"] = $tahun;
+                    $tempData["bulan"] = $transaction->bulan;
+                    $tempData["status"] = $transaction->status;
+                    array_push($array_data_transaksi, $tempData);
+
+                    foreach($array_bulan as $bulan){
+                        if($bulan == $transaction->bulan){
+                            if (($key = array_search($bulan, $array_bulan)) !== false) {
+                                unset($array_bulan[$key]);
+                            }
+                        }
+                    }
                 }
 
-                $counter = 0;
-                foreach($arrBulan as $bulan){
-                    $found = 0;
-                    foreach($arrDataTransaksi as $data){
-                        if($data["bulan"] == $bulan){
-                            $found = 1;
-                            break;
-                        }
-                    }
-
-                    if($found == 0){
-                        if($counter < ((int)$getCreatedMonth - 1)) {
-                            $tempData["jumlah"] = 0;
-                            $tempData["tahun"] = $tahun;
-                            $tempData["bulan"] = $bulan;
-                            $tempData["status"] = "Tidak Tersedia";
-                            array_push($arrDataTransaksi, $tempData);    
-                        }else{
-                            $tempData["jumlah"] = $jumlahIuran;
-                            $tempData["tahun"] = $tahun;
-                            $tempData["bulan"] = $bulan;
-                            $tempData["status"] = "Belum Membayar";
-                            array_push($arrDataTransaksi, $tempData);
-                        }
-                    }
-
-                    $counter++;
-                }
-
-                foreach($arrBulan as $bulan){
-                    foreach($arrDataTransaksi as $data){
-                        if($data["bulan"] == $bulan){
-                            array_push($arrDataTransaksiSorted, $data);
-                        }
-                    }
+                foreach($array_bulan as $bulan){
+                    $tempData["jumlah"] = $get_total_iuran->first()->total_amount;
+                    $tempData["tahun"] = $tahun;
+                    $tempData["bulan"] = $bulan;
+                    $tempData["status"] = "Belum Membayar";
+                    array_push($array_data_transaksi, $tempData);
                 }
             }
         }
+
+        $array_bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", 
+            "September", "Oktober", "November", "Desember"];
+        $arrDataTransaksiSorted = [];
+
+        foreach($array_bulan as $bulan){
+            foreach($array_data_transaksi as $data){
+                if($data["bulan"] == $bulan){
+                    array_push($arrDataTransaksiSorted, $data);
+                }
+            }
+        }
+
         return view('transaction/transaction_detail', compact('title', 'arrDataTransaksiSorted', 'nomor'));
     }
 
