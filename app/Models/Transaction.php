@@ -18,9 +18,7 @@ class Transaction extends Model
     public function familyCard(){
         return $this->belongsTo(FamilyCard::class, 'category_id');
     }
-
     
-
     public function get_transaction($nomor, $tahun, $bulan){
         return DB::table('transactions')
         ->where('family_card_id', $nomor)
@@ -30,11 +28,19 @@ class Transaction extends Model
         ->get();
     }
 
-    public function update_transaction($nomor, $tahun, $bulan, $status, $receipt){
+    public function update_transaction($nomor, $tahun, $bulan, $receipt){
         return DB::table('transactions')
         ->where('family_card_id', $nomor)
         ->where('tahun', $tahun)
         ->where('bulan', $bulan)
-        ->update(['status' => $status, 'receipt' => $receipt]);
+        ->update(['receipt' => $receipt]);
+    }
+
+    public function delete_transaction($nomor, $tahun, $bulan){
+        return DB::table('transactions')
+        ->where('family_card_id', $nomor)
+        ->where('tahun', $tahun)
+        ->where('bulan', $bulan)
+        ->delete();
     }
 }

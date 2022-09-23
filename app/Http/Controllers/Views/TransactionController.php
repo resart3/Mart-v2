@@ -65,15 +65,16 @@ class TransactionController extends Controller
                     'jumlah'=>$request->amount,
                     'tahun'=>$request->tahun,
                     'bulan'=>$request->bulan,
-                    'status' => $request->status,
+                    'status' => 'Lunas',
                     'receipt' => $name,
                 ];
                 Transaction::create($data);
-                return redirect(route('detail_transaction', ['nomor' => $request->nomor_kk, 'tahun' => $request->tahun]));
+                return redirect(route('detail_transaction', ['nomor' => $request->nomor_kk, 'tahun' => $request->tahun]))->with('success','Data Berhasil di Input!');
             }else{
-                dd("MASUK ELSE");
+                return redirect(route('detail_transaction', ['nomor' => $request->nomor_kk, 'tahun' => $request->tahun]))->with('failed','Data Transaksi Sudah Ada!');
             }
-
+        }else{
+            return redirect(route('detail_transaction', ['nomor' => $request->nomor_kk, 'tahun' => $request->tahun]))->with('failed','Harap Masukan Bukti Pembayaran!');
         }
     }
 
@@ -85,14 +86,7 @@ class TransactionController extends Controller
      */
     public function show($nomor)
     {
-
-    }
-
-    public function update_transaction($nomor, $tahun, $bulan, Request $request){
-        
-        $transcation_model = new Transaction;
-
-
+        //
     }
 
     public function show_receipt_image($nomor, $tahun, $bulan){
@@ -103,12 +97,13 @@ class TransactionController extends Controller
         if(isset($cek_receipt_image)){
             return response()->json($get_receipt_image->first()->receipt);
         }else{
-            return("TIDAK ADA");
+            return redirect()->route('detail_transaction', ['nomor' => $nomor, 'tahun' => $tahun])->with('failed','Tidak Ada Bukti Bayar!');
         }
     }
 
-    public function show_transaction($nomor, $tahun)
+    public function show_transaction(Request $request=NULL ,$nomor, $tahun=NULL)
     {
+        
         $title = 'Detail Transaksi ('. $nomor .')';
         $array_bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", 
                 "September", "Oktober", "November", "Desember"];
@@ -270,13 +265,6 @@ class TransactionController extends Controller
     public function edit($id)
     {
         //
-        $transactions = Transaction::find($id);
-
-        return response()->json("Data Transaction Tidak Ditemukan!");
-        if(isset($transactions) == TRUE){
-            return response()->json($transactions);
-        }else{
-        }
     }
 
     /**
@@ -286,13 +274,20 @@ class TransactionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $nomor)
     {
-        $updateData = $request->all();
-        $transaction = Transaction::FindOrFail($id);
+        $transaction_model = new Transaction;
+        if(isset($request->receipt)){
+            $name = $request->receipt->getClientOriginalName();
+            $request->receipt->move(public_path('assets/images/transaction/'. $request->nomor_kk), $name);
 
-        $transaction->status = $updateData['status'];
-        $transaction->save();
+            $transaction_model->update_transaction($nomor, $request->tahun, $request->bulan, $name);
+        }else{
+            $get_transaction = $transaction_model->get_transaction($nomor, $request->tahun, $request->bulan);
+            $transaction_model->update_transaction($nomor, $request->tahun, $request->bulan, $get_transaction->first()->receipt);
+        }
+
+        return redirect()->route('detail_transaction', ['nomor' => $nomor, 'tahun' => $request->tahun])->with('success','Data Berhasil di Update!');
     }
 
     /**
@@ -304,8 +299,12 @@ class TransactionController extends Controller
     public function destroy($id)
     {
         //
-        $transactions = Transaction::where('id', $id)->delete();
-        // redirect ke parentView
-        return redirect()->route('transaction.index')->with('success','Data Transaksi berhasil dihapus!');
+    }
+
+    public function delete_transaction($nomor, $tahun, $bulan){
+        $transaction_model = new Transaction;
+        $transaction_model->delete_transaction($nomor, $tahun, $bulan);
+
+        return redirect()->route('detail_transaction', ['nomor' => $nomor, 'tahun' => $tahun])->with('success','Data Berhasil di Hapus!');
     }
 }

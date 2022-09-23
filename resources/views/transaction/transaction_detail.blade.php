@@ -27,21 +27,13 @@
     <div class="section-body">
         <div id="success_message"></div>
         <div class="card">
-            <div class="card-header d-flex flex-column align-items-start justify-content-start">
-                <div class="dropdown mt-2">
-                    <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" 
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" 
-                        style="background-color: #9f1521; color: white;">
-                        Pilih Tahun
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" href="{{ route('detail_transaction', ['nomor' => $nomor, 'tahun' => '2021']) }}">2021</a>
-                        <a class="dropdown-item" href="{{ route('detail_transaction', ['nomor' => $nomor, 'tahun' => '2022']) }}">2022</a>
-                        <a class="dropdown-item" href="{{ route('detail_transaction', ['nomor' => $nomor, 'tahun' => '2023']) }}">2023</a>
-                    </div>
-                </div>
-            </div>
             <div class="card-body">
+                <div class="d-flex justify-content-start align-items-center w-50">
+                    <span class="mr-2">Input Tahun</span>
+                    <input class="form-control form-control-sm border border-secondary rounded-0 w-25 mr-2" type="number" 
+                        min="1900" max="2099" id="search_tahun"/>
+                    <button class="btn btn-outline-danger" type="submit" onclick="input_tahun({{ $nomor }})">Search</button>
+                </div>
                 <div class="table-responsive">
                     <table id="transactionTable" class="table-bordered table-md table">
                         <thead>
@@ -58,7 +50,7 @@
                             @foreach ($arrDataTransaksiSorted as $key => $data)
                                 <tr class="text-center">
                                     <td>{{ $key + 1 }}</td>
-                                    <td>{{ $data["jumlah"] }}</td>
+                                    <td>Rp {{ number_format($data["jumlah"],0,",",".") }}</td>
                                     <td>{{ $data["tahun"] }}</td>
                                     <td>{{ $data["bulan"] }}</td>
                                     <td>{{ $data["status"] }}</td>
@@ -67,14 +59,14 @@
                                             @if ($data['status'] == 'Belum Membayar')
                                                 <a href="#" class="btn btn-primary"
                                                     onclick="get_input_data({{ $nomor }}, {{$data['jumlah']}}, 
-                                                    {{$data['tahun']}}, '{{$data['bulan']}}', '{{$data['status']}}')"
+                                                    {{$data['tahun']}}, '{{$data['bulan']}}')"
                                                     data-toggle="modal" data-target="#inputTransactionModal">
                                                     Input Transaksi
                                                 </a>
                                             @elseif ($data['status'] == 'Lunas')
                                                 <a href="#" class="btn btn-primary"
                                                     onclick="get_update_data({{ $nomor }}, {{$data['jumlah']}}, 
-                                                    {{$data['tahun']}}, '{{$data['bulan']}}', '{{$data['status']}}')"
+                                                    {{$data['tahun']}}, '{{$data['bulan']}}')"
                                                     data-toggle="modal" data-target="#updateTransactionModal">
                                                     Update
                                                 </a>
@@ -84,6 +76,14 @@
                                                     data-target="#receiptModal">
                                                     Bukti Bayar
                                                 </a>
+                                                <form action="{{ route('delete_transaction', ['nomor' => $nomor, 'tahun' => $data['tahun'], 'bulan' => $data['bulan']])}}" 
+                                                    method="POST" class="mt-1">
+                                                    @csrf @method('DELETE')
+                                                    <button class="btn btn-danger delete" 
+                                                        onclick="return confirm('Apakah anda yakin hapus?');">
+                                                        Hapus
+                                                    </button>
+                                                </form>
                                             @elseif ($data['status'] == 'Tidak Tersedia')
                                                 -
                                             @endif
@@ -137,15 +137,6 @@
                             </div>
                         </div>
                         <div class="form-group row mb-4">
-                            <label class="col-sm-2 col-form-label">Status</label>
-                            <div class="col-sm-10">
-                                <select class="form-control" id="status" name="status" required>
-                                    <option value="Belum Membayar">Belum Membayar</option>
-                                    <option value="Lunas">Lunas</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Bukti Pembayaran</label>
                             <div class="col-sm-10">
                                 <input type="file" class="form-control-file" id="receipt" name="receipt" required>
@@ -162,8 +153,9 @@
 
 {{-- Modal Update Transaksi --}}
 <div class="modal fade" id="updateTransactionModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <form action="" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('transaction.update', $nomor) }}" method="POST" enctype="multipart/form-data">
         @csrf
+        @method('PUT')
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -198,18 +190,9 @@
                             </div>
                         </div>
                         <div class="form-group row mb-4">
-                            <label class="col-sm-2 col-form-label">Status</label>
-                            <div class="col-sm-10">
-                                <select class="form-control" id="update_status" name="status" required>
-                                    <option value="Belum Membayar">Belum Membayar</option>
-                                    <option value="Lunas">Lunas</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label">Bukti Pembayaran</label>
                             <div class="col-sm-10">
-                                <input type="file" class="form-control-file" id="receipt" name="receipt" required>
+                                <input type="file" class="form-control-file" id="receipt" name="receipt">
                             </div>
                         </div>
                 </div>
@@ -242,12 +225,16 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script>
-    const get_input_data = (nomor, jumlah, tahun, bulan, status) => {
+    const input_tahun = (nomor) => {
+        const tahun = $("#search_tahun").val();
+        window.location.href = `{{URL::to('/dashboard/transaction/${nomor}/${tahun}')}}`;
+    }
+
+    const get_input_data = (nomor, jumlah, tahun, bulan) => {
         $("#nomor_kk").val(nomor);
         $("#amount").val(jumlah);
         $("#tahun").val(tahun);
         $("#bulan").val(bulan);
-        $("#status").val(status);
     }
 
     const get_update_data = (nomor, jumlah, tahun, bulan, status) => {
@@ -255,7 +242,6 @@
         $("#update_amount").val(jumlah);
         $("#update_tahun").val(tahun);
         $("#update_bulan").val(bulan);
-        $("#update_status").val(status);
     }
 
     const get_receipt_image = (nomor, tahun, bulan) => {
