@@ -28,10 +28,6 @@
         <div id="success_message"></div>
         <div class="card">
             <div class="card-header d-flex flex-column align-items-start justify-content-start">
-                <a href="#" class="btn btn-icon icon-left btn-primary">
-                    <i class="fa fa-plus"></i>
-                    &nbsp; Tambah Data Transaksi Iuran
-                </a>
                 <div class="dropdown mt-2">
                     <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" 
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" 
@@ -40,14 +36,14 @@
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <a class="dropdown-item" href="{{ route('detail_transaction', ['nomor' => $nomor, 'tahun' => '2021']) }}">2021</a>
-                        <a class="dropdown-item" href="/transaction/{{ $nomor }}/{{ 2022 }}">2022</a>
+                        <a class="dropdown-item" href="{{ route('detail_transaction', ['nomor' => $nomor, 'tahun' => '2022']) }}">2022</a>
                         <a class="dropdown-item" href="{{ route('detail_transaction', ['nomor' => $nomor, 'tahun' => '2023']) }}">2023</a>
                     </div>
                 </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table id="dataTable" class="table-bordered table-md table">
+                    <table id="transactionTable" class="table-bordered table-md table">
                         <thead>
                             <tr class="text-center">
                                 <th>No</th>
@@ -55,6 +51,7 @@
                                 <th>Tahun</th>
                                 <th>Bulan</th>
                                 <th>Status</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody style="font-size: 14px!important">
@@ -65,6 +62,33 @@
                                     <td>{{ $data["tahun"] }}</td>
                                     <td>{{ $data["bulan"] }}</td>
                                     <td>{{ $data["status"] }}</td>
+                                    <td>
+                                        <div class="mr-1">
+                                            @if ($data['status'] == 'Belum Membayar')
+                                                <a href="#" class="btn btn-primary"
+                                                    onclick="get_input_data({{ $nomor }}, {{$data['jumlah']}}, 
+                                                    {{$data['tahun']}}, '{{$data['bulan']}}', '{{$data['status']}}')"
+                                                    data-toggle="modal" data-target="#inputTransactionModal">
+                                                    Input Transaksi
+                                                </a>
+                                            @elseif ($data['status'] == 'Lunas')
+                                                <a href="#" class="btn btn-primary"
+                                                    onclick="get_update_data({{ $nomor }}, {{$data['jumlah']}}, 
+                                                    {{$data['tahun']}}, '{{$data['bulan']}}', '{{$data['status']}}')"
+                                                    data-toggle="modal" data-target="#updateTransactionModal">
+                                                    Update
+                                                </a>
+                                                <a href="" class="btn btn-outline-primary" 
+                                                    onclick="get_receipt_image({{ $nomor }}, {{$data['tahun']}}, 
+                                                    '{{$data['bulan']}}')" data-toggle="modal" 
+                                                    data-target="#receiptModal">
+                                                    Bukti Bayar
+                                                </a>
+                                            @elseif ($data['status'] == 'Tidak Tersedia')
+                                                -
+                                            @endif
+                                        </div>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -75,6 +99,180 @@
     </div>
 @endsection
 
+{{-- Modal Input Transaksi --}}
+<div class="modal fade" id="inputTransactionModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <form action="{{ route('transaction.store') }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Input Transaksi</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="padding-bottom: 5px">
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Nomor KK</label>
+                            <div class="col-sm-10">
+                                <input id="nomor_kk" type="text" name="nomor_kk" class="form-control" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Jumlah</label>
+                            <div class="col-sm-10">
+                                <input id="amount" type="text" name="amount" class="form-control" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Tahun</label>
+                            <div class="col-sm-10">
+                                <input id="tahun" type="text" name="tahun" class="form-control" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Bulan</label>
+                            <div class="col-sm-10">
+                                <input id="bulan" type="text" name="bulan" class="form-control" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Status</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" id="status" name="status" required>
+                                    <option value="Belum Membayar">Belum Membayar</option>
+                                    <option value="Lunas">Lunas</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Bukti Pembayaran</label>
+                            <div class="col-sm-10">
+                                <input type="file" class="form-control-file" id="receipt" name="receipt" required>
+                            </div>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Input</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
 
+{{-- Modal Update Transaksi --}}
+<div class="modal fade" id="updateTransactionModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <form action="" method="POST" enctype="multipart/form-data">
+        @csrf
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Update Transaksi</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="padding-bottom: 5px">
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Nomor KK</label>
+                            <div class="col-sm-10">
+                                <input id="update_nomor_kk" type="text" name="nomor_kk" class="form-control" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Jumlah</label>
+                            <div class="col-sm-10">
+                                <input id="update_amount" type="text" name="amount" class="form-control" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Tahun</label>
+                            <div class="col-sm-10">
+                                <input id="update_tahun" type="text" name="tahun" class="form-control" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Bulan</label>
+                            <div class="col-sm-10">
+                                <input id="update_bulan" type="text" name="bulan" class="form-control" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Status</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" id="update_status" name="status" required>
+                                    <option value="Belum Membayar">Belum Membayar</option>
+                                    <option value="Lunas">Lunas</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label class="col-sm-2 col-form-label">Bukti Pembayaran</label>
+                            <div class="col-sm-10">
+                                <input type="file" class="form-control-file" id="receipt" name="receipt" required>
+                            </div>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+{{-- Modal View Bukti Pembayaran --}}
+<div class="modal fade bd-example-modal-lg" id="receiptModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Bukti Pembayaran</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body" style="padding-bottom: 5px">
+                <div class="w-100">
+                    <img src="" alt="Receipt Image" id="receipt_image" style="max-width: 100%;">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script>
+    const get_input_data = (nomor, jumlah, tahun, bulan, status) => {
+        $("#nomor_kk").val(nomor);
+        $("#amount").val(jumlah);
+        $("#tahun").val(tahun);
+        $("#bulan").val(bulan);
+        $("#status").val(status);
+    }
+
+    const get_update_data = (nomor, jumlah, tahun, bulan, status) => {
+        $("#update_nomor_kk").val(nomor);
+        $("#update_amount").val(jumlah);
+        $("#update_tahun").val(tahun);
+        $("#update_bulan").val(bulan);
+        $("#update_status").val(status);
+    }
+
+    const get_receipt_image = (nomor, tahun, bulan) => {
+        $.ajax({
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},            
+            url: "/dashboard/transaction/" + nomor + "/" + tahun + "/" +bulan,
+            type: "GET",
+            success: function (response) {
+                $("#receipt_image").attr("src", `{{ URL::to('/') }}/assets/images/transaction/${nomor}/${response}`);
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        $('#transactionTable').DataTable({
+            paging: false,
+            info: false,
+        });
+    });
+</script>

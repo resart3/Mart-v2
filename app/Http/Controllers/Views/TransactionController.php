@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Views;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\TarifController;
 use App\Models\Transaction;
 use App\Models\FamilyCard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use File;
 
 class TransactionController extends Controller
 {
@@ -18,7 +20,6 @@ class TransactionController extends Controller
     public function index()
     {
         $title = 'Halaman Transaksi Iuran';
-        // $family_card = FamilyCard::with('with_family_head')->orderBy('created_at', 'desc')->get();
         if (session()->get('user')->role == 'admin_rt') {
             $familyCard = FamilyCard::where('rt_rw',session()->get('user')->rt_rw)->get();
         }
@@ -28,44 +29,6 @@ class TransactionController extends Controller
         else{
             $familyCard = FamilyCard::get();
         }
-        // dd($familyCard);
-        //menyimpan nomor kk yang se rt atau se rw
-        // foreach ($familyCard as $data) {
-        //     $nomor[] = $data->nomor;
-        // }
-        // $transactions = Transaction::whereIn('family_card_id',$nomor)->get();
-        // dd($transactions);
-        // if (count($transactions) != 0) {
-        //     foreach($transactions as $data){
-        //         $transaction_family_card[] = $data->family_card_id;
-        //     }
-    
-        //     $familyHeadName = DB::table('family_members')
-        //     ->whereIn('family_card_id', $transaction_family_card)
-        //     ->where('isFamilyHead', 1)
-        //     ->select('nama', 'family_card_id')        
-        //     ->get();
-    
-        //     $arrDataTransaksi = [];
-        //     foreach($transactions as $key){
-        //         $tempData["family_card_id"] = $key->family_card_id;
-        //         foreach($familyHeadName as $data){
-        //             if($data->family_card_id == $key->family_card_id){
-        //                 $tempData["nama"] = $data->nama;
-        //                 break;
-        //             }
-        //         }
-        //         $tempData["id"] = $key->id;
-        //         $tempData["jumlah"] = $key->jumlah;
-        //         $tempData["tahun"] = $key->tahun;
-        //         $tempData["bulan"] = $key->bulan;
-        //         $tempData["status"] = $key->status;
-        //         $tempData["receipt"] = $key->receipt;
-        //         array_push($arrDataTransaksi, $tempData);
-        //     }
-        // }else{
-        //     $arrDataTransaksi = [];
-        // }
 
         return view('transaction.index', compact('familyCard', 'title'));
     }
@@ -88,19 +51,60 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if(isset($request->receipt)){
+            $transaction_model = new Transaction;
+            $dataTransaction = $transaction_model->get_transaction($request->nomor_kk, $request->tahun, $request->bulan);
+            $dataTransactionStatus = $dataTransaction->first();
+
+            if(isset($dataTransactionStatus) == false){
+                $name = $request->receipt->getClientOriginalName();
+                $request->receipt->move(public_path('assets/images/transaction/'. $request->nomor_kk), $name);
+                
+                $data = [
+                    'family_card_id'=>$request->nomor_kk,
+                    'jumlah'=>$request->amount,
+                    'tahun'=>$request->tahun,
+                    'bulan'=>$request->bulan,
+                    'status' => $request->status,
+                    'receipt' => $name,
+                ];
+                Transaction::create($data);
+                return redirect(route('detail_transaction', ['nomor' => $request->nomor_kk, 'tahun' => $request->tahun]));
+            }else{
+                dd("MASUK ELSE");
+            }
+
+        }
     }
 
     /**
      * Display the specified resource.
      *
      * @param  int  $nomor
-     * * @param  string  $tahun
      * @return \Illuminate\Http\Response
      */
     public function show($nomor)
     {
 
+    }
+
+    public function update_transaction($nomor, $tahun, $bulan, Request $request){
+        
+        $transcation_model = new Transaction;
+
+
+    }
+
+    public function show_receipt_image($nomor, $tahun, $bulan){
+        $transaction = new Transaction();
+        $get_receipt_image = $transaction->get_transaction($nomor, $tahun, $bulan);
+        $cek_receipt_image = $get_receipt_image->first();
+
+        if(isset($cek_receipt_image)){
+            return response()->json($get_receipt_image->first()->receipt);
+        }else{
+            return("TIDAK ADA");
+        }
     }
 
     public function show_transaction($nomor, $tahun)
@@ -145,7 +149,7 @@ class TransactionController extends Controller
 
             $cek_land = $get_land->first();
             if(isset($cek_land) == false){
-                dd("Data Land Belum Terdaftar");
+                return redirect()->route('tarif.index')->with('failed','Harap Tambah Tarif Warga '. $nomor .' Terlebih Dahulu!');
             }else{
                 if($tahun < $get_created_year){
                     foreach($array_bulan as $bulan){
@@ -180,8 +184,6 @@ class TransactionController extends Controller
                         array_push($array_data_transaksi, $tempData);
                     }
                 }
-
-                dd($array_data_transaksi);
             }
         }else{
             if($tahun == $get_created_year){
@@ -270,10 +272,10 @@ class TransactionController extends Controller
         //
         $transactions = Transaction::find($id);
 
+        return response()->json("Data Transaction Tidak Ditemukan!");
         if(isset($transactions) == TRUE){
             return response()->json($transactions);
         }else{
-            return response()->json("Data Transaction Tidak Ditemukan!");
         }
     }
 
@@ -291,8 +293,6 @@ class TransactionController extends Controller
 
         $transaction->status = $updateData['status'];
         $transaction->save();
-
-        // return response()->json($transaction);
     }
 
     /**

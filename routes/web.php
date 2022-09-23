@@ -33,6 +33,7 @@ Route::group(['prefix' => 'dashboard', 'middleware' => 'superuser'], function ()
     Route::resource('user', UserController::class);
     Route::resource('data', FamilyCardController::class);
     Route::get('transaction/{nomor}/{tahun}', [TransactionController::class, 'show_transaction'])->name('detail_transaction');
+    Route::get('transaction/{nomor}/{tahun}/{bulan}', [TransactionController::class, 'show_receipt_image'])->name('get_receipt_image');
     Route::resource('transaction', TransactionController::class);
     Route::resource('tarif', TarifController::class);
     Route::resource('land', LandController::class);
