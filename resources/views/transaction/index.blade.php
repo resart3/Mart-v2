@@ -39,7 +39,7 @@
                         </tr>
                         </thead>
                         <tbody style="font-size: 14px!important">
-                        @foreach ($family_card as $key => $data)
+                        @foreach ($familyCard as $key => $data)
                             <tr class="text-center">
                                 <td>{{ $key + 1 }}</td>
                                 <td>{{ $data->nomor }}</td>

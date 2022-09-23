@@ -18,21 +18,23 @@ class TransactionController extends Controller
     public function index()
     {
         $title = 'Halaman Transaksi Iuran';
-        $family_card = FamilyCard::with('with_family_head')->orderBy('created_at', 'desc')->get();
-        // if (session()->get('user')->role == 'admin_rt') {
-        //     $familyCard = FamilyCard::where('rt_rw',session()->get('user')->rt_rw)->get();
-        // }
-        // else if (session()->get('user')->role == 'admin_rw') {
-        //     $familyCard = FamilyCard::where('rt_rw','like','%'.explode("/",session()->get('user')->rt_rw)[1])->get();
-        // }
-        // else{
-        //     $familyCard = FamilyCard::get();
-        // }
-        // //menyimpan nomor kk yang se rt atau se rw
+        // $family_card = FamilyCard::with('with_family_head')->orderBy('created_at', 'desc')->get();
+        if (session()->get('user')->role == 'admin_rt') {
+            $familyCard = FamilyCard::where('rt_rw',session()->get('user')->rt_rw)->get();
+        }
+        else if (session()->get('user')->role == 'admin_rw') {
+            $familyCard = FamilyCard::where('rt_rw','like','%'.explode("/",session()->get('user')->rt_rw)[1])->get();
+        }
+        else{
+            $familyCard = FamilyCard::get();
+        }
+        // dd($familyCard);
+        //menyimpan nomor kk yang se rt atau se rw
         // foreach ($familyCard as $data) {
         //     $nomor[] = $data->nomor;
         // }
         // $transactions = Transaction::whereIn('family_card_id',$nomor)->get();
+        // dd($transactions);
         // if (count($transactions) != 0) {
         //     foreach($transactions as $data){
         //         $transaction_family_card[] = $data->family_card_id;
@@ -65,7 +67,7 @@ class TransactionController extends Controller
         //     $arrDataTransaksi = [];
         // }
 
-        return view('transaction.index', compact('family_card', 'title'));
+        return view('transaction.index', compact('familyCard', 'title'));
     }
 
     /**
