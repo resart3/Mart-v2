@@ -100,6 +100,20 @@
                         </a>
                     </li>
                     <?php endif ?>
+                    <?php if (session()->get('user')->role != 'admin_rt'):?>
+                    <li class="{{ Request::is('dashboard/report') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ url('dashboard/report/report_jumlah')}}">
+                            <i class="fa fa-file-invoice"></i> <span>Halaman Report</span>
+                        </a>
+                    </li>
+                    <?php endif ?>
+                    <?php if (session()->get('user')->role != 'admin_rt'):?>
+                    <li class="{{ Request::is('dashboard/report') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ url('dashboard/report/report_tunggakan')}}">
+                            <i class="fa fa-file-invoice"></i> <span>Halaman Report Tunggakan</span>
+                        </a>
+                    </li>
+                    <?php endif ?>
                 </ul>
             </aside>
         </div>

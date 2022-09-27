@@ -8,6 +8,7 @@ use App\Http\Controllers\Views\FamilyMemberController;
 use App\Http\Controllers\Views\TransactionController;
 use App\Http\Controllers\Views\TarifController;
 use App\Http\Controllers\Views\LandController;
+use App\Http\Controllers\Views\ReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,6 +40,14 @@ Route::group(['prefix' => 'dashboard', 'middleware' => 'superuser'], function ()
     Route::resource('tarif', TarifController::class);
     Route::resource('land', LandController::class);
     Route::resource('detail', FamilyMemberController::class);
+    // Route::resource('report', ReportController::class);
+    Route::group(['prefix' => 'report'], function () {
+        Route::get('/report_jumlah', [ReportController::class, 'index_reportJumlah']);
+        Route::get('/report_tunggakan', [ReportController::class, 'index_reportTunggakan']);
+        Route::get('/detail_reportJumlah/{rt_rw}/{bulan}/{tahun}', [ReportController::class, 'detail_jumlah'])->name('detail_jumlah');
+        Route::get('/detail_reportTunggakan/{rt_rw}/{bulan}/{tahun}', [ReportController::class, 'detail_tunggakan'])->name('detail_tunggakan');
+        Route::get('/filer_jumlah/{tahun}/{bulan}', [ReportController::class, 'ajaxJumlah']);
+    });
 
     Route::group(['prefix' => 'land'], function () {        
         Route::post('/nama_warga', [LandController::class, 'ajaxGetName']);
@@ -50,5 +59,3 @@ Route::group(['prefix' => 'dashboard', 'middleware' => 'superuser'], function ()
         Route::get('/edit-user/{id}', [UserController::class], 'edit');
     });
 });
-
-
