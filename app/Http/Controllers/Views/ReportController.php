@@ -123,8 +123,23 @@ class ReportController extends Controller
                 'jumlah' => $jumlah,
             );
         }
-        dd($table_rekap);
-        response()->json("masuk");
+        return response()->json($table_rekap);
+    }
+
+    public function ajaxTunggakan($tahun,$bulan){
+        $report = new Report();
+        $title = 'Halaman Report Tunggakan';
+        $rw = explode('/',session()->get('user')->rt_rw)[1];
+        $data = array(
+            'rt_rw' => $rw,
+            'bulan' => $bulan,
+            'tahun' => $tahun
+        );
+        $tunggakan_report = $report->tunggakan_report($data);
+        $all_rt = $report->getAllRt($rw);
+        $table_rekap = $this->rekap($all_rt,$tunggakan_report);
+        
+        return response()->json($table_rekap);
     }
 
     function check_mount($bulan){

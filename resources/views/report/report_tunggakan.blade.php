@@ -65,8 +65,8 @@
                             <th style="width: 15%">Action</th>
                         </tr>
                         </thead>
-                        <tbody style="font-size: 14px!important">
-                        @foreach ($table_rekap as $key => $data)                            
+                        <tbody style="font-size: 14px!important" id="table_body">
+                        {{-- @foreach ($table_rekap as $key => $data)                            
                             <tr>
                                 <td>{{ $key + 1 }}</td>
                                 <td>{{ $data['rt_rw'] }}</td>
@@ -76,7 +76,7 @@
                                     <a href="{{ route('detail_tunggakan', ['rt_rw' => $rt_rw, 'bulan' => $bulan, 'tahun' => $tahun])}}" class="btn btn-outline-primary">Detail</a>
                                 </td>
                             </tr>
-                        @endforeach
+                        @endforeach --}}
                         </tbody>
                     </table>
                 </div>
@@ -88,5 +88,70 @@
 @endsection
 
 @push('scripts')
+    <script>
+        String.prototype.replaceAt = function(index, replacement) {
+            return this.substring(0, index) + replacement + this.substring(index + replacement.length);
+        }
 
+        const detail_function = (rt_rw, bulan, tahun) => {
+            window.location.href = `{{URL::to('/dashboard/report/detail_reportTunggakan/${rt_rw}/${bulan}/${tahun}')}}`;
+        }
+
+        $(document).ready(function(){
+            const table_rekap = @json($table_rekap);
+            const bulan = '{{ $bulan }}';
+            const tahun = '{{ $tahun }}';
+
+            let count = 0;
+            $("#table_body").html('');
+            table_rekap.forEach((data) => {
+                count += 1;
+                let rt_rw = data['rt_rw'].replaceAt(3, "-");
+                
+                $("#table_body").append(`
+                    <tr>
+                        <td>${count}</td>
+                        <td>${data['rt_rw']}</td>
+                        <td>${data['jumlah']}</td>
+                        <td>
+                            <button class="btn btn-outline-primary" onclick="detail_function('${rt_rw}', '${bulan}', ${tahun})">Detail</button>
+                        </td>
+                    </tr>
+                `);
+            })
+
+            $('#search_filter').click(function(){
+                let bulan = $("select[name='filter_bulan']").find(':selected').val()
+                let tahun = $("input[name='filter_tahun']").val()
+                
+                $.ajax({
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    url: "/dashboard/report/filer_jumlah/" + tahun + "/" + bulan,
+                    type: "GET",
+                    success: function (response) {
+                        const bulan = '{{ $bulan }}';
+                        const tahun = '{{ $tahun }}';
+
+                        let count = 0;
+                        $("#table_body").html('');
+                        response.forEach((data) => {
+                            count += 1;
+                            let rt_rw = data['rt_rw'].replaceAt(3, "-");
+                            
+                            $("#table_body").append(`
+                                <tr>
+                                    <td>${count}</td>
+                                    <td>${data['rt_rw']}</td>
+                                    <td>${data['jumlah']}</td>
+                                    <td>
+                                        <button class="btn btn-outline-primary" onclick="detail_function('${rt_rw}', '${bulan}', ${tahun})">Detail</button>
+                                    </td>
+                                </tr>
+                            `);
+                        })
+                    }
+                });
+            })
+        });
+    </script>
 @endpush
