@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Views;
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Report;
@@ -140,6 +142,111 @@ class ReportController extends Controller
         $table_rekap = $this->rekap($all_rt,$tunggakan_report);
         
         return response()->json($table_rekap);
+    }
+
+    public function printJumlah($tahun,$bulan){
+            $report = new Report();
+            $title = 'Halaman Report';
+            $rw = explode('/',session()->get('user')->rt_rw)[1];
+            $data = array(
+                'rw' => $rw,
+                'bulan' => $bulan,
+                'tahun' => $tahun
+            );
+            $report_lunas = $report->lunas_report($data);
+            $all_rt = $report->getAllRt($rw);
+            $table_rekap = [];
+            foreach ($all_rt as $key => $rt) {
+                $jumlah = 0;
+                foreach ($report_lunas as $key_report => $lunas) {
+                    if ($rt->rt_rw == $lunas->rt_rw) {
+                        $jumlah = $lunas->jumlah;
+                        break;
+                    }
+                }
+                $table_rekap[$key] = array(
+                    'rt_rw' => $rt->rt_rw,
+                    'jumlah' => $jumlah,
+                );
+            }
+
+            //inisialisasi spreadsheet
+            $spreadsheet = new Spreadsheet();
+			$sheet = $spreadsheet->getActiveSheet();
+            $sheet->getColumnDimension('A')->setAutoSize(true);
+            $sheet->getColumnDimension('B')->setAutoSize(true);
+            $sheet->mergeCells("A1:I2");
+            $sheet->setCellValue('A1', 'Rekap Iuran RW '.explode('/',session()->get('user')->rt_rw)[1].' Bulan '.$bulan." ".$tahun);
+            $sheet->getStyle('A:C')->getAlignment()->setHorizontal('center');
+            $sheet->getStyle('A:C')->getAlignment()->setVertical('center');
+			$sheet->setCellValue('A4', 'No');
+			$sheet->setCellValue('B4', 'RT RW');
+			$sheet->setCellValue('C4', 'Jumlah');
+            $no_cell = 5;
+            $no = 1;
+            //data spreadsheet
+            foreach ($table_rekap as $key => $rekap) {
+                $sheet->setCellValue('A'.$no_cell, $no);
+                $sheet->setCellValue('B'.$no_cell, $rekap['rt_rw']);
+			    $sheet->setCellValue('C'.$no_cell, $rekap['jumlah']);
+                $no++;
+                $no_cell++;
+            }
+			$sheet->getStyle('A1')->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
+            $sheet->getStyle('A1')->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
+            $sheet->getStyle('A1')->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
+            $sheet->getStyle('A1')->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
+			$writer = new Xlsx($spreadsheet);
+			$filename = 'Rekap Iuran RW '.explode('/',session()->get('user')->rt_rw)[1].' Bulan '.$bulan." ".$tahun;
+			
+			header('Content-Type: application/vnd.ms-excel');
+			header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"'); 
+			header('Cache-Control: max-age=0');
+	
+            ob_end_clean();
+			$writer->save('php://output');
+    }
+
+    public function printTunggakan($tahun,$bulan){
+        $report = new Report();
+        $rw = explode('/',session()->get('user')->rt_rw)[1];
+        $bulan = $this->check_mount(date('m'));
+        $tahun = date('Y');
+        $data = array(
+            'rt_rw' => $rw,
+            'bulan' => $bulan,
+            'tahun' => $tahun
+        );
+        $tunggakan_report = $report->tunggakan_report($data);
+        $all_rt = $report->getAllRt($rw);
+        $table_rekap = $this->rekap($all_rt,$tunggakan_report);
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setCellValue('A1', 'No');
+        $sheet->setCellValue('B1', 'RT RW');
+        $sheet->setCellValue('C1', 'Jumlah');
+        $no = 2;
+        foreach ($table_rekap as $key => $rekap) {
+            $sheet->setCellValue('A'.$no, $no-1);
+            $sheet->setCellValue('B'.$no, $rekap['rt_rw']);
+            $sheet->setCellValue('C'.$no, $rekap['jumlah']);
+            $no++;
+        }
+        
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'laporan-siswa';
+        
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"'); 
+        header('Cache-Control: max-age=0');
+
+        ob_end_clean();
+        $writer->save('php://output');
+    }
+
+    public function detailJumlah(){
+
     }
 
     function check_mount($bulan){

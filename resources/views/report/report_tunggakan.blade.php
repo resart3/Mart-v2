@@ -35,7 +35,6 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <div class="filer">
-                    {{$bulan}}
                     <select name="filter_bulan">
                         <option {{($bulan == 'januari')?'selected':"";}} value="januari">Januari</option>
                         <option {{($bulan == 'februari')?'selected':"";}} value="Februari">Februari</option>
@@ -52,6 +51,9 @@
                     </select>
                     <input type="number" name="filter_tahun" value="{{$tahun}}">
                     <button id="search_filter" class="btn btn-info">Search</button>
+                </div>
+                <div id="export" class="export">
+                    <a href="/dashboard/report/print_jumlah/{{$tahun}}/{{$bulan}}" class="btn btn-info">eksport</a>
                 </div>
             </div>
             <div class="card-body">

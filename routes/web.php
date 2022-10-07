@@ -47,6 +47,8 @@ Route::group(['prefix' => 'dashboard', 'middleware' => 'superuser'], function ()
         Route::get('/detail_reportJumlah/{rt_rw}/{bulan}/{tahun}', [ReportController::class, 'detail_jumlah'])->name('detail_jumlah');
         Route::get('/detail_reportTunggakan/{rt_rw}/{bulan}/{tahun}', [ReportController::class, 'detail_tunggakan'])->name('detail_tunggakan');
         Route::get('/filer_jumlah/{tahun}/{bulan}', [ReportController::class, 'ajaxJumlah']);
+        Route::get('/print_jumlah/{tahun}/{bulan}', [ReportController::class, 'printJumlah']);
+        Route::get('/print_tunggakan/{tahun}/{bulan}', [ReportController::class, 'printTunggakan']);
     });
 
     Route::group(['prefix' => 'land'], function () {        

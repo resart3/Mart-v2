@@ -35,7 +35,6 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <div class="filer">
-                    {{$bulan}}
                     <select name="filter_bulan">
                         <option {{($bulan == 'januari')?'selected':"";}} value="januari">Januari</option>
                         <option {{($bulan == 'februari')?'selected':"";}} value="Februari">Februari</option>
@@ -53,17 +52,20 @@
                     <input type="number" name="filter_tahun" value="{{$tahun}}">
                     <button id="search_filter" class="btn btn-info">Search</button>
                 </div>
+                <div id="export" class="export">
+                    <a href="/dashboard/report/print_jumlah/{{$tahun}}/{{$bulan}}" class="btn btn-info">eksport</a>
+                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
                     <table id="dataTable" class="table-bordered table-md table">
                         <thead>
-                        <tr>
-                            <th style="width: 5%">No</th>
-                            <th>RT RW</th>
-                            <th>Jumlah</th>
-                            <th style="width: 15%">Action</th>
-                        </tr>
+                            <tr>
+                                <th style="width: 5%">No</th>
+                                <th>RT RW</th>
+                                <th>Jumlah</th>
+                                <th style="width: 15%">Action</th>
+                            </tr>
                         </thead>
                         <tbody style="font-size: 14px!important" id="table_body">
                         </tbody>
@@ -141,6 +143,14 @@
                     })
                 }
             });
+        })
+    })
+    $(document).ready(function(){
+        $('#search_filter').click(function(){
+            let bulan = $("select[name='filter_bulan']").find(":selected").val()
+            let tahun = $("input[name='filter_tahun']").val()
+            let url = `/dashboard/report/print_jumlah/${tahun}/${bulan}`
+            $(".export a").attr("href", url)
         })
     })
 </script>
