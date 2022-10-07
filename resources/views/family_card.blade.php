@@ -186,14 +186,18 @@
                                     <label class="col-sm-2 col-form-label">RT</label>
                                     <div class="col-sm-10">
                                         <input id="rt" type="text" name="rt" class="form-control" 
-                                            onkeypress="disableSpacingAndLetter(event)" required>
+                                            onkeypress="disableSpacingAndLetter(event)" placeholder="000"
+                                            required>
+                                        <p class="text-warning ml-1 mb-0">*)Format penulisan RT dengan menggunakan 3 digit angka</p>
                                     </div>
                                 </div>
                                 <div class="form-group row mb-4">
                                     <label class="col-sm-2 col-form-label">RW</label>
                                     <div class="col-sm-10">
                                         <input id="rw" type="text" name="rw" class="form-control" 
-                                            onkeypress="disableSpacingAndLetter(event)" required>
+                                            onkeypress="disableSpacingAndLetter(event)" placeholder="000"
+                                            required>
+                                        <p class="text-warning ml-1 mb-0">*)Format penulisan RW dengan menggunakan 3 digit angka</p>
                                     </div>
                                 </div>
                                 <div class="form-group row mb-4">
@@ -347,6 +351,7 @@
                             <div class="col-sm-10">
                                 <input id="edit_rt" type="text" name="rt" class="form-control" 
                                     onkeypress="disableSpacingAndLetter(event)" required>
+                                <p class="text-warning ml-1 mb-0">*)Format penulisan RT dengan menggunakan 3 digit angka</p>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
@@ -354,6 +359,7 @@
                             <div class="col-sm-10">
                                 <input id="edit_rw" type="text" name="rw" class="form-control" 
                                     onkeypress="disableSpacingAndLetter(event)" required>
+                                <p class="text-warning ml-1 mb-0">*)Format penulisan RW dengan menggunakan 3 digit angka</p>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
@@ -445,9 +451,6 @@
 
             $("#btnUpdateCard").click(() => {
                 const no_kk = $('#edit_no_kk').val();
-                const rt = $("#edit_rt").val();
-                const rw = $("#edit_rw").val();
-                const rt_rw = `${rt}/${rw}`;
 
                 $.ajax({
                     headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},            
@@ -455,7 +458,8 @@
                     type: "PUT",
                     data: {
                         alamat: $('#edit_alamat').val(),
-                        rt_rw: rt_rw,
+                        rt: $("#edit_rt").val(),
+                        rw: $("#edit_rw").val(),
                         kode_pos: $('#edit_kode_pos').val(),
                         kecamatan: $('#edit_kecamatan').val(),
                         desa_kelurahan: $('#edit_desa_kelurahan').val(),
@@ -463,54 +467,76 @@
                         provinsi: $('#edit_provinsi').val()
                     },
                     success: function (response) {
-                        $('#form-card-edit').modal('hide');
-                        window.scrollTo(0, 0);
-                        $('#success_message').addClass('alert alert-success');
-                        $('#success_message').text("Data Family Card Berhasil Di Update!");
-                        setTimeout(() => {
-                            location.reload();
-                        }, 1000);
+                        if(response == "Success"){
+                            $('#form-card-edit').modal('hide');
+                            window.scrollTo(0, 0);
+                            $('#success_message').addClass('alert alert-success');
+                            $('#success_message').text("Data Family Card Berhasil Di Update!");
+                            setTimeout(() => {
+                                location.reload();
+                            }, 1000);
+                        }else{
+                            text = response;
+                            $('#form-card-edit').modal('hide');
+                            window.scrollTo(0, 0);
+                            $('#success_message').addClass('alert alert-danger');
+                            $('#success_message').text(`Data gagal diubah, ${text}`);
+                            setTimeout(() => {
+                                location.reload();
+                            }, 3000);
+                        }
                     }
                 });
             });
 
-            $("#btnUpdateMember").click(() => {
-                const id = $("#edit_id").val();
-                const nomor = $("#edit_nomor").val();  
-                const alamat = $("#edit_alamat").val();
-                const rt_rw = $("#edit_rt_rw").val();  
-                const kode_pos = $("#edit_kode_pos").val();  
-                const kecamatan = $("#edit_kecamatan").val();
-                const desa_kelurahan = $("#edit_desa_kelurahan").val();
-                const kabupaten_kota = $("#edit_kabupaten_kota").val();
-                const provinsi = $("#edit_provinsi").val();
+            // $("#btnUpdateMember").click(() => {
+            //     const id = $("#edit_id").val();
+            //     const nomor = $("#edit_nomor").val();  
+            //     const alamat = $("#edit_alamat").val();
+            //     const rt_rw = $("#edit_rt_rw").val();  
+            //     const kode_pos = $("#edit_kode_pos").val();  
+            //     const kecamatan = $("#edit_kecamatan").val();
+            //     const desa_kelurahan = $("#edit_desa_kelurahan").val();
+            //     const kabupaten_kota = $("#edit_kabupaten_kota").val();
+            //     const provinsi = $("#edit_provinsi").val();
                 
 
-                $.ajax({
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},            
-                    url: "/dashboard/detail/" + id,
-                    type: "PUT",
-                    data: {
-                        nomor: nomor,
-                        alamat: alamat,
-                        rt_rw: rt_rw,
-                        kode_pos: kode_pos,
-                        kecamatan: kecamatan,
-                        desa_kelurahan: desa_kelurahan,
-                        kabupaten_kota: kabupaten_kota,
-                        provinsi: provinsi,
-                    },
-                    success: function (response) {
-                        $('#form-edit-keluarga').modal('hide');
-                        window.scrollTo(0, 0);
-                        $('#success_message').addClass('alert alert-success');
-                        $('#success_message').text("Data Family Member Berhasil Di Update!");
-                        setTimeout(() => {
-                            location.reload();
-                        }, 1000);
-                    }
-                });
-            });
+            //     $.ajax({
+            //         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},            
+            //         url: "/dashboard/detail/" + id,
+            //         type: "PUT",
+            //         data: {
+            //             nomor: nomor,
+            //             alamat: alamat,
+            //             rt_rw: rt_rw,
+            //             kode_pos: kode_pos,
+            //             kecamatan: kecamatan,
+            //             desa_kelurahan: desa_kelurahan,
+            //             kabupaten_kota: kabupaten_kota,
+            //             provinsi: provinsi,
+            //         },
+            //         success: function (response) {
+            //             if(response == "Success"){
+            //                 $('#form-edit-keluarga').modal('hide');
+            //                 window.scrollTo(0, 0);
+            //                 $('#success_message').addClass('alert alert-success');
+            //                 $('#success_message').text("Data Family Member Berhasil Di Update!");
+            //                 setTimeout(() => {
+            //                     location.reload();
+            //                 }, 1000);
+            //             }else{
+            //                 text = response;
+            //                 $('#editModal').modal('hide');
+            //                 window.scrollTo(0, 0);
+            //                 $('#success_message').addClass('alert alert-danger');
+            //                 $('#success_message').text(`Data gagal diubah, ${text}`);
+            //                 setTimeout(() => {
+            //                     location.reload();
+            //                 }, 3000);
+            //             }
+            //         }
+            //     });
+            // });
         </script>
 
 @endpush

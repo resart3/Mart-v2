@@ -61,12 +61,25 @@ class UserController extends Controller
      * @return Response
      */
     public function store(Request $request){
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email|unique:users,email',   // required and email format validation
-            'password' => 'required|min:8', // required and number field validation
-            'confirm_password' => 'required|same:password',
+        // dd($request->rt);
+        if(isset($request->rt)){
+            $validator = Validator::make($request->all(), [
+                'email' => 'required|email|unique:users,email',   // required and email format validation
+                'password' => 'required|min:8', // required and number field validation
+                'confirm_password' => 'required|same:password',
+                'rt' => 'required|min:3|max:3',
+                'rw' => 'required|min:3|max:3'
 
-        ]); // create the validations
+            ]); // create the validations
+        }else{
+            $validator = Validator::make($request->all(), [
+                'email' => 'required|email|unique:users,email',   // required and email format validation
+                'password' => 'required|min:8', // required and number field validation
+                'confirm_password' => 'required|same:password',
+    
+            ]); // create the validations
+        }
+
         if ($validator->fails())   //check all validations are fine, if not then redirect and show error messages
         {
             $error = $validator->errors()->messages();
@@ -77,6 +90,10 @@ class UserController extends Controller
                 $message = "Password minimal 8 karakter!";
             }elseif(isset($error["confirm_password"])){
                 $message = "Konfirmasi password tidak sama!";
+            }elseif(isset($error["rt"])){
+                $message = "Harap menuliskan RT sesuai format!";
+            }elseif(isset($error["rw"])){
+                $message = "Harap menuliskan RW sesuai format!";
             }
 
             return redirect()->route('user.index')->with('failed',$message);
@@ -84,26 +101,13 @@ class UserController extends Controller
             //validations are passed, save new user in database
             $User = new User;
 
-            if($request->role == 'user'){
-                $dataMember = DB::table('family_members')
-                ->select('family_members.nama', 'family_members.id')
-                ->where('nik', $request->nik)
-                ->get();
-                
-                if(isset($dataMember[0])){
-                    $User->name = $dataMember[0]->nama;
-                    $User->family_member_id = $dataMember[0]->id;
-                }else{
-                    return redirect()->route('user.index')->with('failed','NIK Tidak Terdaftar!');
-                }
-
-            }elseif($request->role != 'user'){
-                $User->name = $request->name;
-
+            if($request->role != 'superuser'){
                 $rt = $request->rt;
                 $rw = $request->rw;
                 $User->rt_rw = $rt.'/'.$rw;
             }
+            
+            $User->name = $request->name;
 
             $User->email = $request->email;
             $User->nik = $request->nik;
@@ -148,6 +152,12 @@ class UserController extends Controller
                     'email' => 'required|email',   // required and email format validation
                 ]);
             }
+        }
+
+        if(strlen($request->rt) != 3){
+            return response()->json("Harap menuliskan RT sesuai format!");
+        }elseif(strlen($request->rw) != 3){
+            return response()->json("Harap menuliskan RW sesuai format!");
         }
 
         if ($validator->fails())   //check all validations are fine, if not then redirect and show error messages

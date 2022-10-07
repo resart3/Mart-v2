@@ -37,6 +37,10 @@ class FamilyCardController extends Controller
     {
         $rt = $request->input('rt');
         $rw = $request->input('rw');
+
+        if(strlen($rw) != 3 || strlen($rt) != 3){
+            return redirect()->route('data.index')->with('failed','Harap menuliskan RT / RW sesuai format!');
+        }
         $rt_rw = $rt.'/'.$rw;
 
         $nomor = preg_replace('/\s+/', '', $request->input('nomor'));
@@ -123,10 +127,19 @@ class FamilyCardController extends Controller
      */
     public function update(Request $request, $no_kk)
     {
+        if(strlen($request->rt) != 3){
+            return response()->json("Harap menuliskan RT sesuai format!");
+        }elseif(strlen($request->rw) != 3){
+            return response()->json("Harap menuliskan RW sesuai format!");
+        }
+
         $updateData = $request->all();
         $family_card = FamilyCard::FindOrFail($no_kk);
 
-        $family_card->rt_rw = $updateData['rt_rw'];
+        $rt = $updateData['rt'];
+        $rw = $updateData['rw'];
+        $family_card->rt_rw = $rt.'/'.$rw;
+
         $family_card->alamat = $updateData['alamat'];
         $family_card->kode_pos = $updateData['kode_pos'];
         $family_card->desa_kelurahan = $updateData['desa_kelurahan'];

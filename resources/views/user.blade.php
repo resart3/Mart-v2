@@ -93,7 +93,7 @@
                 </div>
                 <div class="modal-body" style="padding-bottom: 5px">
                     <form action="">
-                        <div class="form-group row mb-4" hidden>
+                        <div class="form-group row mb-4">
                             <label class="col-sm-2 col-form-label" for="name">Nama Lengkap</label>
                             <div class="col-sm-10">
                                 <input id="name" type="text" name="name" class="form-control @error ('name') is-invalid @enderror" value="{{old('name')}}">
@@ -122,10 +122,10 @@
                             <label class="col-sm-2 col-form-label">Role</label>
                             <div class="col-sm-10">
                                 <select class="form-control" id="role" name="role" required>
-                                    <option value="user">User</option>
                                     <option value="superuser">Super User</option>
                                     <option value="admin_rt">Admin RT</option>
                                     <option value="admin_rw">Admin RW</option>
+                                    {{-- <option value="admin_rw">Bendahara</option> --}}
                                 </select>
                             </div>
                         </div>
@@ -133,14 +133,16 @@
                             <label class="col-sm-2 col-form-label">RT</label>
                             <div class="col-sm-10">
                                 <input id="rt" type="text" name="rt" class="form-control" 
-                                    onkeypress="disableSpacingAndLetter(event)">
+                                    onkeypress="disableSpacingAndLetter(event)" placeholder="000">
+                                    <p class="text-warning ml-1 mb-0">*)Format penulisan RT dengan menggunakan 3 digit angka</p>
                             </div>
                         </div>
                         <div class="form-group row mb-4" hidden>
                             <label class="col-sm-2 col-form-label">RW</label>
                             <div class="col-sm-10">
                                 <input id="rw" type="text" name="rw" class="form-control"
-                                    onkeypress="disableSpacingAndLetter(event)">
+                                    onkeypress="disableSpacingAndLetter(event)" placeholder="000">
+                                    <p class="text-warning ml-1 mb-0">*)Format penulisan RW dengan menggunakan 3 digit angka</p>
                             </div>
                         </div>
                         <div class="form-group row mb-2">
@@ -222,6 +224,7 @@
                             <div class="col-sm-10">
                                 <input id="edit_rt" type="text" name="rt" class="form-control" 
                                     onkeypress="disableSpacingAndLetter(event)" required>
+                                <p class="text-warning ml-1 mb-0">*)Format penulisan RT dengan menggunakan 3 digit angka</p>
                             </div>
                         </div>
                         <div class="form-group row mb-4" hidden>
@@ -229,6 +232,7 @@
                             <div class="col-sm-10">
                                 <input id="edit_rw" type="text" name="rw" class="form-control" 
                                     onkeypress="disableSpacingAndLetter(event)" required>
+                                <p class="text-warning ml-1 mb-0">*)Format penulisan RW dengan menggunakan 3 digit angka</p>
                             </div>
                         </div>
                         <div class="form-group row mb-4">
@@ -242,6 +246,7 @@
                                         <div class="input-group-text"><i class="fa fa-eye"></i></div>
                                     </div>
                                 </div>
+                                <p class="text-warning ml-1 mb-0">*)Password minimal 8 karakter</p>
                             </div>
                         </div>
                         <button type="" class="btn btn-primary" id="btnUpdateUser">Update Data</button>
@@ -271,14 +276,14 @@
     }
     
     $("#role").change(() => {
-        if($("#role").val() != "user"){
+        if($("#role").val() != "superuser"){
             $("#name").prop("required", true);
             $("#rt").prop("required", true);
             $("#rw").prop("required", true);
             $("#name").parent().parent().prop("hidden", false);
             $("#rt").parent().parent().prop("hidden", false);
             $("#rw").parent().parent().prop("hidden", false);
-        }else if ($("#role").val() == "user"){
+        }else if ($("#role").val() == "superuser"){
             $("#name").prop("required", false);
             $("#rt").prop("required", false);
             $("#rw").prop("required", false);
@@ -318,7 +323,7 @@
                 $('#edit_name').val(response.name);
                 $('#edit_email').val(response.email);
                 $('#edit_nik').val(response.nik);
-                $('#edit_role').val(capitalizeFirstLetter(response.role));
+                $('#edit_role').val(response.role);
                 $('#edit_password').val(response.password);
 
                 if(response.rt_rw){
