@@ -19,23 +19,38 @@ class ReportController extends Controller
     {
         $report = new Report();
         $title = 'Halaman Report Lunas';
-        $rw = explode('/',session()->get('user')->rt_rw)[1];
-        // $data = array(
-        //     'rw' => $rw,
-        //     'bulan' => 'juli',
-        //     'tahun' => '2022'
-        // );
-        $bulan = $this->check_mount(date('m'));
-        $tahun = date('Y');
-        $data = array(
-            'rw' => $rw,
-            'bulan' => $bulan,
-            'tahun' => $tahun
-        );
-        $report_lunas = $report->lunas_report($data);
-        $all_rt = $report->getAllRt($rw);
-        $table_rekap = $this->rekap($all_rt,$report_lunas);
-        return view('report/report_lunas', compact('title','table_rekap','bulan','tahun'));
+
+        if(isset(session()->get('user')->rt_rw)){
+            $rw = explode('/',session()->get('user')->rt_rw)[1];
+            
+            $bulan = $this->check_mount(date('m'));
+            $tahun = date('Y');
+            $data = array(
+                'rw' => $rw,
+                'bulan' => $bulan,
+                'tahun' => $tahun
+            );
+            $report_lunas = $report->lunas_report($data);
+            $all_rt = $report->getAllRt($rw);
+            $table_rekap = $this->rekap($all_rt,$report_lunas);
+
+            return view('report/report_lunas', compact('title','table_rekap','bulan','tahun'));
+        }else{
+            $bulan = $this->check_mount(date('m'));
+            $tahun = date('Y');
+            $data = array(
+                'bulan' => $bulan,
+                'tahun' => $tahun
+            );
+
+            $report_lunas = $report->getAllReportLunas($data);
+            $all_rt_rw = $report->getAllRTRW();
+            $table_rekap = $this->rekap($all_rt_rw,$report_lunas);
+
+            return view('report/report_lunas', compact('title','table_rekap','bulan','tahun'));
+
+        }
+        
     }
 
     //controllrt untuk tunggakan

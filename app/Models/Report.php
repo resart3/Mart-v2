@@ -10,6 +10,28 @@ class Report extends Model
 {
     use HasFactory;
 
+    public function getAllReportLunas($data){
+        $report = DB::table('transactions')
+            ->join('family_cards', 'family_cards.nomor', '=', 'transactions.family_card_id')
+            ->where([
+                ['transactions.bulan', '=', $data['bulan']],
+                ['transactions.tahun', '=', $data['tahun']],
+                ])
+            ->groupBy('family_cards.rt_rw')
+            ->select('family_cards.rt_rw', DB::raw('SUM(transactions.jumlah) as jumlah'))
+            ->get();
+        return $report;
+    }
+
+    public function getAllRTRW(){
+        $data = DB::table('family_cards')
+        ->select('rt_rw')
+        ->distinct('rt_rw')
+        ->get();
+
+        return $data;
+    }
+
     public function getAllRt($rw){
         $rt = DB::table('family_cards')
         ->where('rt_rw', 'LIKE', '%'.$rw)
