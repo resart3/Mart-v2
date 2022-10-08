@@ -71,12 +71,22 @@ class Report extends Model
     }
 
     public function tunggakan_report($data){
-        // $this->subquery_tunggakan($data);
         $report = DB::table('lands')
         ->join('family_cards', 'family_cards.nomor', '=', 'lands.family_card_id')
         ->join('categories', 'categories.id', '=', 'lands.category_id')
         ->where('family_cards.rt_rw', 'LIKE', "%".$data['rt_rw'])
         ->whereNotIn('family_cards.nomor', $this->subquery_tunggakan($data))
+        ->groupBy('family_cards.rt_rw')
+        ->select('family_cards.rt_rw', DB::raw('SUM(categories.amount) as jumlah'))
+        ->get();
+        return $report;
+    }
+
+    public function all_tunggakan_report($data){
+        $report = DB::table('lands')
+        ->join('family_cards', 'family_cards.nomor', '=', 'lands.family_card_id')
+        ->join('categories', 'categories.id', '=', 'lands.category_id')
+        ->whereNotIn('family_cards.nomor', $this->subquery_tunggakan_all($data))
         ->groupBy('family_cards.rt_rw')
         ->select('family_cards.rt_rw', DB::raw('SUM(categories.amount) as jumlah'))
         ->get();
@@ -110,7 +120,24 @@ class Report extends Model
         foreach ($query as $value) {
             $data_return[] = $value->nomor;
         }
-        // dd($data_return);
+
+        return $data_return;
+    }
+
+    function subquery_tunggakan_all($data){
+        $query =  DB::table('transactions')
+        ->join('family_cards', 'family_cards.nomor', '=', 'transactions.family_card_id')
+        ->where([
+            ['transactions.bulan', '=', $data['bulan']],
+            ['transactions.tahun', '=', $data['tahun']],
+            ])
+        ->select('family_cards.nomor')
+        ->get();
+        $data_return = [];
+        foreach ($query as $value) {
+            $data_return[] = $value->nomor;
+        }
+
         return $data_return;
     }
 }

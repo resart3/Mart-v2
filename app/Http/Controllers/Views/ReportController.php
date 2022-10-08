@@ -58,18 +58,37 @@ class ReportController extends Controller
     {
         $report = new Report();
         $title = 'Halaman Report Tunggakan';
-        $rw = explode('/',session()->get('user')->rt_rw)[1];
-        $bulan = $this->check_mount(date('m'));
-        $tahun = date('Y');
-        $data = array(
-            'rt_rw' => $rw,
-            'bulan' => $bulan,
-            'tahun' => $tahun
-        );
-        $tunggakan_report = $report->tunggakan_report($data);
-        $all_rt = $report->getAllRt($rw);
-        $table_rekap = $this->rekap($all_rt,$tunggakan_report);
-        return view('report/report_tunggakan', compact('title','table_rekap','bulan','tahun'));
+
+        if(isset(session()->get('user')->rt_rw)){
+            $rw = explode('/',session()->get('user')->rt_rw)[1];
+            $bulan = $this->check_mount(date('m'));
+            $tahun = date('Y');
+            $data = array(
+                'rt_rw' => $rw,
+                'bulan' => $bulan,
+                'tahun' => $tahun
+            );
+            $tunggakan_report = $report->tunggakan_report($data);
+            $all_rt = $report->getAllRt($rw);
+            $table_rekap = $this->rekap($all_rt,$tunggakan_report);
+
+            return view('report/report_tunggakan', compact('title','table_rekap','bulan','tahun'));
+        }else{
+            $bulan = $this->check_mount(date('m'));
+            $tahun = date('Y');
+            $data = array(
+                'bulan' => $bulan,
+                'tahun' => $tahun
+            );
+
+            $report_lunas = $report->all_tunggakan_report($data);
+            $all_rt_rw = $report->getAllRTRW();
+            $table_rekap = $this->rekap($all_rt_rw,$report_lunas);
+
+            return view('report/report_lunas', compact('title','table_rekap','bulan','tahun'));
+        }
+
+        
     }
 
     public function detail_jumlah($rt_rw, $bulan, $tahun){
