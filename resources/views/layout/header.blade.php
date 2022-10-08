@@ -114,6 +114,21 @@
                         </a>
                     </li>
                     <?php endif ?>
+                    <?php if (session()->get('user')->role == 'admin_rt'):?>
+                        <?php $rt_rw = implode('-',explode('/',session()->get('user')->rt_rw)); ?>
+                    <li class="{{ Request::is('dashboard/report') ? 'active' : '' }}">
+                        <a class="nav-link" href="<?php echo url('dashboard/report/detailRt_iuran/'.$rt_rw) ?>">
+                            <i class="fa fa-file-invoice"></i> <span>Halaman Report Iuran</span>
+                        </a>
+                    </li>
+                    <?php endif ?>
+                    <?php if (session()->get('user')->role == 'admin_rt'):?>
+                    <li class="{{ Request::is('dashboard/report') ? 'active' : '' }}">
+                        <a class="nav-link" href="<?php echo url('dashboard/report/detailRt_tunggakan/'.$rt_rw) ?>">
+                            <i class="fa fa-file-invoice"></i> <span>Halaman Report Tunggakan</span>
+                        </a>
+                    </li>
+                    <?php endif ?>
                 </ul>
             </aside>
         </div>
