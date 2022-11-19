@@ -43,7 +43,7 @@ class ReportController extends Controller
                 'tahun' => $tahun
             );
 
-            $report_lunas = $report->getAllReportLunas($data);
+            $report_lunas = $report->lunas_report_all($data);
             $all_rt_rw = $report->getAllRTRW();
             $table_rekap = $this->rekap($all_rt_rw,$report_lunas);
 
@@ -80,7 +80,7 @@ class ReportController extends Controller
                 'tahun' => $tahun
             );
 
-            $report_lunas = $report->all_tunggakan_report($data);
+            $report_lunas = $report->tunggakan_report_all($data);
             $all_rt_rw = $report->getAllRTRW();
             $table_rekap = $this->rekap($all_rt_rw,$report_lunas);
             return view('report/report_tunggakan', compact('title','table_rekap','bulan','tahun'));
@@ -99,7 +99,7 @@ class ReportController extends Controller
             'tahun' => $tahun
         );
         $detail_report = $report->detail_lunas($data);
-        return view('report/detail_reportLunas', compact('title','detail_report'));
+        return view('report/detail_reportLunas', compact('title','detail_report', 'bulan', 'tahun', 'rt_rw'));
     }
 
     public function detail_tunggakan($rt_rw, $bulan, $tahun){
@@ -112,33 +112,56 @@ class ReportController extends Controller
             'tahun' => $tahun
         );
         $detail_report = $report->detail_tunggakan($data);
-        return view('report/detail_reportTunggakan', compact('title','detail_report'));
+        return view('report/detail_reportTunggakan', compact('title','detail_report', 'rt_rw', 'bulan', 'tahun'));
     }
 
     public function ajaxJumlah($tahun,$bulan){
         $report = new Report();
         $title = 'Halaman Report';
-        $rw = explode('/',session()->get('user')->rt_rw)[1];
-        $data = array(
-            'rw' => $rw,
-            'bulan' => $bulan,
-            'tahun' => $tahun
-        );
-        $report_lunas = $report->lunas_report($data);
-        $all_rt = $report->getAllRt($rw);
-        $table_rekap = [];
-        foreach ($all_rt as $key => $rt) {
-            $jumlah = 0;
-            foreach ($report_lunas as $key_report => $lunas) {
-                if ($rt->rt_rw == $lunas->rt_rw) {
-                    $jumlah = $lunas->jumlah;
-                    break;
-                }
-            }
-            $table_rekap[$key] = array(
-                'rt_rw' => $rt->rt_rw,
-                'jumlah' => $jumlah,
+        if(isset(session()->get('user')->rt_rw)){
+            $rw = explode('/',session()->get('user')->rt_rw)[1];
+            $data = array(
+                'rw' => $rw,
+                'bulan' => $bulan,
+                'tahun' => $tahun
             );
+            $report_lunas = $report->lunas_report($data);
+            $all_rt = $report->getAllRt($rw);
+            $table_rekap = [];
+            foreach ($all_rt as $key => $rt) {
+                $jumlah = 0;
+                foreach ($report_lunas as $key_report => $lunas) {
+                    if ($rt->rt_rw == $lunas->rt_rw) {
+                        $jumlah = $lunas->jumlah;
+                        break;
+                    }
+                }
+                $table_rekap[$key] = array(
+                    'rt_rw' => $rt->rt_rw,
+                    'jumlah' => $jumlah,
+                );
+            }
+        }else{
+            $data = array(
+                'bulan' => $bulan,
+                'tahun' => $tahun
+            );
+            $report_lunas = $report->lunas_report_all($data);
+            $all_rt_rw = $report->getAllRTRW();
+            $table_rekap = [];
+            foreach ($all_rt_rw as $key => $data) {
+                $jumlah = 0;
+                foreach ($report_lunas as $key_report => $lunas) {
+                    if ($data->rt_rw == $lunas->rt_rw) {
+                        $jumlah = $lunas->jumlah;
+                        break;
+                    }
+                }
+                $table_rekap[$key] = array(
+                    'rt_rw' => $data->rt_rw,
+                    'jumlah' => $jumlah,
+                );
+            }
         }
         return response()->json($table_rekap);
     }
@@ -146,15 +169,26 @@ class ReportController extends Controller
     public function ajaxTunggakan($tahun,$bulan){
         $report = new Report();
         $title = 'Halaman Report Tunggakan';
-        $rw = explode('/',session()->get('user')->rt_rw)[1];
-        $data = array(
-            'rt_rw' => $rw,
-            'bulan' => $bulan,
-            'tahun' => $tahun
-        );
-        $tunggakan_report = $report->tunggakan_report($data);
-        $all_rt = $report->getAllRt($rw);
-        $table_rekap = $this->rekap($all_rt,$tunggakan_report);
+
+        if(isset(session()->get('user')->rt_rw)){
+            $rw = explode('/',session()->get('user')->rt_rw)[1];
+            $data = array(
+                'rt_rw' => $rw,
+                'bulan' => $bulan,
+                'tahun' => $tahun
+            );
+            $tunggakan_report = $report->tunggakan_report($data);
+            $all_rt = $report->getAllRt($rw);
+            $table_rekap = $this->rekap($all_rt,$tunggakan_report);
+        }else{
+            $data = array(
+                'bulan' => $bulan,
+                'tahun' => $tahun
+            );
+            $tunggakan_report = $report->tunggakan_report_all($data);
+            $all_rt_rw = $report->getAllRTRW();
+            $table_rekap = $this->rekap($all_rt_rw,$tunggakan_report);
+        }
         
         return response()->json($table_rekap);
     }
@@ -162,27 +196,51 @@ class ReportController extends Controller
     public function printJumlah($tahun,$bulan){
         $report = new Report();
         $title = 'Halaman Report';
-        $rw = explode('/',session()->get('user')->rt_rw)[1];
-        $data = array(
-            'rw' => $rw,
-            'bulan' => $bulan,
-            'tahun' => $tahun
-        );
-        $report_lunas = $report->lunas_report($data);
-        $all_rt = $report->getAllRt($rw);
-        $table_rekap = [];
-        foreach ($all_rt as $key => $rt) {
-            $jumlah = 0;
-            foreach ($report_lunas as $key_report => $lunas) {
-                if ($rt->rt_rw == $lunas->rt_rw) {
-                    $jumlah = $lunas->jumlah;
-                    break;
-                }
-            }
-            $table_rekap[$key] = array(
-                'rt_rw' => $rt->rt_rw,
-                'jumlah' => $jumlah,
+        if(!isset(session()->get('user')->rt_rw)){
+            $data = array(
+                'bulan' => $bulan,
+                'tahun' => $tahun
             );
+            $report_lunas = $report->lunas_report_all($data);
+            $all_rt_rw = $report->getAllRTRW();
+            $table_rekap = [];
+            foreach ($all_rt_rw as $key => $data) {
+                $jumlah = 0;
+                foreach ($report_lunas as $key_report => $lunas) {
+                    if ($data->rt_rw == $lunas->rt_rw) {
+                        $jumlah = $lunas->jumlah;
+                        break;
+                    }
+                }
+                $table_rekap[$key] = array(
+                    'rt_rw' => $data->rt_rw,
+                    'jumlah' => $jumlah,
+                );
+            }
+        }else{
+            $rw = explode('/',session()->get('user')->rt_rw)[1];
+            $data = array(
+                'rw' => $rw,
+                'bulan' => $bulan,
+                'tahun' => $tahun
+            );
+    
+            $report_lunas = $report->lunas_report($data);
+            $all_rt = $report->getAllRt($rw);
+            $table_rekap = [];
+            foreach ($all_rt as $key => $rt) {
+                $jumlah = 0;
+                foreach ($report_lunas as $key_report => $lunas) {
+                    if ($rt->rt_rw == $lunas->rt_rw) {
+                        $jumlah = $lunas->jumlah;
+                        break;
+                    }
+                }
+                $table_rekap[$key] = array(
+                    'rt_rw' => $rt->rt_rw,
+                    'jumlah' => $jumlah,
+                );
+            }
         }
 
         //inisialisasi spreadsheet
@@ -191,7 +249,11 @@ class ReportController extends Controller
         $sheet->getColumnDimension('A')->setAutoSize(true);
         $sheet->getColumnDimension('B')->setAutoSize(true);
         $sheet->mergeCells("A1:I2");
-        $sheet->setCellValue('A1', 'Rekap Iuran RW '.explode('/',session()->get('user')->rt_rw)[1].' Bulan '.$bulan." ".$tahun);
+        if(session()->get('user')->rt_rw){
+            $sheet->setCellValue('A1', 'Rekap Iuran RW '.explode('/',session()->get('user')->rt_rw)[1].' Bulan '.$bulan." ".$tahun);
+        }else{
+            $sheet->setCellValue('A1', 'Rekap Iuran Seluruh Warga ');
+        }
         $sheet->getStyle('A:C')->getAlignment()->setHorizontal('center');
         $sheet->getStyle('A:C')->getAlignment()->setVertical('center');
         $sheet->setCellValue('A4', 'No');
@@ -207,12 +269,12 @@ class ReportController extends Controller
             $no++;
             $no_cell++;
         }
-        // $sheet->getStyle('A1')->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
-        // $sheet->getStyle('A1')->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
-        // $sheet->getStyle('A1')->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
-        // $sheet->getStyle('A1')->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
         $writer = new Xlsx($spreadsheet);
-        $filename = 'Rekap Iuran RW '.explode('/',session()->get('user')->rt_rw)[1].' Bulan '.$bulan." ".$tahun;
+        if(session()->get('user')->rt_rw){
+            $filename = 'Rekap Iuran RW '.explode('/',session()->get('user')->rt_rw)[1].' Bulan '.$bulan." ".$tahun;
+        }else{
+            $filename = 'Rekap Iuran Seluruh Warga';
+        }
         
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"'); 
@@ -224,17 +286,25 @@ class ReportController extends Controller
 
     public function printTunggakan($tahun,$bulan){
         $report = new Report();
-        $rw = explode('/',session()->get('user')->rt_rw)[1];
-        $bulan = $this->check_mount(date('m'));
-        $tahun = date('Y');
-        $data = array(
-            'rt_rw' => $rw,
-            'bulan' => $bulan,
-            'tahun' => $tahun
-        );
-        $tunggakan_report = $report->tunggakan_report($data);
-        $all_rt = $report->getAllRt($rw);
-        $table_rekap = $this->rekap($all_rt,$tunggakan_report);
+        if(isset(session()->get('user')->rt_rw)){
+            $rw = explode('/',session()->get('user')->rt_rw)[1];
+            $data = array(
+                'rt_rw' => $rw,
+                'bulan' => $bulan,
+                'tahun' => $tahun
+            );
+            $tunggakan_report = $report->tunggakan_report($data);
+            $all_rt = $report->getAllRt($rw);
+            $table_rekap = $this->rekap($all_rt,$tunggakan_report);
+        }else{
+            $data = array(
+                'bulan' => $bulan,
+                'tahun' => $tahun
+            );
+            $tunggakan_report = $report->tunggakan_report_all($data);
+            $all_rt_rw = $report->getAllRTRW();
+            $table_rekap = $this->rekap($all_rt_rw,$tunggakan_report);
+        }
 
         //inisialisasi spreadsheet
         $spreadsheet = new Spreadsheet();
@@ -242,7 +312,11 @@ class ReportController extends Controller
         $sheet->getColumnDimension('A')->setAutoSize(true);
         $sheet->getColumnDimension('B')->setAutoSize(true);
         $sheet->mergeCells("A1:I2");
-        $sheet->setCellValue('A1', 'Rekap Tunggakan RW '.explode('/',session()->get('user')->rt_rw)[1].' Bulan '.$bulan." ".$tahun);
+        if(isset(session()->get('user')->rt_rw)){
+            $sheet->setCellValue('A1', 'Rekap Tunggakan RW '.explode('/',session()->get('user')->rt_rw)[1].' Bulan '.$bulan." ".$tahun);
+        }else{
+            $sheet->setCellValue('A1', 'Rekap Tunggakan Warga');
+        }
         $sheet->getStyle('A:C')->getAlignment()->setHorizontal('center');
         $sheet->getStyle('A:C')->getAlignment()->setVertical('center');
         $sheet->setCellValue('A4', 'No');
@@ -261,7 +335,11 @@ class ReportController extends Controller
         }
         
         $writer = new Xlsx($spreadsheet);
-        $filename = 'Rekap Tunggakan RW '.explode('/',session()->get('user')->rt_rw)[1].' Bulan '.$bulan." ".$tahun;
+        if(isset(session()->get('user')->rt_rw)){
+            $filename = 'Rekap Tunggakan RW '.explode('/',session()->get('user')->rt_rw)[1].' Bulan '.$bulan." ".$tahun;
+        }else{
+            $filename = 'Rekap Tunggakan Warga';
+        }
         
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"'); 
@@ -291,7 +369,7 @@ class ReportController extends Controller
         $sheet->getColumnDimension('D')->setAutoSize(true);
         $sheet->getColumnDimension('E')->setAutoSize(true);
         $sheet->mergeCells("A1:I2");
-        $sheet->setCellValue('A1', 'Rekap Iuran RW '.explode('/',session()->get('user')->rt_rw)[1].' Bulan '.$bulan." ".$tahun);
+        $sheet->setCellValue('A1', 'Rekap Iuran RT '.$rt_rw[0].' RW '.$rt_rw[1].' Bulan '.$bulan." ".$tahun);
         $sheet->getStyle('A:E')->getAlignment()->setHorizontal('center');
         $sheet->getStyle('A:E')->getAlignment()->setVertical('center');
         $sheet->setCellValue('A4', 'No');
@@ -311,12 +389,8 @@ class ReportController extends Controller
             $no++;
             $no_cell++;
         }
-        // $sheet->getStyle('A1')->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
-        // $sheet->getStyle('A1')->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
-        // $sheet->getStyle('A1')->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
-        // $sheet->getStyle('A1')->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
         $writer = new Xlsx($spreadsheet);
-        $filename = 'Rekap Detail Iuran RT '.explode('/',session()->get('user')->rt_rw)[0].' RW '.explode('/',session()->get('user')->rt_rw)[1].' Bulan '.$bulan." ".$tahun;
+        $filename = 'Rekap Detail Iuran RT '.$rt_rw[0].' RW '.$rt_rw[1].' Bulan '.$bulan." ".$tahun;
         
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"'); 
@@ -346,7 +420,7 @@ class ReportController extends Controller
         $sheet->getColumnDimension('D')->setAutoSize(true);
         $sheet->getColumnDimension('E')->setAutoSize(true);
         $sheet->mergeCells("A1:I2");
-        $sheet->setCellValue('A1', 'Rekap Tunggakan RW '.explode('/',session()->get('user')->rt_rw)[1].' Bulan '.$bulan." ".$tahun);
+        $sheet->setCellValue('A1', 'Rekap Tunggakan RT '.$rt_rw[0].' RW '.$rt_rw[1].' Bulan '.$bulan." ".$tahun);
         $sheet->getStyle('A:E')->getAlignment()->setHorizontal('center');
         $sheet->getStyle('A:E')->getAlignment()->setVertical('center');
         $sheet->setCellValue('A4', 'No');
@@ -366,12 +440,8 @@ class ReportController extends Controller
             $no++;
             $no_cell++;
         }
-        // $sheet->getStyle('A1')->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
-        // $sheet->getStyle('A1')->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
-        // $sheet->getStyle('A1')->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
-        // $sheet->getStyle('A1')->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
         $writer = new Xlsx($spreadsheet);
-        $filename = 'Rekap Detail Tunggakan RT '.explode('/',session()->get('user')->rt_rw)[0].' RW '.explode('/',session()->get('user')->rt_rw)[1].' Bulan '.$bulan." ".$tahun;
+        $filename = 'Rekap Detail Tunggakan RT '.$rt_rw[0].' RW '.$rt_rw[1].' Bulan '.$bulan." ".$tahun;
         
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"'); 
@@ -477,8 +547,8 @@ class ReportController extends Controller
         $report = new Report();
         $rt_rw = explode('/',session()->get('user')->rt_rw);
         $title = 'Halaman Report Detail RT '.$rt_rw[0].' RW '.$rt_rw[1];
-        $bulan = $this->check_mount(date('m'));
-        $tahun = date('Y');
+        // $bulan = $this->check_mount(date('m'));
+        // $tahun = date('Y');
         $data = array(
             'rt_rw' => implode('/',$rt_rw),
             'bulan' => $bulan,
@@ -492,8 +562,8 @@ class ReportController extends Controller
         $report = new Report();
         $rt_rw = explode('/',session()->get('user')->rt_rw);
         $title = 'Halaman Report Detail Tunggakan RT '.$rt_rw[0].' RW '.$rt_rw[1];
-        $bulan = $this->check_mount(date('m'));
-        $tahun = date('Y');
+        // $bulan = $this->check_mount(date('m'));
+        // $tahun = date('Y');
         $data = array(
             'rt_rw' => implode('/',$rt_rw),
             'bulan' => $bulan,

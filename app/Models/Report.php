@@ -10,18 +10,18 @@ class Report extends Model
 {
     use HasFactory;
 
-    public function getAllReportLunas($data){
-        $report = DB::table('transactions')
-            ->join('family_cards', 'family_cards.nomor', '=', 'transactions.family_card_id')
-            ->where([
-                ['transactions.bulan', '=', $data['bulan']],
-                ['transactions.tahun', '=', $data['tahun']],
-                ])
-            ->groupBy('family_cards.rt_rw')
-            ->select('family_cards.rt_rw', DB::raw('SUM(transactions.jumlah) as jumlah'))
-            ->get();
-        return $report;
-    }
+    // public function getAllReportLunas($data){
+    //     $report = DB::table('transactions')
+    //         ->join('family_cards', 'family_cards.nomor', '=', 'transactions.family_card_id')
+    //         ->where([
+    //             ['transactions.bulan', '=', $data['bulan']],
+    //             ['transactions.tahun', '=', $data['tahun']],
+    //             ])
+    //         ->groupBy('family_cards.rt_rw')
+    //         ->select('family_cards.rt_rw', DB::raw('SUM(transactions.jumlah) as jumlah'))
+    //         ->get();
+    //     return $report;
+    // }
 
     public function getAllRTRW(){
         $data = DB::table('family_cards')
@@ -39,6 +39,19 @@ class Report extends Model
         ->select('rt_rw')
         ->get();
         return $rt;
+    }
+
+    public function lunas_report_all($data){
+        $report = DB::table('transactions')
+            ->join('family_cards', 'family_cards.nomor', '=', 'transactions.family_card_id')
+            ->where([
+                ['transactions.bulan', '=', $data['bulan']],
+                ['transactions.tahun', '=', $data['tahun']],
+                ])
+            ->groupBy('family_cards.rt_rw')
+            ->select('family_cards.rt_rw', DB::raw('SUM(transactions.jumlah) as jumlah'))
+            ->get();
+        return $report;
     }
 
     public function lunas_report($data){
@@ -82,7 +95,7 @@ class Report extends Model
         return $report;
     }
 
-    public function all_tunggakan_report($data){
+    public function tunggakan_report_all($data){
         $report = DB::table('lands')
         ->join('family_cards', 'family_cards.nomor', '=', 'lands.family_card_id')
         ->join('categories', 'categories.id', '=', 'lands.category_id')

@@ -33,7 +33,13 @@
     <div class="section-body">
         <div id="success_message"></div>
         <div class="card">
-            <div class="card-header d-flex justify-content-between">
+            <div class="card-header d-flex justify-content-end">
+                <div id="export" class="export">
+                    <?php 
+                        $rt_rw = $rt_rw[0]."-".$rt_rw[1];
+                    ?>
+                    <a href="/dashboard/report/print_DetailJumlah/{{$rt_rw}}/{{$tahun}}/{{$bulan}}" class="btn btn-info">eksport</a>
+                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">

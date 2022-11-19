@@ -276,7 +276,7 @@
     }
     
     $("#role").change(() => {
-        if($("#role").val() != "superuser"){
+        if($("#role").val() == "admin_rt"){
             $("#name").prop("required", true);
             $("#rt").prop("required", true);
             $("#rw").prop("required", true);
@@ -290,6 +290,13 @@
             $("#name").parent().parent().prop("hidden", true);
             $("#rt").parent().parent().prop("hidden", true);
             $("#rw").parent().parent().prop("hidden", true);
+        }else if($("#role").val() == "admin_rw"){
+            $("#name").prop("required", true);
+            $("#rw").prop("required", true);
+            $("#rt").prop("required", false);
+            $("#name").parent().parent().prop("hidden", false);
+            $("#rt").parent().parent().prop("hidden", true);
+            $("#rw").parent().parent().prop("hidden", false);
         }
     })
 

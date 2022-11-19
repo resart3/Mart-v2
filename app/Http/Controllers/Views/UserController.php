@@ -60,8 +60,7 @@ class UserController extends Controller
      * @param UserRequest $request
      * @return Response
      */
-    public function store(Request $request){
-        // dd($request->rt);
+    public function store(Request $request){        
         if(isset($request->rt)){
             $validator = Validator::make($request->all(), [
                 'email' => 'required|email|unique:users,email',   // required and email format validation
@@ -71,7 +70,16 @@ class UserController extends Controller
                 'rw' => 'required|min:3|max:3'
 
             ]); // create the validations
-        }else{
+        }elseif(isset($request->rw)){
+                $validator = Validator::make($request->all(), [
+                'email' => 'required|email|unique:users,email',   // required and email format validation
+                'password' => 'required|min:8', // required and number field validation
+                'confirm_password' => 'required|same:password',
+                'rw' => 'required|min:3|max:3'
+
+            ]); // create the validations
+        }
+        else{
             $validator = Validator::make($request->all(), [
                 'email' => 'required|email|unique:users,email',   // required and email format validation
                 'password' => 'required|min:8', // required and number field validation
@@ -101,8 +109,12 @@ class UserController extends Controller
             //validations are passed, save new user in database
             $User = new User;
 
-            if($request->role != 'superuser'){
+            if($request->role == 'admin_rt'){
                 $rt = $request->rt;
+                $rw = $request->rw;
+                $User->rt_rw = $rt.'/'.$rw;
+            }elseif($request->role == 'admin_rw'){
+                $rt = 000;
                 $rw = $request->rw;
                 $User->rt_rw = $rt.'/'.$rw;
             }

@@ -34,8 +34,8 @@
         <div id="success_message"></div>
         <div class="card">
             <div class="card-header d-flex justify-content-between">
-                <div class="filer">
-                    <select name="filter_bulan">
+                <div class="filer d-flex align-items-center">
+                    <select class="form-control mr-2" name="filter_bulan">
                         <option {{($bulan == 'januari')?'selected':"";}} value="januari">Januari</option>
                         <option {{($bulan == 'februari')?'selected':"";}} value="Februari">Februari</option>
                         <option {{($bulan == 'maret')?'selected':"";}} value="maret">Maret</option>
@@ -49,11 +49,11 @@
                         <option {{($bulan == 'november')?'selected':"";}} value="november">November</option>
                         <option {{($bulan == 'desember')?'selected':"";}} value="desember">Desember</option>
                     </select>
-                    <input type="number" name="filter_tahun" value="{{$tahun}}">
+                    <input class="form-control mr-2" type="number" name="filter_tahun" value="{{$tahun}}" style="height: 100%;">
                     <button id="search_filter" class="btn btn-info">Search</button>
                 </div>
                 <div id="export" class="export">
-                    <a href="/dashboard/report/print_jumlah/{{$tahun}}/{{$bulan}}" class="btn btn-info">eksport</a>
+                    <button class="btn btn-info" onclick="funcExport()">eksport</button>
                 </div>
             </div>
             <div class="card-body">
@@ -91,8 +91,15 @@
 
 @push('scripts')
     <script>
+        let bulan = '{{ $bulan }}';
+        let tahun = '{{ $tahun }}';
+
         String.prototype.replaceAt = function(index, replacement) {
             return this.substring(0, index) + replacement + this.substring(index + replacement.length);
+        }
+
+        const funcExport = function(){
+            window.location.href = `{{URL::to('/dashboard/report/print_tunggakan/${tahun}/${bulan}')}}`;
         }
 
         const detail_function = (rt_rw, bulan, tahun) => {
@@ -101,8 +108,6 @@
 
         $(document).ready(function(){
             const table_rekap = @json($table_rekap);
-            const bulan = '{{ $bulan }}';
-            const tahun = '{{ $tahun }}';
 
             let count = 0;
             $("#table_body").html('');
@@ -123,17 +128,14 @@
             })
 
             $('#search_filter').click(function(){
-                let bulan = $("select[name='filter_bulan']").find(':selected').val()
-                let tahun = $("input[name='filter_tahun']").val()
+                bulan = $("select[name='filter_bulan']").find(':selected').val();
+                tahun = $("input[name='filter_tahun']").val();
                 
                 $.ajax({
                     headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                    url: "/dashboard/report/filer_jumlah/" + tahun + "/" + bulan,
+                    url: "/dashboard/report/filer_tunggakan/" + tahun + "/" + bulan,
                     type: "GET",
                     success: function (response) {
-                        const bulan = '{{ $bulan }}';
-                        const tahun = '{{ $tahun }}';
-
                         let count = 0;
                         $("#table_body").html('');
                         response.forEach((data) => {
