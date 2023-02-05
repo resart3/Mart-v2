@@ -87,6 +87,13 @@
                         </a>
                     </li>
 
+                    <li class="{{ Request::is('dashboard/calonPemilih') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ url('dashboard/calonPemilih') }}">
+                            <i class="fa fa-users"></i>
+                            <span>Halaman Data Calon Pemilih</span>
+                        </a>
+                    </li>
+
                     <li class="{{ Request::is('dashboard/transaction') ? 'active' : '' }}">
                         <a class="nav-link" href="{{ url('dashboard/transaction') }}">
                             <i class="fa fa-book"></i> <span>Halaman Transaksi</span>
