@@ -36,7 +36,7 @@ class FamilyMember extends Model
         ->join('family_cards', 'family_cards.nomor', '=', 'family_members.family_card_id')
         ->whereRaw('(DATE_FORMAT(FROM_DAYS(DATEDIFF("2023-03-01",family_members.tanggal_lahir)), "%Y") + 0) > 16')
         ->where ('family_cards.rt_rw', '=', $rt)
-        ->selectRaw('family_members.nama, family_cards.alamat, family_cards.rt_rw, family_cards.kode_pos')
+        ->selectRaw('family_members.nama, family_cards.alamat, family_cards.rt_rw, family_cards.kode_pos, DATE_FORMAT(FROM_DAYS(DATEDIFF("2023-03-01",family_members.tanggal_lahir)), "%Y") + 0 as age')
         ->get();
 
         return $quer;

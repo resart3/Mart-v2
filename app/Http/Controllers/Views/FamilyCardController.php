@@ -13,18 +13,25 @@ class FamilyCardController extends Controller
     public function index()
     {
         $title = 'Halaman Data Warga';
-        // $rt_rw = explode("/",session()->get('user')->rt_rw);
+        $familyMember_model = new FamilyMember;
+        $rt = $familyMember_model->get_rt(explode("/",session()->get('user')->rt_rw)[1]);
         if (session()->get('user')->role=='admin_rt') {
             $family_card = FamilyCard::with('with_family_head')->where('rt_rw',session()->get('user')->rt_rw)->orderBy('created_at', 'desc')->get();
         }
-        else if (session()->get('user')->role=='admin_rw') {
-            $family_card =  FamilyCard::with('with_family_head')->where('rt_rw','like','%'.explode("/",session()->get('user')->rt_rw)[1])->orderBy('created_at', 'desc')->get();
+        else if (session()->get('user')->role=='Admin_rw') {
+            $family_card =  FamilyCard::with('with_family_head')->where('rt_rw','001/'.explode("/",session()->get('user')->rt_rw)[1])->orderBy('created_at', 'desc')->get();
+            // $family_card =  FamilyCard::with('with_family_head')->where('rt_rw','like','%'.explode("/",session()->get('user')->rt_rw)[1])->orderBy('created_at', 'desc')->get();
         }
         else{
             $family_card = FamilyCard::with('with_family_head')->orderBy('created_at', 'desc')->get();
         }
 
-        return view('family_card', compact('family_card', 'title'));
+        return view('family_card', compact('family_card','rt', 'title'));
+    }
+
+    public function filter_rt($rt){
+        $family_card =  FamilyCard::with('with_family_head')->where('rt_rw',$rt."/".explode("/",session()->get('user')->rt_rw)[1])->orderBy('created_at', 'desc')->get();
+        return response()->json($family_card);
     }
 
     /**

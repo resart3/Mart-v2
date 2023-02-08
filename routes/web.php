@@ -34,6 +34,7 @@ Route::group(['prefix' => 'dashboard', 'middleware' => 'superuser'], function ()
     Route::get('/', function () { $title = 'Dashboard'; return view('index', compact('title')); });
     Route::resource('user', UserController::class);
     Route::resource('data', FamilyCardController::class);
+    Route::get('data_filter/{rt}', [FamilyCardController::class, 'filter_rt']);
     Route::resource('calonPemilih', CalonPemilihController::class);
     Route::get('calonPemilih/filter/{rt}', [CalonPemilihController::class, 'filter']);
     Route::get('transaction/{nomor}/{tahun}', [TransactionController::class, 'show_transaction'])->name('detail_transaction');

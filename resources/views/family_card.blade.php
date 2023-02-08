@@ -54,16 +54,26 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <a data-target="#form-modal" href="#" class="btn btn-icon icon-left btn-primary"
-                data-toggle="modal"
-
-                >
+                data-toggle="modal">
                     <i class="fa fa-plus"></i>
                     &nbsp; Tambah Data Kartu Keluarga
                 </a>
+                @if (session()->get('user')->role != 'admin_rt')
+                <div class="filter_rt">
+                    <div class="form-group m-0">
+                        <select id="rt_filter" class="form-control" aria-label="Default select example">
+                            <option disabled selected value="">Silahkan pilih nomor RT</option>
+                            @foreach ($rt as $key => $data)
+                                    <option value={{ explode("/",$data->rt_rw)[0] }}>{{ explode("/",$data->rt_rw)[0] }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                @endif
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table id="dataTable" class="table-bordered table-md table">
+                    <table id="dataTableKK" class="table-bordered table-md table">
                         <thead>
                         <tr>
                             <th>#</th>
@@ -271,7 +281,7 @@
                                         <select class="form-control" name="jenis_kelamin" id="jenis_kelamin" 
                                             required>
                                             <option value=""></option>
-                                            <option value="Laki - Laki">Laki-Laki</option>
+                                            <option value="Laki-Laki">Laki-Laki</option>
                                             <option value="Perempuan">Perempuan</option>
                                         </select>
                                     </div>
@@ -447,6 +457,7 @@
                     }
                 });
                 $('.close').find('input').val('');
+
             });
 
             $("#btnUpdateCard").click(() => {
@@ -488,6 +499,69 @@
                     }
                 });
             });
+
+            $(document).ready(function() {
+                let table_calon = $("#dataTableKK").DataTable({
+                    info: false,
+                    responsive: true,
+                })
+                $("#rt_filter").change(function(){
+                    let rt = $(this).val();
+                    table_calon.clear().draw();
+                    $.ajax({
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},            
+                        url: "/dashboard/data_filter/" + rt,
+                        type: "GET",
+                        success: function (response) {
+                            let no = 1;
+                            // let base = window.location.host;
+                            // console.log(base);
+                            $.each(response,function() {
+                                let family_head = "";
+                                if (this.with_family_head[0] != null) {
+                                    family_head = this.with_family_head[0].nama
+                                }
+                                // let html = "<div class='d-flex justify-content-center'>"+
+                                //             +"<div class='mr-1'>"+
+                                //                 "<a href='data/this.nomor' class="btn btn-outline-primary">Detail</a>"
+                                //         +"</div>"
+                                table_calon.row.add(
+                                    [no++, this.nomor, family_head, this.alamat, this.rt_rw, this.kode_pos,
+                                        `<div class="d-flex justify-content-center">
+                                            <div class="mr-1">
+                                                <a href="data/${this.nomor}" class="btn btn-outline-primary">
+                                                    Detail
+                                                </a>
+                                            </div>
+                                            <div class="mr-1">
+                                                <a href="#" class="btn btn-primary" id='editCard' data-id="${this.nomor}" 
+                                                    data-toggle="modal" data-target="#form-card-edit">
+                                                    Edit
+                                                </a>
+                                            </div>
+                                            <div>
+                                                <form action="/dashboard/data/${this.nomor}" 
+                                                    method="POST">
+                                                    @csrf @method('DELETE')
+                                                    <button class="btn btn-danger delete" 
+                                                        onclick="return confirm('Apakah anda yakin hapus?');">
+                                                        Hapus
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>`
+                                    ]
+                                ).draw(false);
+                            })
+                        },
+                        error: function (response){
+                            console.log(response);
+                        }
+                    });
+                })
+            });
+
+            
 
             // $("#btnUpdateMember").click(() => {
             //     const id = $("#edit_id").val();

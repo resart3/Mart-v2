@@ -29,11 +29,14 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 @if (session()->get('user')->role != 'admin_rt')
-                    <select id="rt_filter" class="form-select" aria-label="Default select example">
-                        @foreach ($rt as $key => $data)
-                                <option value={{ explode("/",$data->rt_rw)[0] }}>{{ explode("/",$data->rt_rw)[0] }}</option>
+                    <div class="form-group m-0">
+                        <select id="rt_filter" class="form-control" aria-label="Default select example">
+                            <option disabled selected value="">Silahkan pilih nomor RT</option>
+                            @foreach ($rt as $key => $data)
+                                    <option value={{ explode("/",$data->rt_rw)[0] }}>{{ explode("/",$data->rt_rw)[0] }}</option>
                             @endforeach
-                    </select>
+                        </select>
+                    </div>
                 @endif
             </div>
             <div class="card-body">
@@ -43,6 +46,7 @@
                         <tr>
                             <th>#</th>
                             <th>Nama</th>
+                            <th>Usia</th>
                             <th>Alamat</th>
                             <th>RT/RW</th>
                             <th>Kode Pos</th>
@@ -53,6 +57,7 @@
                             <tr>
                                 <td>{{ $key + 1 }}</td>
                                 <td>{{ $data->nama }}</td>
+                                <td>{{ $data->age }}</td>
                                 <td>{{ $data->alamat }}</td>
                                 <td>{{ $data->rt_rw }}</td>
                                 <td>{{ $data->kode_pos }}</td>
@@ -396,7 +401,7 @@ $(document).ready(function() {
                 let no = 1;
                 $.each(response,function() {
                     table_calon.row.add(
-                        [no++, this.nama, this.alamat, this.rt_rw, this.kode_pos]
+                        [no++, this.nama,this.age ,this.alamat, this.rt_rw, this.kode_pos]
                     ).draw(false);
                 })
             },
