@@ -87,6 +87,12 @@
                         </a>
                     </li>
 
+                    <li class="{{ Request::is('dashboard/statistic') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ url('dashboard/statistic') }}">
+                            <i class="fa fa-users"></i> <span>Halaman Statistik</span>
+                        </a>
+                    </li>
+
                     <li class="{{ Request::is('dashboard/calonPemilih') ? 'active' : '' }}">
                         <a class="nav-link" href="{{ url('dashboard/calonPemilih') }}">
                             <i class="fa fa-users"></i>

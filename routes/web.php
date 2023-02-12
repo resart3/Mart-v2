@@ -10,7 +10,7 @@ use App\Http\Controllers\Views\TarifController;
 use App\Http\Controllers\Views\LandController;
 use App\Http\Controllers\Views\ReportController;
 use App\Http\Controllers\Views\CalonPemilihController;
-
+use App\Http\Controllers\Views\StatisticController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -37,6 +37,7 @@ Route::group(['prefix' => 'dashboard', 'middleware' => 'superuser'], function ()
     Route::get('data_filter/{rt}', [FamilyCardController::class, 'filter_rt']);
     Route::resource('calonPemilih', CalonPemilihController::class);
     Route::get('calonPemilih/filter/{rt}', [CalonPemilihController::class, 'filter']);
+    Route::resource('statistic', StatisticController::class);
     Route::get('transaction/{nomor}/{tahun}', [TransactionController::class, 'show_transaction'])->name('detail_transaction');
     Route::get('transaction/{nomor}/{tahun}/{bulan}', [TransactionController::class, 'show_receipt_image'])->name('get_receipt_image');
     Route::delete('transaction/{nomor}/{tahun}/{bulan}', [TransactionController::class, 'delete_transaction'])->name('delete_transaction');
