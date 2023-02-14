@@ -146,7 +146,7 @@
                                 <select class="form-control" name="jenis_kelamin" id="jenis_kelamin" 
                                     required>
                                     <option value=""></option>
-                                    <option value="Laki - Laki">Laki-Laki</option>
+                                    <option value="Laki-Laki">Laki-Laki</option>
                                     <option value="Perempuan">Perempuan</option>
                                 </select>
                             </div>
